@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="claude-na-pratica">
+  <title>1.1 Boas-vindas: imagine e construa | Claude Code na Prática</title>
+
+  <!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'emerald');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.emerald;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    section[data-inema-topic], [id^="topico-"], [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    /* Light mode - acento T1 emerald */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5,150,105,0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5,150,105,0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5,150,105,0.18); }
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    /* SVG adapta ao tema claro */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    /* Pulso do SVG */
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- NAV -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">⚡</span>
+            <span class="font-bold text-lg hidden sm:inline">Claude Code na Prática</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar &amp; Lucrar</span></a>
+          <a href="../trilha4/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+          <button type="button" data-inema-journey-open class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" title="Minha jornada">
+            <span aria-hidden="true">◷</span><span class="hidden lg:inline">Jornada</span>
+            <span class="inema-journey-badge hidden" aria-hidden="true"></span>
+          </button>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" title="Tema claro/escuro" aria-label="Alternar tema claro/escuro">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Início</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-emerald-400">Fundamentos</a>
+      <span>/</span>
+      <span class="text-emerald-400">Módulo 1.1</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">MÓDULO 1.1</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🌅 Boas-vindas: se você imagina, você constrói</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">A aula de abertura. Aqui você entende o que é o Claude Code, adota o mindset que move o curso inteiro e sai com um plano de estudo que cabe na sua rotina.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">6</div><div class="text-xs text-neutral-400">Tópicos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">~25</div><div class="text-xs text-neutral-400">Minutos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Iniciante</div><div class="text-xs text-neutral-400">Nível</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Abertura</div><div class="text-xs text-neutral-400">Tipo</div></div>
+      </div>
+      <!-- Medidor de progresso do modulo -->
+      <div class="mt-6 max-w-2xl">
+        <div data-inema-meter="modulo:1-1" class="inema-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 1.1">
+          <span data-inema-meter-pct class="inema-meter-pct">0%</span> <span data-inema-meter-frac class="inema-meter-count text-neutral-400 text-sm">0 de 6</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEUDO + TOC -->
+  <main id="conteudo" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+
+    <!-- TOC sticky -->
+    <nav data-inema-toc aria-label="Índice da página" class="hidden lg:block sticky top-24 self-start">
+      <p class="text-sm text-neutral-400 mb-3">Seção <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+      <ul class="space-y-1 text-sm">
+        <li><a href="#topico-1" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">1. O mundo virou</a></li>
+        <li><a href="#topico-2" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">2. Imagine → construa</a></li>
+        <li><a href="#topico-3" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">3. O que é o Claude Code</a></li>
+        <li><a href="#topico-4" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">4. Construir, não só estudar</a></li>
+        <li><a href="#topico-5" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">5. As 3 trilhas</a></li>
+        <li><a href="#topico-6" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">6. Como estudar</a></li>
+      </ul>
+    </nav>
+
+    <div class="inema-prose">
+
+      <!-- SVG modelo mental -->
+      <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
+        <svg viewBox="0 0 1000 220" class="w-full h-auto" role="img" aria-label="Uma ideia na sua cabeça atravessa o Claude Code e vira site, app e automação, dispensando a camada no-code">
+          <defs>
+            <linearGradient id="m11-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/></linearGradient>
+            <filter id="m11-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <pattern id="m11-grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#10b981" opacity="0.12"/></pattern>
+            <marker id="m11-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#34d399"/></marker>
+            <marker id="m11-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
+          </defs>
+          <rect x="0" y="0" width="1000" height="220" fill="url(#m11-grid)"/>
+          <!-- ideia -->
+          <g filter="url(#m11-glow)"><rect x="36" y="78" width="170" height="64" rx="14" fill="#0e2018" stroke="url(#m11-grad)" stroke-width="2.5"/></g>
+          <text x="121" y="104" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="600" font-size="18">💡 Sua ideia</text>
+          <text x="121" y="124" text-anchor="middle" fill="#9fe7c9" font-family="Inter,sans-serif" font-size="12">em português</text>
+          <!-- seta para o code -->
+          <path d="M206,110 L430,110" fill="none" stroke="#34d399" stroke-width="2" opacity="0.7" marker-end="url(#m11-ah)"/>
+          <!-- claude code -->
+          <rect x="430" y="80" width="190" height="60" rx="12" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+          <text x="525" y="106" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-weight="600" font-size="15">Claude Code</text>
+          <text x="525" y="126" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11.5">escreve · testa · corrige</text>
+          <!-- saidas -->
+          <g fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.5">
+            <path d="M620,110 C720,110 740,52 812,52" marker-end="url(#m11-ahc)"/>
+            <path d="M620,110 L812,110" marker-end="url(#m11-ahc)"/>
+            <path d="M620,110 C720,110 740,168 812,168" marker-end="url(#m11-ahc)"/>
+          </g>
+          <g font-family="Inter,sans-serif" font-size="13" font-weight="600">
+            <g class="wf-a"><rect x="812" y="36" width="150" height="32" rx="9" fill="#0e2018" stroke="#34d399" stroke-width="2"/><text x="887" y="57" text-anchor="middle" fill="#9fe7c9">🌐 site</text></g>
+            <g class="wf-a"><rect x="812" y="94" width="150" height="32" rx="9" fill="#0e2018" stroke="#34d399" stroke-width="2"/><text x="887" y="115" text-anchor="middle" fill="#9fe7c9">📱 app</text></g>
+            <g class="wf-a"><rect x="812" y="152" width="150" height="32" rx="9" fill="#0e2018" stroke="#34d399" stroke-width="2"/><text x="887" y="173" text-anchor="middle" fill="#9fe7c9">⚙️ automação</text></g>
+          </g>
+          <text x="525" y="196" text-anchor="middle" fill="#6b7280" font-family="Inter,sans-serif" font-size="11">a "camada no-code" sumiu — você vai direto da ideia ao código</text>
+        </svg>
+      </div>
+
+      <h2 class="text-2xl font-bold mb-6">Conteúdo detalhado</h2>
+
+      <!-- TOPICO 1 -->
+      <section id="topico-1" data-inema-topic="modulo-1-1#topico-1" data-inema-module="1-1" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+            <h2 class="text-2xl font-bold">🌅 O mundo virou: por que isso é possível agora</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-1-t1-p1" class="text-neutral-300 mb-6 leading-relaxed">A maior mudança de habilidade da sua vida profissional já aconteceu — e quase ninguém percebeu. Hoje, <strong class="text-emerald-400">descrever uma ideia em português</strong> já basta para construí-la em software. O que antes exigia anos de estudo agora cabe numa conversa.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Um momento em que linguagem natural vira código. Você fala o que quer; a máquina constrói.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">A barreira de entrada caiu. Quem entende isso primeiro larga na frente — e não precisa ser "de tecnologia".</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Linguagem natural → código · queda da barreira de entrada · habilidade transferível.</p></div>
+        </div>
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">📊</span> O que mudou na prática</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>Antes: para um site, você contratava alguém ou estudava meses.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>Agora: você descreve o site e revisa o resultado em uma tarde.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>O gargalo deixou de ser "saber programar" e virou "saber descrever bem".</span></li>
+          </ul>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 2 -->
+      <section id="topico-2" data-inema-topic="modulo-1-1#topico-2" data-inema-module="1-1" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+            <h2 class="text-2xl font-bold">🧠 O mindset "se você imagina, você constrói"</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-1-t2-p1" class="text-neutral-300 mb-6 leading-relaxed">A frase parece motivacional, mas é técnica. Em vez de pensar "eu não saberia fazer isso", você passa a perguntar <strong class="text-emerald-400">"como eu descreveria isso para a máquina construir?"</strong>. Sua imaginação vira a especificação do projeto.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">A postura de tratar suas ideias como projetos executáveis, não como sonhos distantes.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">O maior bloqueio do iniciante não é técnico — é acreditar que "não é para mim". Esse mindset destrava a ação.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Imaginação como especificação · da dúvida à descrição · você é o diretor do projeto.</p></div>
+        </div>
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Quando bater o "eu não sei fazer", reescreva mentalmente como uma pergunta: <em>"como eu descreveria isso em 3 frases?"</em>. A maioria das ideias fica construível só com essa virada.</p>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 3 -->
+      <section id="topico-3" data-inema-topic="modulo-1-1#topico-3" data-inema-module="1-1" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+            <h2 class="text-2xl font-bold">🤖 O que é o Claude Code (e o que não é)</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-1-t3-p1" class="text-neutral-300 mb-6 leading-relaxed">O Claude Code é um assistente que vive no <strong class="text-emerald-400">terminal</strong> (a "tela preta" do computador) e escreve, executa e corrige código a partir das suas instruções em texto. Não é mais uma ferramenta no-code: é a camada por baixo de todas elas.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Um agente de código que conversa com você e itera: escreve → testa → corrige.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Entender o que a ferramenta realmente faz evita expectativa errada e revela por que ela é mais poderosa que as "caixinhas".</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Terminal · agente de código · iteração · camada de abstração.</p></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+            <h4 class="font-bold text-emerald-400 mb-4">✓ O que o Claude Code É</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Um parceiro que escreve código de verdade a partir de texto.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Capaz de criar sites, apps, scripts e automações.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Flexível: vai direto à fonte, sem teto de "caixinha".</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ O que ele NÃO é</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Um botão mágico que adivinha o que você quer.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Uma ferramenta só "para programadores".</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Mais uma camada visual como n8n ou Make — ele é o nível abaixo.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🪜</span> Por que ir direto ao código</h3>
+          <p class="text-neutral-300 text-sm">Ferramentas no-code são "camadas de abstração" — escondem o código numa interface visual, mas têm um teto. O Claude Code dispensa a caixinha e mantém a simplicidade da conversa: menos intermediário, mais alcance.</p>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 4 -->
+      <section id="topico-4" data-inema-topic="modulo-1-1#topico-4" data-inema-module="1-1" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+            <h2 class="text-2xl font-bold">🛠️ Construir, não só estudar</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-1-t4-p1" class="text-neutral-300 mb-6 leading-relaxed">Este curso é mãos na massa. Você sai de cada trilha com <strong class="text-emerald-400">algo pronto</strong> — um site, um app, uma automação — não com a cabeça cheia de teoria solta.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">A filosofia de aprender construindo coisas reais, com avaliação por projeto.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Conhecimento que vira projeto fica na memória; conhecimento solto evapora. E você sai com portfólio.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Aprender fazendo · projeto como avaliação · sem enche-linguiça.</p></div>
+        </div>
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Leia / assista o tópico</h4><p class="text-neutral-300 text-sm">Entenda a ideia central. Não decore — entenda.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Faça o exercício</h4><p class="text-neutral-300 text-sm">É aqui que o conhecimento gruda. Pular o exercício é estudar pela metade.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Marque como lido e avance</h4><p class="text-neutral-300 text-sm">Só então passe ao próximo. Seu progresso aparece na "Minha jornada".</p></div>
+          </div>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 5 -->
+      <section id="topico-5" data-inema-topic="modulo-1-1#topico-5" data-inema-module="1-1" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+            <h2 class="text-2xl font-bold">🗺️ Panorama das 3 trilhas</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-1-t5-p1" class="text-neutral-300 mb-6 leading-relaxed">O curso se organiza em três trilhas progressivas. Cada uma constrói sobre a anterior. Ver o mapa antes da caminhada <strong class="text-emerald-400">reduz a ansiedade</strong> e ajuda a escolher seu ritmo.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Três trilhas: Fundamentos, Construir e Operar &amp; Lucrar — mais a Biblioteca de recursos.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Saber onde cada coisa está te dá um mapa para voltar e consultar quando precisar.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Trilha 1 Fundamentos · Trilha 2 Construir · Trilha 3 Operar &amp; Lucrar · Biblioteca.</p></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <a href="index.html" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all"><div class="text-emerald-400 font-bold text-sm mb-1">Trilha 1</div><h4 class="font-semibold group-hover:text-emerald-400 transition-colors">🧱 Fundamentos</h4><p class="text-xs text-neutral-400 mt-1">Instalar, configurar e operar com segurança.</p></a>
+          <a href="../trilha2/index.html" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all"><div class="text-blue-400 font-bold text-sm mb-1">Trilha 2</div><h4 class="font-semibold group-hover:text-blue-400 transition-colors">🚀 Construir</h4><p class="text-xs text-neutral-400 mt-1">Do zero ao site no ar, depois apps.</p></a>
+          <a href="../trilha3/index.html" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all"><div class="text-purple-400 font-bold text-sm mb-1">Trilha 3</div><h4 class="font-semibold group-hover:text-purple-400 transition-colors">📈 Operar &amp; Lucrar</h4><p class="text-xs text-neutral-400 mt-1">Memória, agente pessoal, segurança e receita.</p></a>
+          <a href="../trilha4/index.html" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-amber-500/30 p-5 transition-all"><div class="text-amber-400 font-bold text-sm mb-1">Biblioteca</div><h4 class="font-semibold group-hover:text-amber-400 transition-colors">📚 Recursos</h4><p class="text-xs text-neutral-400 mt-1">Banco de prompts, skills e agentes prontos.</p></a>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 6 -->
+      <section id="topico-6" data-inema-topic="modulo-1-1#topico-6" data-inema-module="1-1" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+            <h2 class="text-2xl font-bold">📚 Como estudar este curso</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-1-t6-p1" class="text-neutral-300 mb-6 leading-relaxed">Comece do começo. Foque de verdade. Faça os exercícios antes de avançar. Os "pequenos truques" que parecem dispensáveis são <strong class="text-emerald-400">exatamente onde mora o ganho</strong>.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Um método simples: sequência, foco profundo e prática antes de avançar.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Pular etapas "que você acha que já sabe" cria buracos que você sente lá na frente.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Sequência · foco · prática · curso vivo (material atualizado).</p></div>
+        </div>
+        <details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+          <summary class="cursor-pointer font-semibold text-emerald-400">Indo mais fundo (opcional): por que sessões curtas vencem</summary>
+          <p class="text-neutral-300 text-sm mt-3">Maratonar cansa e não fixa. Sessões de 25–30 minutos, algumas vezes por semana, criam consistência — e consistência vence o esforço heroico de um dia só. Use o medidor "Minha jornada" para ver seu avanço a cada sessão.</p>
+        </details>
+        <!-- Checagem leve opcional -->
+        <div data-inema-check="modulo-1-1#q1" class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <p class="font-medium mb-4">Auto-checagem (opcional): qual frase melhor resume o jeito de falar com o Claude Code?</p>
+          <div class="inema-check-options space-y-2">
+            <button type="button" data-inema-check-option="0" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Decorar comandos secretos e digitá-los rápido.</button>
+            <button type="button" data-inema-check-option="1" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Descrever com clareza o que você quer, em português.</button>
+            <button type="button" data-inema-check-option="2" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Clicar em botões numa interface visual.</button>
+          </div>
+          <div data-inema-check-feedback class="mt-4 text-sm" role="status" aria-live="polite"></div>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- EXERCICIOS -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6">✏️ Exercícios</h2>
+        <div class="space-y-4">
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. A frase-âncora <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Escreva o que "se você imagina, você constrói" significa no seu contexto. <span class="text-emerald-400">Critério:</span> cita um exemplo concreto seu.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Caça à abstração <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Em 2-3 linhas, explique a diferença entre uma ferramenta no-code e ir direto ao código. <span class="text-emerald-400">Critério:</span> usa "camada de abstração" corretamente.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Sua especificação <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Descreva um projeto seu em 3 frases. <span class="text-emerald-400">Critério:</span> nenhuma frase tem palavra vaga (bonito, fácil, rápido) sem um detalhe concreto ao lado.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Plano de estudo <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Defina quando e quanto vai estudar nas próximas 2 semanas. <span class="text-emerald-400">Critério:</span> tem dia, horário e duração reais.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Ambiente de foco <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Prepare seu espaço: celular longe, uma aba só, água ao lado. <span class="text-emerald-400">Critério:</span> 25 min sem checar o celular.</p></div>
+        </div>
+      </section>
+
+      <!-- PROMPTS PRONTOS -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6">⌨️ Prompts prontos</h2>
+        <p class="text-neutral-300 text-sm mb-6">Você ainda não vai rodar estes (a instalação é no próximo módulo). Eles mostram o <strong class="text-emerald-400">tom</strong> de uma boa instrução: clara, em português, dizendo <em>o quê</em> e <em>para quem</em>. O banco completo está na <a href="../trilha4/modulo-4-1.html" class="text-sky-400 hover:text-sky-300">Biblioteca → Prompts</a>.</p>
+        <div class="space-y-5">
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Explicação no seu nível</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Explique, em português e como se eu nunca tivesse programado, o que é o Claude Code e para que serve. Use uma analogia do dia a dia. No máximo 5 frases.</pre></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Ideia vaga → especificação (canônico)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Vou te descrever uma ideia ainda meio vaga. Sua tarefa é me fazer 5 perguntas curtas, uma de cada vez, para transformar essa ideia em uma especificação clara e construível. Minha ideia: [descreva aqui].</pre><p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p><pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">I'll describe a still-vague idea. Your job is to ask me 5 short questions, one at a time, to turn it into a clear, buildable spec. My idea: [describe here].</pre></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Plano de estudo pessoal</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Sou iniciante total, sem experiência em programação. Quero aprender a construir software descrevendo o que quero em português. Monte um plano de estudo de 2 semanas, realista, com sessões curtas. Comece pelo mais básico.</pre></div>
+        </div>
+      </section>
+
+      <!-- ERROS COMUNS -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6">⚠️ Erros comuns</h2>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>"Isso não é para mim, não sou de tecnologia."</strong> O bloqueio nº 1 — e é falso. O pré-requisito é vontade, não diploma.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Pular o início "porque parece básico".</strong> Os truques pequenos das primeiras aulas são onde mora o ganho depois.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Estudar sem construir.</strong> Assistir sem fazer os exercícios cria a ilusão de que você sabe.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Esperar "comando mágico".</strong> O resultado vem de descrições claras, não de fórmulas secretas.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Querer aprender tudo de uma vez.</strong> Sessões curtas e regulares vencem o esforço heroico.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <section class="mb-12">
+        <div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Resumo do módulo</h2>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>O que é o Claude Code</strong><span class="text-neutral-400"> — um agente no terminal que escreve, testa e corrige código a partir do seu texto.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>O mindset</strong><span class="text-neutral-400"> — imaginar é especificar; você é o diretor, não o pedreiro.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>O mapa</strong><span class="text-neutral-400"> — 3 trilhas progressivas + uma biblioteca de recursos.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>Como estudar</strong><span class="text-neutral-400"> — do começo, com foco e prática antes de avançar.</span></div></div>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+            <h3 class="font-semibold text-emerald-400 mb-3">Checklist de conclusão</h3>
+            <ul class="space-y-2 text-sm text-neutral-300">
+              <li>☐ Sei explicar, em uma frase, o que é o Claude Code.</li>
+              <li>☐ Entendo a diferença entre no-code e ir direto ao código.</li>
+              <li>☐ Internalizei "se eu imagino, eu construo" com um exemplo meu.</li>
+              <li>☐ Conheço as 3 trilhas e sei por onde começar.</li>
+              <li>☐ Escrevi minha primeira especificação (ideia em 3 frases concretas).</li>
+              <li>☐ Defini meu plano de estudo (dia, horário, duração).</li>
+            </ul>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+            <h3 class="font-semibold text-emerald-400 mb-2">Próximo módulo:</h3>
+            <p class="text-neutral-300">1.2 — Fundamentos e Setup: do zero ao primeiro comando no Claude Code</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Voltar para a trilha</a>
+            <a href="modulo-1-2.html" class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors">Próximo módulo →</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Claude Code na Prática — <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a> · 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS: nucleo v1 -->
+  <script>
+    function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp) e.classList.remove('active'); });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync();
+      tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+    function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }
+    function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  </script>
+
+  <!-- Camada de aprendizagem -->
+  <script>
+    window.addEventListener('DOMContentLoaded', function(){
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-1-1#q1', {
+          answer: 1,
+          explain: {
+            0: 'Não há comandos secretos — o que conta é a clareza da descrição.',
+            1: 'Isso! Você descreve o quê e para quem; o Claude Code escreve o código.',
+            2: 'Isso é no-code. O Claude Code vai direto ao código, conversando.'
+          }
+        });
+      }
+    });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="claude-na-pratica">
+  <title>Biblioteca | Claude Code na Prática</title>
+
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'emerald');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.emerald;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-amber-400 { color: #92400e; }
+    html:not(.dark) .bg-amber-500\/20 { background-color: rgba(217,119,6,0.12); }
+    html:not(.dark) .bg-amber-500\/10 { background-color: rgba(217,119,6,0.08); }
+    html:not(.dark) .border-amber-500\/30 { border-color: rgba(217,119,6,0.25); }
+    html:not(.dark) .hover\:bg-amber-500\/30:hover { background-color: rgba(217,119,6,0.18); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) { .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; } .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s} }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- NAV -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300"><span class="text-2xl">⚡</span><span class="font-bold text-lg hidden sm:inline">Claude Code na Prática</span></a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar &amp; Lucrar</span></a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-amber-400 bg-amber-500/10"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+          <button type="button" data-inema-journey-open class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" title="Minha jornada"><span aria-hidden="true">◷</span><span class="hidden lg:inline">Jornada</span><span class="inema-journey-badge hidden" aria-hidden="true"></span></button>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" title="Tema claro/escuro" aria-label="Alternar tema claro/escuro">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+    <nav class="text-sm text-neutral-500" aria-label="Trilha de navegação">
+      <a href="../../index.html" class="hover:text-amber-400">Início</a>
+      <span class="mx-2">/</span>
+      <span class="text-neutral-300">Biblioteca</span>
+    </nav>
+  </div>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-amber-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-semibold rounded-full mb-4">BIBLIOTECA</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">📚 Biblioteca</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Tudo junto, pronto pra usar: o <strong class="text-amber-400">Banco de Prompts</strong> (48 prompts em PT-BR), as <strong class="text-amber-400">Skills</strong> (60+ habilidades prontas pra colar) e os <strong class="text-amber-400">Agentes</strong> (18 especialistas de SEO). Um catálogo de recursos para acelerar tudo que você aprendeu nas trilhas — copie, instale e adapte.</p>
+      <div class="grid grid-cols-3 gap-4 mt-8 max-w-xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-amber-400">48</div><div class="text-xs text-neutral-400">Prompts</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-amber-400">60+</div><div class="text-xs text-neutral-400">Skills</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-amber-400">18</div><div class="text-xs text-neutral-400">Agentes</div></div>
+      </div>
+      <!-- HERO SVG -->
+      <div class="rounded-2xl border border-amber-500/30 bg-dark-900/40 p-3 sm:p-4 mt-8 overflow-hidden">
+        <svg viewBox="0 0 1000 200" class="w-full h-auto" role="img" aria-label="Três prateleiras da biblioteca — prompts, skills e agentes — alimentando o seu fluxo de trabalho">
+          <defs>
+            <linearGradient id="t4-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#f59e0b"/></linearGradient>
+            <filter id="t4-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <pattern id="t4-grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#f59e0b" opacity="0.12"/></pattern>
+          </defs>
+          <rect x="0" y="0" width="1000" height="200" fill="url(#t4-grid)"/>
+          <path d="M180,100 L470,100 M530,100 L800,100" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="8 8" opacity="0.5"/>
+          <g font-family="Inter,sans-serif">
+            <g class="wf-a"><rect x="40" y="62" width="160" height="76" rx="12" fill="#1f1604" stroke="#fbbf24" stroke-width="2"/><text x="120" y="95" text-anchor="middle" fill="#fcd9a0" font-size="22">⌨️</text><text x="120" y="120" text-anchor="middle" fill="#fcd9a0" font-size="13" font-weight="600">Prompts</text></g>
+            <g class="wf-a"><rect x="420" y="62" width="160" height="76" rx="12" fill="#1f1604" stroke="#fbbf24" stroke-width="2"/><text x="500" y="95" text-anchor="middle" fill="#fcd9a0" font-size="22">🎯</text><text x="500" y="120" text-anchor="middle" fill="#fcd9a0" font-size="13" font-weight="600">Skills</text></g>
+            <g class="wf-a"><rect x="800" y="62" width="160" height="76" rx="12" fill="#1f1604" stroke="#fbbf24" stroke-width="2"/><text x="880" y="95" text-anchor="middle" fill="#fcd9a0" font-size="22">🤖</text><text x="880" y="120" text-anchor="middle" fill="#fcd9a0" font-size="13" font-weight="600">Agentes</text></g>
+            <g filter="url(#t4-glow)"><rect x="430" y="156" width="140" height="34" rx="9" fill="#1f1604" stroke="url(#t4-grad)" stroke-width="2.5"/></g>
+            <text x="500" y="178" text-anchor="middle" fill="#f59e0b" font-size="13" font-weight="600">Seu fluxo</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <!-- 3 CARDS GRANDES -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">O que tem na Biblioteca</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <a href="modulo-4-1.html" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-amber-500/30 p-6 transition-all flex flex-col">
+          <div class="text-3xl mb-3">⌨️</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-amber-400 transition-colors">Banco de Prompts (48)</h3>
+          <p class="text-sm text-neutral-400 flex-1">Prompts em PT-BR prontos para colar — setup, memória, websites, apps, SEO, automação, segurança e mais. Cada um com "quando usar".</p>
+          <span class="mt-4 inline-flex items-center gap-1 text-amber-400 text-sm font-semibold">Abrir →</span>
+        </a>
+        <a href="modulo-4-2.html" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-amber-500/30 p-6 transition-all flex flex-col">
+          <div class="text-3xl mb-3">🎯</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-amber-400 transition-colors">Skills (60+)</h3>
+          <p class="text-sm text-neutral-400 flex-1">Habilidades prontas em 4 coleções: SEO (25), Superpowers (14), Power Design e UI/UX Pro Max. Cola a pasta e o Claude já reconhece.</p>
+          <span class="mt-4 inline-flex items-center gap-1 text-amber-400 text-sm font-semibold">Abrir →</span>
+        </a>
+        <a href="modulo-4-3.html" class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-amber-500/30 p-6 transition-all flex flex-col">
+          <div class="text-3xl mb-3">🤖</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-amber-400 transition-colors">Agentes (18)</h3>
+          <p class="text-sm text-neutral-400 flex-1">18 agentes especialistas de SEO para delegar tarefas focadas — técnico, conteúdo, schema, local, backlinks, performance e mais.</p>
+          <span class="mt-4 inline-flex items-center gap-1 text-amber-400 text-sm font-semibold">Abrir →</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- NOTA DE LICENÇAS -->
+    <section class="mb-4">
+      <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+        <h2 class="text-lg font-bold mb-2">⚖️ Licenças &amp; atribuição</h2>
+        <p class="text-sm text-neutral-400 max-w-3xl">Os prompts foram escritos para este curso. As skills e os agentes incluídos são <strong class="text-amber-400">open-source</strong> (licenças MIT/Apache), mantidos pelos respectivos autores — cada item conserva seu próprio <code class="text-amber-400">LICENSE</code>. Respeite os termos de cada licença ao reutilizar.</p>
+        <a href="../../biblioteca/ATTRIBUTION.md" class="mt-3 inline-flex items-center gap-1 text-amber-400 text-sm font-semibold hover:underline">Ver créditos e licenças completas (ATTRIBUTION.md) →</a>
+      </div>
+    </section>
+
+    <!-- NAVEGACAO -->
+    <div class="flex flex-col sm:flex-row gap-4 mt-10">
+      <a href="../../index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Início do curso</a>
+      <a href="modulo-4-1.html" class="flex-1 text-center px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-500 transition-colors">Começar pelos Prompts →</a>
+    </div>
+  </main>
+
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>Claude Code na Prática — <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a> · 2026</p></div>
+  </footer>
+
+  <script>
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync(); tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>

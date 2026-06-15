@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="claude-na-pratica">
+  <title>1.3 Sistema de memória: curta, média e longa | Claude Code na Prática</title>
+
+  <!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'emerald');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.emerald;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    section[data-inema-topic], [id^="topico-"], [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    /* Light mode - acento T1 emerald */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5,150,105,0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5,150,105,0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5,150,105,0.18); }
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    /* SVG adapta ao tema claro */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    /* Pulso do SVG */
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- NAV -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">⚡</span>
+            <span class="font-bold text-lg hidden sm:inline">Claude Code na Prática</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+          <a href="../trilha2/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar &amp; Lucrar</span></a>
+          <a href="../trilha4/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+          <button type="button" data-inema-journey-open class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" title="Minha jornada">
+            <span aria-hidden="true">◷</span><span class="hidden lg:inline">Jornada</span>
+            <span class="inema-journey-badge hidden" aria-hidden="true"></span>
+          </button>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" title="Tema claro/escuro" aria-label="Alternar tema claro/escuro">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-emerald-400">Início</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-emerald-400">Fundamentos</a>
+      <span>/</span>
+      <span class="text-emerald-400">Módulo 1.3</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">MÓDULO 1.3</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🧠 Sistema de memória: curta, média e longa</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Quanto mais contexto certo o Claude tem, melhores as respostas. Aqui você separa a memória em três níveis, escreve um <code class="text-emerald-400">CLAUDE.md</code> enxuto e monta uma rotina de "salvar memória" — para que um chat novo renda igual a um antigo.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">6</div><div class="text-xs text-neutral-400">Tópicos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">~45</div><div class="text-xs text-neutral-400">Minutos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Iniciante</div><div class="text-xs text-neutral-400">Nível</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Prática</div><div class="text-xs text-neutral-400">Tipo</div></div>
+      </div>
+      <!-- Medidor de progresso do modulo -->
+      <div class="mt-6 max-w-2xl">
+        <div data-inema-meter="modulo:1-3" class="inema-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 1.3">
+          <span data-inema-meter-pct class="inema-meter-pct">0%</span> <span data-inema-meter-frac class="inema-meter-count text-neutral-400 text-sm">0 de 6</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEUDO + TOC -->
+  <main id="conteudo" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+
+    <!-- TOC sticky -->
+    <nav data-inema-toc aria-label="Índice da página" class="hidden lg:block sticky top-24 self-start">
+      <p class="text-sm text-neutral-400 mb-3">Seção <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+      <ul class="space-y-1 text-sm">
+        <li><a href="#topico-1" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">1. Os três níveis</a></li>
+        <li><a href="#topico-2" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">2. Memória curta</a></li>
+        <li><a href="#topico-3" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">3. Baldes (buckets)</a></li>
+        <li><a href="#topico-4" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">4. CLAUDE.md</a></li>
+        <li><a href="#topico-5" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">5. Memória longa</a></li>
+        <li><a href="#topico-6" class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400">6. memory save</a></li>
+      </ul>
+    </nav>
+
+    <div class="inema-prose">
+
+      <!-- SVG modelo mental: curta / média / longa -->
+      <div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
+        <svg viewBox="0 0 1000 250" class="w-full h-auto" role="img" aria-label="Os três níveis de memória do Claude Code: curta, que é a sessão do agora; média, que é o CLAUDE.md, um por pasta; e longa, que é a base de conhecimento em disco. Uma seta memory save liga a conversa à base de conhecimento.">
+          <defs>
+            <linearGradient id="m13-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/></linearGradient>
+            <filter id="m13-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <pattern id="m13-grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#10b981" opacity="0.12"/></pattern>
+            <marker id="m13-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#34d399"/></marker>
+            <marker id="m13-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
+          </defs>
+          <rect x="0" y="0" width="1000" height="250" fill="url(#m13-grid)"/>
+          <!-- CURTA -->
+          <g class="wf-a" filter="url(#m13-glow)"><rect x="40" y="58" width="270" height="120" rx="16" fill="#0e2018" stroke="url(#m13-grad)" stroke-width="2.5"/></g>
+          <text x="175" y="92" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="700" font-size="19">⏱️ Curta</text>
+          <text x="175" y="118" text-anchor="middle" fill="#9fe7c9" font-family="Inter,sans-serif" font-size="13">a sessão · o "agora"</text>
+          <text x="175" y="140" text-anchor="middle" fill="#7fd6b4" font-family="Inter,sans-serif" font-size="11.5">some ao abrir chat novo</text>
+          <!-- seta curta -> media -->
+          <path d="M310,118 L362,118" fill="none" stroke="#34d399" stroke-width="2" opacity="0.6" marker-end="url(#m13-ah)"/>
+          <!-- MEDIA -->
+          <g class="wf-a" filter="url(#m13-glow)"><rect x="365" y="58" width="270" height="120" rx="16" fill="#0e2018" stroke="url(#m13-grad)" stroke-width="2.5"/></g>
+          <text x="500" y="92" text-anchor="middle" fill="#34d399" font-family="Inter,sans-serif" font-weight="700" font-size="19">📋 Média</text>
+          <text x="500" y="118" text-anchor="middle" fill="#9fe7c9" font-family="Inter,sans-serif" font-size="13">CLAUDE.md · 1 por pasta</text>
+          <text x="500" y="140" text-anchor="middle" fill="#7fd6b4" font-family="Inter,sans-serif" font-size="11.5">o "manual do projeto"</text>
+          <!-- seta media -> longa -->
+          <path d="M635,118 L687,118" fill="none" stroke="#34d399" stroke-width="2" opacity="0.6" marker-end="url(#m13-ah)"/>
+          <!-- LONGA -->
+          <g class="wf-a" filter="url(#m13-glow)"><rect x="690" y="58" width="270" height="120" rx="16" fill="#0e1b26" stroke="#38bdf8" stroke-width="2.5"/></g>
+          <text x="825" y="92" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-weight="700" font-size="19">🗄️ Longa</text>
+          <text x="825" y="118" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="13">base de conhecimento</text>
+          <text x="825" y="140" text-anchor="middle" fill="#7cc3ec" font-family="Inter,sans-serif" font-size="11.5">notas em disco · durável</text>
+          <!-- memory save: curva da conversa (curta) para a base (longa) -->
+          <path d="M175,178 C175,228 825,228 825,178" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5 5" opacity="0.7" marker-end="url(#m13-ahc)"/>
+          <text x="500" y="224" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="12" font-weight="600">💾 memory save — a conversa que importa vira arquivo</text>
+          <text x="500" y="40" text-anchor="middle" fill="#6b7280" font-family="Inter,sans-serif" font-size="11">o melhor sistema de memória é o que funciona mesmo num chat novo</text>
+        </svg>
+      </div>
+
+      <h2 class="text-2xl font-bold mb-6">Conteúdo detalhado</h2>
+
+      <!-- TOPICO 1 -->
+      <section id="topico-1" data-inema-topic="modulo-1-3#topico-1" data-inema-module="1-3" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+            <h2 class="text-2xl font-bold">🧠 Os três níveis de memória</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-3-t1-p1" class="text-neutral-300 mb-6 leading-relaxed">A ideia é simples: <strong class="text-emerald-400">quanto mais contexto certo o Claude tem sobre você e seu projeto, melhores são as respostas e o código</strong>. Mas nem todo dado é igual — alguns mudam o tempo todo, outros quase nunca. Por isso separamos a memória em três níveis, cada um com uma "taxa de mudança" diferente.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">O modelo mental de memória curta, média e longa — e como os três se encaixam num só sistema.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Sem esse mapa, as pessoas jogam tudo na conversa e sofrem com respostas que pioram. Com ele, você sabe <em>onde</em> cada informação mora.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Curta = sessão · Média = <code class="text-emerald-400">CLAUDE.md</code> · Longa = base de conhecimento em disco · cada nível tem sua taxa de mudança.</p></div>
+        </div>
+
+        <!-- Timeline dos 3 níveis -->
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">⏱️</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Curta — o agora</h4><p class="text-neutral-300 text-sm">O que você falou nesta conversa. Vive dentro da sessão; some ao abrir um chat novo. Muda toda hora.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">📋</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Média — o manual do projeto</h4><p class="text-neutral-300 text-sm">Um <code class="text-emerald-400">CLAUDE.md</code> na raiz da pasta diz o que é o projeto, o objetivo, o stack e as decisões. Muda às vezes, mas tem estabilidade.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">🗄️</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Longa — o arquivo morto vivo</h4><p class="text-neutral-300 text-sm">Notas, decisões e aprendizados guardados em disco para consultar meses adiante. Quase nunca muda; só cresce.</p></div>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🏢</span> Analogia do escritório</h3>
+          <p class="text-neutral-300 text-sm">A <strong>memória curta</strong> é o que está espalhado na sua mesa agora. O <strong><code>CLAUDE.md</code></strong> é o quadro fixo na parede com as regras do projeto — quem entra na sala lê primeiro. A <strong>base de conhecimento</strong> é o arquivo de gavetas atrás de você: não olha toda hora, mas sabe onde achar.</p>
+        </div>
+
+        <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-emerald-400 mb-3 flex items-center"><span class="mr-2">⭐</span> A regra de ouro</h3>
+          <p class="text-neutral-300 text-sm">O melhor sistema de memória é aquele que <strong>não exige que você esteja num chat específico para funcionar</strong>. Se você abrir uma conversa nova do zero, o Claude deveria render quase igual — porque o que importa está escrito em arquivo, não preso na conversa anterior.</p>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 2 -->
+      <section id="topico-2" data-inema-topic="modulo-1-3#topico-2" data-inema-module="1-3" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+            <h2 class="text-2xl font-bold">⏱️ Memória curta e o context rot</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-3-t2-p1" class="text-neutral-300 mb-6 leading-relaxed">A memória curta é o estado da conversa atual mais o básico sobre você. É o nível mais <strong class="text-emerald-400">frágil</strong>: desaparece a cada chat novo. E tem um efeito traiçoeiro — quando a conversa fica longa demais, a qualidade cai. É o <strong class="text-emerald-400">context rot</strong>. Por isso recomeçar é saudável, não desperdício.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">O estado da conversa atual mais instruções gerais sobre você.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o nível mais frágil — saber disso evita frustração e ensina quando recomeçar.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Contexto de sessão · instruções gerais · <strong>context rot</strong> (a qualidade cai quando a conversa fica longa demais).</p></div>
+        </div>
+
+        <!-- Grid: conversa curta vs longa -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+            <h4 class="font-bold text-emerald-400 mb-4">✓ Conversa enxuta</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Foco num assunto por vez — respostas afiadas.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Recomeça sem medo quando trocar de tema.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>O contexto durável já está em arquivo, não na conversa.</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ Sessão eterna</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Arrasta tudo num chat só — a qualidade vai caindo.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Acha que conversa longa = mais memória (é o oposto).</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Perde tudo quando o chat fecha, sem nada salvo.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Quando sentir a conversa "pesada" ou notar respostas piores, abra um chat novo. Se o seu <code>CLAUDE.md</code> e a base de conhecimento estiverem em ordem, você não perde nada — recomeçar é parte do método.</p>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 3 -->
+      <section id="topico-3" data-inema-topic="modulo-1-3#topico-3" data-inema-module="1-3" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+            <h2 class="text-2xl font-bold">🪣 Organize sua vida em "baldes"</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-3-t3-p1" class="text-neutral-300 mb-6 leading-relaxed">Antes de escrever um <code class="text-emerald-400">CLAUDE.md</code>, você precisa de <strong class="text-emerald-400">onde colocá-lo</strong>. A base da memória média é dividir tudo o que você faz em 5–8 grandes áreas — os <strong class="text-emerald-400">baldes</strong> (buckets) — e transformar cada uma numa pasta.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Dividir suas frentes de trabalho em 5–8 baldes, cada um virando uma pasta no computador.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o alicerce da memória média. Sem baldes, não há onde morar um <code>CLAUDE.md</code>.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Bucket = cluster de projetos relacionados · uma pasta por bucket · comece simples (<code>pessoal</code>, <code>cliente-x</code>, <code>estudos</code>).</p></div>
+        </div>
+
+        <!-- Passo a passo (timeline numerada) -->
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Peça ao Claude para organizar</h4><p class="text-neutral-300 text-sm">Use o prompt de baldes (seção Prompts) para agrupar suas atividades em 5–8 áreas.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Crie uma pasta por balde</h4><p class="text-neutral-300 text-sm">No seu computador, uma pasta com nome claro para cada balde.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Reserve um balde <code class="text-emerald-400">pessoal</code></h4><p class="text-neutral-300 text-sm">Sempre tenha um balde para seus dados e documentos próprios.</p></div>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Dica prática</h3>
+          <p class="text-neutral-300 text-sm">Não busque a taxonomia perfeita. Comece com poucos baldes amplos e ajuste depois — é mais fácil dividir um balde grande do que juntar dez pequenos.</p>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 4 -->
+      <section id="topico-4" data-inema-topic="modulo-1-3#topico-4" data-inema-module="1-3" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+            <h2 class="text-2xl font-bold">📋 CLAUDE.md — o manual do projeto</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-3-t4-p1" class="text-neutral-300 mb-6 leading-relaxed">O <code class="text-emerald-400">CLAUDE.md</code> é um arquivo na raiz de cada pasta que explica o projeto ao Claude. <strong class="text-emerald-400">Apenas um por pasta</strong>, curto (~200 palavras). O Claude lê esse arquivo automaticamente ao abrir a pasta — ele vira a sua "estrela-guia". É o coração da memória média.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Um arquivo <code>CLAUDE.md</code> na raiz da pasta, curto, que descreve o projeto ao Claude.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o coração da memória média. Lido automaticamente, vira a referência fixa de todo o trabalho na pasta.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">O que é a pasta · objetivo (north star) · stack · decisões fixas · mapa de memória · referências. Decisões viram regras (ex.: "nada de posts gerados por IA").</p></div>
+        </div>
+
+        <!-- CAIXA DE CÓDIGO: template do CLAUDE.md -->
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+          <p class="text-sm text-neutral-400 mb-2">Template de <code class="text-emerald-400">CLAUDE.md</code> (pronto para copiar)</p>
+          <pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap"># CLAUDE.md — &lt;nome do projeto&gt;
+
+## O que é esta pasta
+&lt;Uma frase: o que vive aqui e para quê.&gt;
+
+## Objetivo (north star)
+&lt;O resultado que este projeto persegue. Toda decisão é medida contra isto.&gt;
+
+## Stack
+&lt;Ferramentas, linguagens, serviços usados. Ex.: Next.js, Stripe, Supabase.&gt;
+
+## Decisões fixas
+- &lt;Decisão 1 — ex.: tudo em português.&gt;
+- &lt;Decisão 2 — ex.: sem dependências pesadas.&gt;
+- &lt;Decisão 3 — ex.: nada de conteúdo gerado por IA sem revisão.&gt;
+
+## Mapa de memória
+- Base de conhecimento: ./conhecimento/
+- Subpastas por tema: &lt;ex.: decisoes, notas, referencias&gt;
+
+## Memória (memory save)
+Quando eu pedir para salvar/lembrar uma conversa, grave o essencial em
+./conhecimento/ na subpasta mais relacionada ao tema.
+
+## Referências
+- &lt;link ou caminho de algo importante.&gt;</pre>
+        </div>
+
+        <!-- Passo a passo -->
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Copie o template</h4><p class="text-neutral-300 text-sm">Use o bloco acima como ponto de partida.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Preencha objetivo, stack e decisões</h4><p class="text-neutral-300 text-sm">Específico de cada balde. Salve como <code class="text-emerald-400">CLAUDE.md</code> na raiz da pasta.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Peça ao Claude para te entrevistar</h4><p class="text-neutral-300 text-sm">Ele faz 3–5 perguntas e completa o que faltou, mantendo o arquivo curto.</p></div>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">✂️</span> Mantenha enxuto</h3>
+          <p class="text-neutral-300 text-sm">Mire em ~200 palavras — algo que cabe numa tela. Se crescer demais, mova os detalhes para a base de conhecimento. O <code>CLAUDE.md</code> guarda "o projeto hoje", não o histórico.</p>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 5 -->
+      <section id="topico-5" data-inema-topic="modulo-1-3#topico-5" data-inema-module="1-3" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+            <h2 class="text-2xl font-bold">🗄️ Memória longa: a base que cresce</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-3-t5-p1" class="text-neutral-300 mb-6 leading-relaxed">A memória longa são notas e decisões guardadas em arquivos de texto (markdown) que você consulta no futuro. O <code class="text-emerald-400">CLAUDE.md</code> cuida do "como o projeto é hoje"; a base de conhecimento guarda o <strong class="text-emerald-400">histórico e os aprendizados</strong>.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Notas e decisões em arquivos markdown interligados, organizados em subpastas por tema.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É a memória institucional do projeto — o que você decidiu e aprendeu, disponível meses depois.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Markdown interligado · subpastas por tema · editável à mão · ferramentas como Obsidian só <em>visualizam</em> os arquivos (são opcionais).</p></div>
+        </div>
+
+        <!-- Grid: o que vai pra cada lugar -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+            <h4 class="font-bold text-emerald-400 mb-4">✓ Vai para a memória longa</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Decisões importantes (com data e motivo).</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Frameworks e aprendizados que valem por meses.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Referências e notas que você vai querer reler.</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ NÃO vai para lá</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>A conversa inteira copiada e colada.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Detalhes do dia que mudam toda hora.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Coisas que pertencem ao <code>CLAUDE.md</code> (o "hoje").</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🔭</span> Obsidian é opcional</h3>
+          <p class="text-neutral-300 text-sm">A base de conhecimento são só arquivos <code>.md</code> em pastas — você não precisa de nenhum app. Ferramentas como o Obsidian apenas <em>visualizam</em> e conectam esses arquivos; o conteúdo continua sendo seu, em texto, no disco.</p>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 6 -->
+      <section id="topico-6" data-inema-topic="modulo-1-3#topico-6" data-inema-module="1-3" data-inema-track="1" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+            <h2 class="text-2xl font-bold">💾 "memory save": registre o que importa</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m1-3-t6-p1" class="text-neutral-300 mb-6 leading-relaxed">O <strong class="text-emerald-400">memory save</strong> é uma rotina: ao pedir "salve isto", o Claude grava o essencial da conversa na pasta certa da base. Transforma boas conversas em conhecimento permanente — <strong class="text-emerald-400">sem copiar-e-colar manual</strong>. É o que fecha o ciclo entre os três níveis.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-emerald-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Uma rotina onde, ao pedir "salve", o Claude grava o essencial na pasta certa da base.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Converte boas conversas em conhecimento durável, sem trabalho manual.</p></div>
+          <div><span class="text-emerald-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Seção de memória no <code>CLAUDE.md</code> · escolha da subpasta certa · salvar só o que tem valor durável (decisões, frameworks).</p></div>
+        </div>
+
+        <!-- Passo a passo -->
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Adicione a seção ao <code class="text-emerald-400">CLAUDE.md</code></h4><p class="text-neutral-300 text-sm">Diga <em>onde</em> salvar quando você pedir (use a seção "Memória" do template).</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Aponte o caminho da base</h4><p class="text-neutral-300 text-sm">Ex.: <code class="text-emerald-400">./conhecimento/</code> com subpastas por tema.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Peça para o Claude escolher a subpasta</h4><p class="text-neutral-300 text-sm">Pelo tema da conversa — e salvar só decisões e aprendizados duráveis.</p></div>
+          </div>
+        </div>
+
+        <details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+          <summary class="cursor-pointer font-semibold text-emerald-400">Indo mais fundo (opcional): por que recomeçar não perde nada</summary>
+          <p class="text-neutral-300 text-sm mt-3">Com <code>CLAUDE.md</code> + base de conhecimento em ordem, abrir um chat novo é seguro: o que importa está em arquivo, não na sessão. Você evita o context rot e mantém a performance estável. A memória não pode depender da conversa anterior — esse é o teste final do sistema.</p>
+        </details>
+
+        <!-- Checagem leve opcional -->
+        <div data-inema-check="modulo-1-3#q1" class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <p class="font-medium mb-4">Auto-checagem (opcional): onde mora a "estrela-guia" que o Claude lê automaticamente ao abrir uma pasta?</p>
+          <div class="inema-check-options space-y-2">
+            <button type="button" data-inema-check-option="0" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Na memória curta — basta deixar tudo na conversa atual.</button>
+            <button type="button" data-inema-check-option="1" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">No <code>CLAUDE.md</code> da raiz da pasta — um por pasta, ~200 palavras.</button>
+            <button type="button" data-inema-check-option="2" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">No Obsidian — sem ele a memória não funciona.</button>
+          </div>
+          <div data-inema-check-feedback class="mt-4 text-sm" role="status" aria-live="polite"></div>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- EXERCICIOS -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6">✏️ Exercícios</h2>
+        <div class="space-y-4">
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. Mapeie seus baldes <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Liste de 5 a 8 baldes da sua vida/trabalho. <span class="text-emerald-400">Critério:</span> cada balde é uma área distinta, sem sobreposição grande.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Crie um <code class="text-emerald-400">CLAUDE.md</code> de verdade <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Escolha um projeto real e escreva um <code>CLAUDE.md</code> de no máximo ~200 palavras. <span class="text-emerald-400">Critério:</span> tem objetivo, stack e ao menos 2 decisões; cabe numa tela.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Teste do chat novo <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Abra uma conversa do zero e peça ao Claude para resumir o projeto só pelo <code>CLAUDE.md</code>. <span class="text-emerald-400">Critério:</span> o resumo bate com o que você escreveu, sem dar contexto extra.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Salve na base de conhecimento <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Crie uma subpasta <code class="text-emerald-400">conhecimento/</code> e registre 1 decisão em markdown. <span class="text-emerald-400">Critério:</span> o arquivo existe, tem data e está na pasta certa.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Enxugue <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Releia seu <code>CLAUDE.md</code> e corte tudo que não é durável. <span class="text-emerald-400">Critério:</span> nada de detalhes de conversa do dia; só o que vale por semanas/meses.</p></div>
+        </div>
+      </section>
+
+      <!-- PROMPTS PRONTOS -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6">⌨️ Prompts prontos</h2>
+        <p class="text-neutral-300 text-sm mb-6">Estes prompts montam sua memória média e longa na prática. Copie, ajuste para o seu contexto e rode no Claude Code. O banco completo está na <a href="../trilha4/modulo-4-1.html" class="text-sky-400 hover:text-sky-300">Biblioteca → Prompts</a>.</p>
+        <div class="space-y-5">
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Organizar em baldes (canônico)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Com base em tudo o que você sabe sobre mim e no que eu trabalho, organize minha vida em 5 a 8 "baldes". Cada projeto deve cair em um balde. Não invente fatos: se faltar informação, me pergunte. Sem enrolação.</pre><p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p><pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">Based on everything you know about me and everything I work on, organize my life into 5 to 8 buckets. Put any project into one of those buckets. Don't invent facts — ask me if something is missing. No fluff.</pre></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Aplicar o CLAUDE.md em cada pasta</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Adicione um arquivo CLAUDE.md na raiz de cada uma das pastas dos baldes, usando o template que vou te passar. Depois, me faça perguntas sobre cada projeto para preencher o briefing completo. Apenas um CLAUDE.md por pasta.</pre></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Salvar na memória longa ("memory save")</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quando eu pedir para salvar, guardar, encerrar ou lembrar uma conversa, grave o essencial em markdown na minha base de conhecimento, na subpasta mais relacionada ao tema. Salve só decisões e aprendizados duráveis, não a conversa toda.</pre></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Template de CLAUDE.md (pronto para copiar)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap"># CLAUDE.md — &lt;nome do projeto&gt;
+
+## O que é esta pasta
+&lt;Uma frase: o que vive aqui e para quê.&gt;
+
+## Objetivo (north star)
+&lt;O resultado que este projeto persegue. Toda decisão é medida contra isto.&gt;
+
+## Stack
+&lt;Ferramentas, linguagens, serviços usados. Ex.: Next.js, Stripe, Supabase.&gt;
+
+## Decisões fixas
+- &lt;Decisão 1 — ex.: tudo em português.&gt;
+- &lt;Decisão 2 — ex.: sem dependências pesadas.&gt;
+- &lt;Decisão 3 — ex.: nada de conteúdo gerado por IA sem revisão.&gt;
+
+## Mapa de memória
+- Base de conhecimento: ./conhecimento/
+- Subpastas por tema: &lt;ex.: decisoes, notas, referencias&gt;
+
+## Memória (memory save)
+Quando eu pedir para salvar/lembrar uma conversa, grave o essencial em
+./conhecimento/ na subpasta mais relacionada ao tema.
+
+## Referências
+- &lt;link ou caminho de algo importante.&gt;</pre><p class="text-xs text-neutral-500 mt-2">Dica: mantenha o <code>CLAUDE.md</code> em torno de ~200 palavras. Se crescer, mova detalhes para a base de conhecimento.</p></div>
+        </div>
+      </section>
+
+      <!-- ERROS COMUNS -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6">⚠️ Erros comuns</h2>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Deixar tudo na conversa.</strong> Confiar na memória curta e perder o contexto ao abrir um chat novo. <em>Corrija:</em> escreva o que importa no <code>CLAUDE.md</code>.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong><code>CLAUDE.md</code> gigante.</strong> Encher de detalhes que mudam toda hora. <em>Corrija:</em> mantenha ~200 palavras; o resto vai para a base.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Mais de um <code>CLAUDE.md</code> por pasta.</strong> Gera confusão sobre qual o Claude lê. <em>Corrija:</em> só um por pasta, na raiz.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Salvar lixo na memória longa.</strong> Jogar a conversa inteira na base. <em>Corrija:</em> salve só decisões e aprendizados duráveis.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Arrastar uma sessão eterna.</strong> Achar que conversa longa = mais memória. <em>Corrija:</em> recomece sem medo; o sistema em arquivo segura o contexto.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <section class="mb-12">
+        <div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Resumo do módulo</h2>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>Três níveis</strong><span class="text-neutral-400"> — curta (sessão), média (<code>CLAUDE.md</code>) e longa (base de conhecimento); cada um com sua taxa de mudança.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>Context rot</strong><span class="text-neutral-400"> — conversa longa demais piora as respostas; recomeçar é saudável.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>Baldes + CLAUDE.md</strong><span class="text-neutral-400"> — uma pasta por frente de trabalho, um <code>CLAUDE.md</code> enxuto por pasta.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>memory save</strong><span class="text-neutral-400"> — boas conversas viram conhecimento durável na base, sem copiar-e-colar.</span></div></div>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+            <h3 class="font-semibold text-emerald-400 mb-3">Checklist de conclusão</h3>
+            <ul class="space-y-2 text-sm text-neutral-300">
+              <li>☐ Defini de 5 a 8 baldes para minha vida/trabalho.</li>
+              <li>☐ Criei uma pasta por balde.</li>
+              <li>☐ Cada pasta tem <strong>um</strong> <code>CLAUDE.md</code> na raiz, com ~200 palavras.</li>
+              <li>☐ Cada <code>CLAUDE.md</code> traz objetivo, stack e ao menos 2 decisões.</li>
+              <li>☐ Testei um chat novo e o Claude resumiu o projeto só pelo <code>CLAUDE.md</code>.</li>
+              <li>☐ Criei a subpasta <code>conhecimento/</code> e salvei ao menos 1 decisão.</li>
+              <li>☐ Adicionei a seção de "memory save" ao <code>CLAUDE.md</code>.</li>
+            </ul>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+            <h3 class="font-semibold text-emerald-400 mb-2">Próximo módulo:</h3>
+            <p class="text-neutral-300">1.4 — Power Features: recursos avançados para tirar mais do Claude Code</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Voltar para a trilha</a>
+            <a href="modulo-1-4.html" class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors">Próximo módulo →</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Claude Code na Prática — <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a> · 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS: nucleo v1 -->
+  <script>
+    function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp) e.classList.remove('active'); });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync();
+      tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+    function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }
+    function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  </script>
+
+  <!-- Camada de aprendizagem -->
+  <script>
+    window.addEventListener('DOMContentLoaded', function(){
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-1-3#q1', {
+          answer: 1,
+          explain: {
+            0: 'A memória curta some ao abrir um chat novo — não é onde mora a estrela-guia.',
+            1: 'Isso! O CLAUDE.md na raiz da pasta é lido automaticamente: um por pasta, ~200 palavras.',
+            2: 'O Obsidian só visualiza arquivos .md — é opcional. A memória vive nos arquivos, não no app.'
+          }
+        });
+      }
+    });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>

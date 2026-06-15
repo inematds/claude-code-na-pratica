@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="inema-course" content="claude-na-pratica">
+  <title>2.4 Design Systems: interfaces profissionais de primeira | Claude Code na Prática</title>
+
+  <!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
+  <script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'emerald');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.emerald;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/learn.css">
+
+  <!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
+  <script type="application/json" data-inema-manifest>
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    section[data-inema-topic], [id^="topico-"], [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    /* Light mode - acento T2 blue */
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37,99,235,0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37,99,235,0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37,99,235,0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37,99,235,0.18); }
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    /* SVG adapta ao tema claro */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    /* Pulso do SVG */
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s}
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen">
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- NAV -->
+  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-14">
+        <div class="flex items-center space-x-4">
+          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
+            <span class="text-2xl">⚡</span>
+            <span class="font-bold text-lg hidden sm:inline">Claude Code na Prática</span>
+          </a>
+          <span class="text-neutral-600">|</span>
+          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
+        </div>
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar &amp; Lucrar</span></a>
+          <a href="../trilha4/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+          <button type="button" data-inema-journey-open class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" title="Minha jornada">
+            <span aria-hidden="true">◷</span><span class="hidden lg:inline">Jornada</span>
+            <span class="inema-journey-badge hidden" aria-hidden="true"></span>
+          </button>
+          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" title="Tema claro/escuro" aria-label="Alternar tema claro/escuro">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
+    <div class="flex items-center space-x-2 text-sm text-neutral-400">
+      <a href="../../index.html" class="hover:text-blue-400">Início</a>
+      <span>/</span>
+      <a href="index.html" class="hover:text-blue-400">Construir</a>
+      <span>/</span>
+      <span class="text-blue-400">Módulo 2.4</span>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MÓDULO 2.4</span>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🎨 Design Systems: interfaces que parecem profissionais "de primeira"</h1>
+      <p class="text-lg text-neutral-400 max-w-3xl">Design virou código. Neste módulo você codifica as regras do bom design num sistema reutilizável e usa skills para gerar telas, marcas e apresentações que já nascem com cara de produto de verdade.</p>
+      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">6</div><div class="text-xs text-neutral-400">Tópicos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">~55</div><div class="text-xs text-neutral-400">Minutos</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Inter.</div><div class="text-xs text-neutral-400">Nível</div></div>
+        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Prática</div><div class="text-xs text-neutral-400">Tipo</div></div>
+      </div>
+      <!-- Medidor de progresso do modulo -->
+      <div class="mt-6 max-w-2xl">
+        <div data-inema-meter="modulo:2-4" class="inema-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 2.4">
+          <span data-inema-meter-pct class="inema-meter-pct">0%</span> <span data-inema-meter-frac class="inema-meter-count text-neutral-400 text-sm">0 de 6</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEUDO + TOC -->
+  <main id="conteudo" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
+
+    <!-- TOC sticky -->
+    <nav data-inema-toc aria-label="Índice da página" class="hidden lg:block sticky top-24 self-start">
+      <p class="text-sm text-neutral-400 mb-3">Seção <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+      <ul class="space-y-1 text-sm">
+        <li><a href="#topico-1" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">1. Design virou código</a></li>
+        <li><a href="#topico-2" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">2. Codificar o bom design</a></li>
+        <li><a href="#topico-3" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">3. Skills de design</a></li>
+        <li><a href="#topico-4" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">4. Extrair identidade</a></li>
+        <li><a href="#topico-5" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">5. Imagens, animação e 3D</a></li>
+        <li><a href="#topico-6" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">6. Seu design system</a></li>
+      </ul>
+    </nav>
+
+    <div class="inema-prose">
+
+      <!-- SVG modelo mental -->
+      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
+        <svg viewBox="0 0 1000 220" class="w-full h-auto" role="img" aria-label="Design genérico de IA passa por um funil de regras codificadas (proporção, espaçamento, contraste, hierarquia) e sai como uma tela glanceável em 3 segundos">
+          <defs>
+            <linearGradient id="m24-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/></linearGradient>
+            <filter id="m24-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <pattern id="m24-grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#3b82f6" opacity="0.12"/></pattern>
+            <marker id="m24-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"/></marker>
+            <marker id="m24-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
+          </defs>
+          <rect x="0" y="0" width="1000" height="220" fill="url(#m24-grid)"/>
+          <!-- IA sem sistema -->
+          <g filter="url(#m24-glow)"><rect x="36" y="74" width="176" height="72" rx="14" fill="#0e1622" stroke="url(#m24-grad)" stroke-width="2.5"/></g>
+          <g opacity="0.85"><rect x="52" y="88" width="86" height="9" rx="3" fill="#5a6b85"/><rect x="52" y="104" width="128" height="9" rx="3" fill="#5a6b85"/><rect x="52" y="120" width="60" height="9" rx="3" fill="#5a6b85"/></g>
+          <text x="124" y="166" text-anchor="middle" fill="#93c5fd" font-family="Inter,sans-serif" font-size="12">IA sem sistema</text>
+          <!-- seta para o funil -->
+          <path d="M212,110 L386,110" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.7" marker-end="url(#m24-ah)"/>
+          <!-- funil de regras -->
+          <rect x="392" y="58" width="216" height="104" rx="14" fill="#0e1b26" stroke="#38bdf8" stroke-width="2"/>
+          <text x="500" y="80" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-weight="600" font-size="14">Funil de regras</text>
+          <g font-family="Inter,sans-serif" font-size="11" fill="#9ad6ff">
+            <text x="500" y="102" text-anchor="middle">⟡ proporção · ▦ espaçamento</text>
+            <text x="500" y="120" text-anchor="middle">◐ contraste · ☰ hierarquia</text>
+            <text x="500" y="138" text-anchor="middle">␣ white space generoso</text>
+          </g>
+          <!-- seta para a tela -->
+          <path d="M608,110 L786,110" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.7" marker-end="url(#m24-ahc)"/>
+          <!-- tela glanceável -->
+          <g filter="url(#m24-glow)"><rect x="792" y="50" width="172" height="120" rx="14" fill="#0e1622" stroke="#60a5fa" stroke-width="2.5"/></g>
+          <g class="wf-a"><rect x="812" y="68" width="120" height="14" rx="4" fill="#3b82f6" opacity="0.85"/></g>
+          <g class="wf-a"><rect x="812" y="92" width="78" height="8" rx="3" fill="#60a5fa" opacity="0.6"/></g>
+          <g class="wf-a"><rect x="812" y="120" width="64" height="22" rx="7" fill="#0e1b26" stroke="#38bdf8" stroke-width="1.6"/></g>
+          <text x="878" y="160" text-anchor="middle" fill="#bfe6ff" font-family="Inter,sans-serif" font-size="11">glanceável em 3s ✓</text>
+          <text x="500" y="200" text-anchor="middle" fill="#6b7280" font-family="Inter,sans-serif" font-size="11">do gosto à regra — bom design vira sistema que a IA reproduz</text>
+        </svg>
+      </div>
+
+      <h2 class="text-2xl font-bold mb-6">Conteúdo detalhado</h2>
+
+      <!-- TOPICO 1 -->
+      <section id="topico-1" data-inema-topic="modulo-2-4#topico-1" data-inema-module="2-4" data-inema-track="2" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+            <h2 class="text-2xl font-bold">🧩 Design virou código — a mudança de superfície</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m2-4-t1-p1" class="text-neutral-300 mb-6 leading-relaxed">Durante mais de 20 anos, design morava em outro app: você desenhava num editor e um time reconstruía aquilo em código, em outro lugar. Hoje a superfície de design <strong class="text-blue-400">é o próprio código</strong>. Você descreve, o agente gera a interface direto em HTML/CSS — e você itera ali mesmo.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">O reconhecimento de que a interface agora nasce no código, e que o agente é quem a desenha conforme você descreve.</p></div>
+          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Quem entende isso para de tratar design como "etapa separada" e passa a iterar visual e código no mesmo lugar — muito mais rápido.</p></div>
+          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Superfície de design = código · iteração no mesmo ambiente · design como sistema, não ato isolado.</p></div>
+        </div>
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🔁</span> Onde o design mora — antes e agora</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>Antes: design no app de protótipo → engenharia reconstrói em código → duas fontes de verdade.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>Agora: você descreve no Claude Code → ele gera HTML/CSS → você ajusta na hora, mesmo lugar.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>O ciclo "desenhar → entregar → reconstruir" virou um único loop de conversa.</span></li>
+          </ul>
+        </div>
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">⚠️</span> O calcanhar de Aquiles</h3>
+          <p class="text-neutral-300 text-sm">IA, por padrão, é <strong>ruim de design</strong>. Ela não "sente" o que é bonito nem sabe <em>por que</em> uma tela boa é boa. Se você só pede "faça bonito", recebe o visual genérico de sempre. O resto do módulo resolve exatamente isso.</p>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 2 -->
+      <section id="topico-2" data-inema-topic="modulo-2-4#topico-2" data-inema-module="2-4" data-inema-track="2" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+            <h2 class="text-2xl font-bold">🎯 Codificar o "bom design" — a ideia que destrava tudo</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m2-4-t2-p1" class="text-neutral-300 mb-6 leading-relaxed">A virada do módulo cabe numa frase: <strong class="text-blue-400">se a gente codificar o que é bom design, a IA reproduz bom design com confiabilidade</strong>. Bom design tem regras — proporção, espaçamento, contraste, hierarquia. Quando viram um arquivo que o agente lê e segue, a qualidade deixa de ser sorte e passa a ser sistema.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Escrever, num arquivo que o agente lê, as regras objetivas que tornam uma tela boa.</p></div>
+          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o que separa "página genérica de IA" de "isso parece um produto de verdade".</p></div>
+          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Cognitive load (lida em ~3 s) · white space · proporção entre textos · espaços iguais · nada encostando nas bordas.</p></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+            <h4 class="font-bold text-blue-400 mb-4">✓ As regras que fazem "parecer profissional"</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Glanceável em ~3 s (sistema 1, não sistema 2).</span></li>
+              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>White space generoso e espaços iguais entre elementos.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Razão consistente entre tamanhos de texto (hierarquia).</span></li>
+              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Margem de respiro: nada encostando nas bordas.</span></li>
+            </ul>
+          </div>
+          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+            <h4 class="font-bold text-red-400 mb-4">✗ O que "denuncia" amadorismo</h4>
+            <ul class="space-y-3 text-neutral-300 text-sm">
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Texto demais — a leitura de 3 s some.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Elementos colados na borda da tela.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Espaços desiguais e tamanhos de fonte aleatórios.</span></li>
+              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>"Faça bonito" sem nenhuma regra carregada.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">📐</span> A proporção áurea como atalho</h3>
+          <p class="text-neutral-300 text-sm">Sites "nível Apple" não são bonitos por acaso: a razão entre tamanhos de texto, os espaços iguais e a margem de respiro seguem proporção (~1,618). E a IA é um <strong>estagiário de QI 500</strong>: capaz, mas sem a régua certa ele "come giz de cera". Dê a régua — ele entrega nível sênior.</p>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 3 -->
+      <section id="topico-3" data-inema-topic="modulo-2-4#topico-3" data-inema-module="2-4" data-inema-track="2" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+            <h2 class="text-2xl font-bold">🖼️ Skills de design — open-design e power-design</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m2-4-t3-p1" class="text-neutral-300 mb-6 leading-relaxed">Um bom designer tem <strong class="text-blue-400">muitas cores no pincel</strong>. Aqui suas "cores" são as skills. Duas formam a fundação: <strong class="text-blue-400">open-design</strong> (um estúdio local para montar brand systems) e <strong class="text-blue-400">power-design</strong> (regras universais que o agente carrega antes de construir slides e telas).</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">open-design = UI local open-source com exemplos prontos e suporte a vários modelos. power-design = repositório de regras (cognitive load, white space, proporção, hierarquia).</p></div>
+          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">open-design dá versatilidade e consistência de marca; power-design dá decks e telas "nível Apple" sem você ser designer.</p></div>
+          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">UI local · design systems · escolha do agente de código · ~3 s para entender · ~10 palavras por tela como teto.</p></div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+          <h3 class="text-lg font-semibold mb-4 flex items-center"><span class="mr-2">🪜</span> Passo a passo — open-design (estúdio local)</h3>
+          <ol class="space-y-3 text-neutral-300 text-sm list-decimal list-inside">
+            <li>No Claude Code, peça para <strong>clonar o repositório</strong> do open-design e abrir o projeto.</li>
+            <li>Peça para <strong>instalar dependências e rodar</strong> a aplicação (ela sobe a própria interface).</li>
+            <li>Na UI, <strong>escolha seu agente</strong> de código (ex.: Claude Code) e conclua a configuração.</li>
+            <li>Use um <strong>exemplo da galeria</strong> (dashboard, kanban) como base e monte seu design system.</li>
+          </ol>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+          <p class="text-sm text-neutral-400 mb-2">Carregar power-design antes de construir</p>
+          <pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Clone o repositório do power-design, instale e estude todas as regras de design.
+Antes de construir qualquer tela, aplique: cognitive load baixo (legível em ~3 s),
+white space generoso, nada encostando nas bordas e proporção consistente entre tamanhos de texto.</pre>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 4 -->
+      <section id="topico-4" data-inema-topic="modulo-2-4#topico-4" data-inema-module="2-4" data-inema-track="2" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+            <h2 class="text-2xl font-bold">🔍 Extrair identidade visual — design-language-skill</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m2-4-t4-p1" class="text-neutral-300 mb-6 leading-relaxed">O coração do módulo: <strong class="text-blue-400">extrair, não copiar</strong>. Você aponta uma referência que admira e a design-language-skill gera um <em>blueprint</em> — paleta, fontes, escala, espaçamento, scaffold de layout — para reaplicar no seu projeto, com identidade própria.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Uma skill que, a partir de um site/print, gera um blueprint de design (cores, fontes, escala, espaçamento, layout).</p></div>
+          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o atalho para seu projeto ter "a vibe" de referências excelentes. <strong>Extração ≠ cópia</strong>: você captura o <em>porquê</em>, não o código alheio.</p></div>
+          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Brand extraction · blueprint/design tokens · scaffold de layout · múltiplos eixos (cor, tipografia, espaçamento, ritmo).</p></div>
+        </div>
+        <div class="space-y-6 mb-6">
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Aponte a referência</h4><p class="text-neutral-300 text-sm">Instale a skill e diga ao agente o site de referência e o que é o seu negócio.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Receba o blueprint</h4><p class="text-neutral-300 text-sm">Cores, fontes, espaçamento e escala — com um print de referência junto.</p></div>
+          </div>
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
+            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Construa e itere</h4><p class="text-neutral-300 text-sm">Peça a tela aplicando o blueprint e refine com feedback curto: "mais respiro aqui", "logo no canto inferior esquerdo".</p></div>
+          </div>
+        </div>
+        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🚫</span> A linha vermelha</h3>
+          <p class="text-neutral-300 text-sm">Tentar reproduzir o <strong>código</strong> da referência gera bagunça e problema de direito autoral. Extraia a <em>linguagem</em> de design (cor, fonte, espaçamento, ritmo) — não o código. Identidade própria, vibe inspirada.</p>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 5 -->
+      <section id="topico-5" data-inema-topic="modulo-2-4#topico-5" data-inema-module="2-4" data-inema-track="2" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+            <h2 class="text-2xl font-bold">🎬 Imagens com IA, animação e 3D — o acabamento</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m2-4-t5-p1" class="text-neutral-300 mb-6 leading-relaxed">Com a fundação no lugar, o visual eleva tudo: imagens com IA (inclusive com <strong class="text-blue-400">texto na imagem</strong>) para heróis e brand assets, mais loops sutis e 3D que dão finesse. Atenção: isso é <strong class="text-blue-400">acabamento, não fundação</strong> — vem por último.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Geração/edição de imagens por IA para ilustrar telas, e animações de fundo + assets 3D que adicionam profundidade.</p></div>
+          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">A imagem certa eleva qualquer interface; e gerar 20 variações no mesmo estilo economiza horas.</p></div>
+          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Referência de estilo · edição guiada para "encaixar" no fundo · lote consistente · start frame = end frame · preferir 4K · 3D como finesse.</p></div>
+        </div>
+        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🖌️</span> Fluxo prático do visual</h3>
+          <ul class="space-y-2 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span><strong>Imagem:</strong> gere a base descrevendo o estilo; se não contrastar com o fundo, peça ao agente para <em>escrever um prompt de edição</em> (posição, contraste, recorte) e ajuste.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span><strong>Lote:</strong> use uma imagem como referência e gere 20 variações coerentes (mesma paleta, iluminação e linguagem).</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span><strong>Loop:</strong> garanta o mesmo quadro inicial e final; gere algumas vezes até a emenda ficar limpa.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span><strong>3D:</strong> assets (ex.: via Spline) entram como finesse, validados em alta resolução.</span></li>
+          </ul>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+          <p class="text-sm text-neutral-400 mb-2">Gerar imagem de herói no estilo da marca</p>
+          <pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Gere uma imagem de herói no estilo desta marca: [paleta e descrição].
+Se não contrastar com o fundo, escreva um prompt de edição para ajustar contraste e posição,
+de forma que a imagem encaixe perfeitamente no fundo do site.</pre>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- TOPICO 6 -->
+      <section id="topico-6" data-inema-topic="modulo-2-4#topico-6" data-inema-module="2-4" data-inema-track="2" class="mb-16">
+        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+            <h2 class="text-2xl font-bold">🧱 Seu design system reutilizável</h2>
+          </div>
+          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+        </div>
+        <p data-inema-block="m2-4-t6-p1" class="text-neutral-300 mb-6 leading-relaxed">Tudo converge aqui. Pense em <strong class="text-blue-400">peças de Lego universais</strong>: espaçamento, fontes, proporções e cores são blocos padronizados. Consolide-os num design system <strong class="text-blue-400">seu</strong> — tokens, marca, componentes — que o agente reutiliza em todo projeto.</p>
+        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Consolidar paleta, tipografia, espaçamento, componentes e regras num design system reutilizável.</p></div>
+          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Consistência vira padrão. Você para de redecidir cores/fontes a cada tela.</p></div>
+          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Design tokens · biblioteca de componentes · brand kit · reuso entre projetos · paleta por significado (azul = confiança/dados).</p></div>
+        </div>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6 mb-6">
+          <h3 class="text-lg font-semibold mb-4 flex items-center"><span class="mr-2">🪜</span> Passo a passo — consolidar o sistema</h3>
+          <ol class="space-y-3 text-neutral-300 text-sm list-decimal list-inside">
+            <li>Defina <strong>paleta</strong> (use uma plataforma de paletas como referência) e <strong>tipografia</strong>.</li>
+            <li>Registre <strong>tokens e regras</strong> num arquivo que o agente possa ler em qualquer projeto.</li>
+            <li>A cada nova tela, <strong>referencie esse design system</strong> para manter coerência.</li>
+          </ol>
+        </div>
+        <details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+          <summary class="cursor-pointer font-semibold text-blue-400">Indo mais fundo (opcional): por que escolher cor por significado</summary>
+          <p class="text-neutral-300 text-sm mt-3">Cor não é só estética — é mensagem. Azul transmite confiança e densidade de dados; por isso muito dashboard e produto SaaS é azul. Escolher a paleta pelo significado do seu negócio (e não pelo gosto do dia) é o que torna o sistema durável entre projetos.</p>
+        </details>
+        <!-- Checagem leve opcional -->
+        <div data-inema-check="modulo-2-4#q1" class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6">
+          <p class="font-medium mb-4">Auto-checagem (opcional): por que codificar regras de design melhora o resultado da IA?</p>
+          <div class="inema-check-options space-y-2">
+            <button type="button" data-inema-check-option="0" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Porque a IA "sente" beleza e só precisa de permissão para usá-la.</button>
+            <button type="button" data-inema-check-option="1" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Porque bom design tem regras objetivas; viradas em arquivo, a IA as reproduz com consistência.</button>
+            <button type="button" data-inema-check-option="2" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Porque pedir "faça bonito" já basta se você repetir várias vezes.</button>
+          </div>
+          <div data-inema-check-feedback class="mt-4 text-sm" role="status" aria-live="polite"></div>
+        </div>
+        <div class="flex justify-start mt-6">
+          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+        </div>
+      </section>
+
+      <!-- EXEMPLO PRATICO -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6">🛠️ Exemplo prático guiado</h2>
+        <p class="text-neutral-300 text-sm mb-6"><strong>Objetivo:</strong> criar uma landing de 1 seção (hero) que pareça profissional já na primeira geração, com identidade extraída de uma referência e um asset visual coerente.</p>
+        <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+          <ol class="space-y-3 text-neutral-300 text-sm list-decimal list-inside">
+            <li><strong>Prepare o terreno.</strong> Abra o Claude Code numa pasta de projeto vazia.</li>
+            <li><strong>Carregue as regras.</strong> "Clone o power-design, instale e estude todas as regras antes de construir."</li>
+            <li><strong>Extraia a identidade.</strong> Com a design-language-skill, aponte a referência e o seu tema; receba o blueprint.</li>
+            <li><strong>Construa o hero.</strong> "Crie uma landing de 1 seção aplicando o blueprint e as regras do power-design. Proposta de valor em uma frase, muito white space, nada encostando nas bordas."</li>
+            <li><strong>Adicione o visual.</strong> Gere a imagem de herói no estilo da marca; se não contrastar, peça um prompt de edição.</li>
+            <li><strong>Refine com feedback curto.</strong> "Iguale os espaços; razão entre título e subtítulo na proporção; logo no canto inferior esquerdo."</li>
+            <li><strong>Valide os 3 segundos.</strong> Olhe a tela por 3 s — você entende do que se trata? Se sim, passou no teste.</li>
+          </ol>
+          <div class="mt-5 bg-blue-900/20 rounded-lg border border-blue-500/30 p-4">
+            <p class="text-neutral-300 text-sm"><span class="text-blue-400 font-semibold">Critério de qualidade:</span> hierarquia clara, respiro nas bordas, proposta de valor em uma frase, e coerência entre texto, cor e imagem.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXERCICIOS -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6">✏️ Exercícios</h2>
+        <div class="space-y-4">
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. Blueprint de marca <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Escolha um site que admira e extraia o blueprint com a design-language-skill. <span class="text-blue-400">Sucesso:</span> arquivo com cor, tipografia, espaçamento e uma observação de hierarquia.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Slide glanceável <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Com o power-design, gere um slide único sobre um tema seu. <span class="text-blue-400">Sucesso:</span> entende-se em ~3 s, máx. ~10 palavras, margens de respiro visíveis.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Hero com imagem coerente <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Construa um hero de 1 seção e adicione uma imagem gerada por IA no estilo da marca. <span class="text-blue-400">Sucesso:</span> a imagem contrasta bem e a proposta de valor está em uma frase.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Loop sutil <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Gere uma animação de fundo em loop (start frame = end frame). <span class="text-blue-400">Sucesso:</span> sem "salto" visível na emenda e em resolução alta.</p></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Design system mínimo <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Consolide paleta + tipografia + 2 componentes num arquivo e gere uma segunda tela referenciando-o. <span class="text-blue-400">Sucesso:</span> as duas telas parecem da mesma marca sem redefinir cores/fontes.</p></div>
+        </div>
+      </section>
+
+      <!-- PROMPTS PRONTOS -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6">⌨️ Prompts prontos</h2>
+        <p class="text-neutral-300 text-sm mb-6">Use-os como ponto de partida. Quando o canônico é em inglês (colar na referência original), o original vem junto. O banco completo está na <a href="../trilha4/modulo-4-1.html" class="text-sky-400 hover:text-sky-300">Biblioteca → Prompts</a>.</p>
+        <div class="space-y-5">
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Carregar e estudar regras de design (power-design)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Clone o repositório do power-design, instale e estude todas as regras de design.
+Antes de construir qualquer tela, aplique: cognitive load baixo (legível em ~3 segundos),
+white space generoso, nada encostando nas bordas e proporção consistente entre tamanhos de texto.</pre></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Extrair identidade visual (design-language-skill) — canônico</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Use a design-language-skill com esta referência: [URL ou print].
+Meu negócio é: [descrição em 1 frase].
+Gere um blueprint de design com paleta, tipografia, escala de tamanhos, espaçamento e um scaffold de layout.
+Não copie o código da referência — extraia o porquê do design.</pre><p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p><pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">Extract this website's design identity (palette, typography, scale, spacing, layout scaffold)
+into a reusable blueprint. Do not copy the code — capture why the design works,
+then rebuild a new hero section applying universal design rules (cognitive load, white space, proportion).</pre></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Construir o hero aplicando o blueprint</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Crie uma landing de 1 seção (hero) aplicando o blueprint extraído e as regras do power-design.
+Proposta de valor em uma frase. Pouco texto. Muito respiro. Hierarquia clara entre título e subtítulo.</pre></div>
+          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Consolidar o design system reutilizável</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Consolide um design system reutilizável: paleta, tipografia, espaçamento, tokens e componentes base.
+Salve num arquivo que você possa ler em qualquer projeto futuro para manter consistência.</pre></div>
+        </div>
+      </section>
+
+      <!-- ERROS COMUNS -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold mb-6">⚠️ Erros comuns</h2>
+        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+          <ul class="space-y-3 text-neutral-300 text-sm">
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Pedir "faça bonito" sem regras.</strong> Sem um design system carregado, a IA entrega o visual genérico. Sempre referencie regras (power-design) e/ou um blueprint.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Copiar em vez de extrair.</strong> Reproduzir o código da referência gera bagunça. Extraia a <em>linguagem</em> de design, não o código.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Texto demais na tela.</strong> Telas profissionais são glanceáveis. Encheu de texto, quebrou a leitura de 3 s. Corte palavras.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Ignorar white space e bordas.</strong> Elementos encostando na borda e espaços desiguais denunciam amadorismo. Garanta respiro e espaços iguais.</span></li>
+            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Tratar 3D/animação como fundação.</strong> O maior retorno está no design system (cor, tipografia, proporção). 3D e loops são acabamento — venham por último.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- RESUMO -->
+      <section class="mb-12">
+        <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Resumo do módulo</h2>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Design virou código</strong><span class="text-neutral-400"> — a interface nasce no código e você itera no mesmo lugar.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Codificar o bom design</strong><span class="text-neutral-400"> — proporção, espaçamento, contraste e hierarquia viram regras que a IA reproduz.</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Skills e extração</strong><span class="text-neutral-400"> — open-design, power-design e design-language-skill (extrair ≠ copiar).</span></div></div>
+            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Acabamento e sistema</strong><span class="text-neutral-400"> — imagens/animação/3D por último; tudo consolidado num design system reutilizável.</span></div></div>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+            <h3 class="font-semibold text-blue-400 mb-3">Checklist de conclusão</h3>
+            <ul class="space-y-2 text-sm text-neutral-300">
+              <li>☐ Entendi que design virou código e por que codificar regras melhora a IA.</li>
+              <li>☐ Carreguei um conjunto de regras de design (power-design) antes de construir.</li>
+              <li>☐ Extraí um blueprint de uma referência com a design-language-skill (sem copiar código).</li>
+              <li>☐ Construí uma tela glanceável em ~3 segundos, com white space e bordas respeitadas.</li>
+              <li>☐ Adicionei uma imagem coerente com a marca (contraste e estilo ok).</li>
+              <li>☐ Consolidei um design system reutilizável (tokens, paleta, tipografia, componentes).</li>
+              <li>☐ Gerei uma segunda tela reaproveitando o design system e mantendo consistência.</li>
+            </ul>
+          </div>
+          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+            <h3 class="font-semibold text-blue-400 mb-2">Próxima trilha:</h3>
+            <p class="text-neutral-300">Trilha 3 — Operar &amp; Lucrar: 3.1 — Agente pessoal sempre-ligado. Você termina a Trilha 2 sabendo construir com qualidade; agora é hora de operar e monetizar.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Voltar para a trilha</a>
+            <a href="../trilha3/modulo-3-1.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">Próxima trilha →</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-dark-600 py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+      <p>Claude Code na Prática — <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a> · 2026</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS: nucleo v1 -->
+  <script>
+    function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp) e.classList.remove('active'); });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync();
+      tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+    function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }
+    function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  </script>
+
+  <!-- Camada de aprendizagem -->
+  <script>
+    window.addEventListener('DOMContentLoaded', function(){
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-2-4#q1', {
+          answer: 1,
+          explain: {
+            0: 'A IA não "sente" beleza — é justamente por isso que ela precisa das regras escritas.',
+            1: 'Isso! Bom design tem regras objetivas; viradas em arquivo que o agente lê, a qualidade vira sistema.',
+            2: '"Faça bonito" sem regras gera o visual genérico de sempre, por mais que se repita.'
+          }
+        });
+      }
+    });
+  </script>
+  <script src="../../assets/learn.js"></script>
+  <script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>
