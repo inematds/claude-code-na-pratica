@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="claude-na-pratica" name="inema-course"/>
+<title>3.4 Your Operating System for Claude Code | Claude Code in Practice</title>
+<!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'purple' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'purple');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.purple;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    section[data-inema-topic], [id^="topico-"], [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    /* Light mode - acento T3 purple */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124,58,237,0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124,58,237,0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124,58,237,0.18); }
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    /* SVG adapta ao tema claro */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    /* Pulso do SVG */
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s}
+    }
+  </style>
+<link href="https://inematds.github.io/claude-code-na-pratica/curso/trilha3/modulo-3-4.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/en/curso/trilha3/modulo-3-4.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/es/curso/trilha3/modulo-3-4.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha3/modulo-3-4.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="modulo-3-4.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">EN</a><a href="../../../es/curso/trilha3/modulo-3-4.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
+<a class="skip" href="#conteudo">Skip to content</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">⚡</span>
+<span class="font-bold text-lg hidden sm:inline">Claude Code in Practice</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentals</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Build</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10" href="index.html"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operate &amp; Profit</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Library</span></a>
+<button class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" data-inema-journey-open="" title="My journey" type="button">
+<span aria-hidden="true">◷</span><span class="hidden lg:inline">Journey</span>
+<span aria-hidden="true" class="inema-journey-badge hidden"></span>
+</button>
+<button aria-label="Toggle light/dark theme" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Light/dark theme">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Navigation track" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-purple-400" href="../../index.html">Home</a>
+<span>/</span>
+<a class="hover:text-purple-400" href="index.html">Operate &amp; Profit</a>
+<span>/</span>
+<span class="text-purple-400">Module 3.4</span>
+</div>
+</nav>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MODULE 3.4</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🖥️ Build your own "operating system" for Claude Code</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">The bonus module / capstone. You bring together everything you’ve learned in a layer that gives you an overview: a root folder, a <code>CLAUDE.md</code> master and an HTML dashboard that reads your data and shows projects, skills, agents, and costs at a glance.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">6</div><div class="text-xs text-neutral-400">Topics</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">~60</div><div class="text-xs text-neutral-400">Minutes</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Intermediate</div><div class="text-xs text-neutral-400">Level</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Capstone</div><div class="text-xs text-neutral-400">Type</div></div>
+</div>
+<!-- Medidor de progresso do modulo -->
+<div class="mt-6 max-w-2xl">
+<div aria-label="Module 3.4 progress" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:3-4" role="progressbar">
+<span class="inema-meter-pct" data-inema-meter-pct="">0%</span> <span class="inema-meter-count text-neutral-400 text-sm" data-inema-meter-frac="">0 of 6</span>
+</div>
+</div>
+</div>
+</header>
+<!-- CONTEUDO + TOC -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10" id="conteudo">
+<!-- TOC sticky -->
+<nav aria-label="Page index" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Section <span class="inema-toc-pos">1</span> of <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-1">1. What is a personal OS</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-2">2. Folder structure</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-3">3. Master CLAUDE.md</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-4">4. HTML dashboard reading JSON</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-5">5. Cost tracking</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-6">6. Onboarding + catalog</a></li>
+</ul>
+</nav>
+<div class="inema-prose">
+<!-- SVG: painel contém módulos (aninhamento) + dashboard mock -->
+<div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
+<svg aria-label="Illustrative: a folder tree called meu-os feeds a dashboard with three gauges—Projects, Skills/Agents, and This Month’s Cost with an underuse alert" class="w-full h-auto" role="img" viewbox="0 0 1000 300">
+<defs>
+<lineargradient id="m34-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#c084fc"></stop><stop offset="1" stop-color="#a855f7"></stop></lineargradient>
+<filter height="180%" id="m34-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m34-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#a855f7" opacity="0.12" r="1.3"></circle></pattern>
+<marker id="m34-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#c084fc"></path></marker>
+<marker id="m34-ahc" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"></path></marker>
+</defs>
+<rect fill="url(#m34-grid)" height="300" width="1000" x="0" y="0"></rect>
+<!-- arvore de pastas (raiz contem dados que alimentam o painel) -->
+<g fill="#d8b9ff" font-family="Inter,sans-serif" font-size="12.5">
+<rect fill="#1a1230" height="200" rx="14" stroke="url(#m34-grad)" stroke-width="2.5" width="220" x="36" y="50"></rect>
+<text fill="#c084fc" font-size="14" font-weight="700" x="58" y="80">📁 meu-os/</text>
+<text x="74" y="106">📋 CLAUDE.md</text>
+<text x="74" y="130">📁 projects/</text>
+<text x="74" y="154">📁 skills/ · agents/</text>
+<text x="74" y="178">📁 knowledge/</text>
+<text fill="#e9d5ff" x="74" y="202">📁 data/  (JSON)</text>
+<text x="74" y="226">🖥️ painel/index.html</text>
+</g>
+<!-- setas: dados alimentam o painel -->
+<g fill="none" opacity="0.6" stroke="#c084fc" stroke-width="1.8">
+<path d="M256,150 C330,150 350,90 410,90" marker-end="url(#m34-ah)"></path>
+<path d="M256,150 L410,150" marker-end="url(#m34-ah)"></path>
+<path d="M256,150 C330,150 350,210 410,210" marker-end="url(#m34-ah)"></path>
+</g>
+<!-- monitor / dashboard mock (painel contem 3 mostradores = modulos) -->
+<rect fill="#0f0a1e" height="208" rx="16" stroke="#a855f7" stroke-width="2" width="554" x="410" y="36"></rect>
+<text fill="#e9d5ff" font-family="Inter,sans-serif" font-size="14" font-weight="700" text-anchor="middle" x="687" y="62">🖥️ Dashboard — my OS</text>
+<g font-family="Inter,sans-serif" font-size="13" font-weight="600">
+<g class="wf-a"><rect fill="#1a1230" height="62" rx="10" stroke="#c084fc" stroke-width="2" width="160" x="430" y="78"></rect><text fill="#e9d5ff" text-anchor="middle" x="510" y="104">📁 Projects</text><text fill="#a855f7" font-size="18" font-weight="800" text-anchor="middle" x="510" y="125">7</text></g>
+<g class="wf-a"><rect fill="#1a1230" height="62" rx="10" stroke="#c084fc" stroke-width="2" width="160" x="606" y="78"></rect><text fill="#e9d5ff" text-anchor="middle" x="686" y="104">🧩 Skills/Agents</text><text fill="#a855f7" font-size="18" font-weight="800" text-anchor="middle" x="686" y="125">21</text></g>
+<g class="wf-a"><rect fill="#1a1230" height="62" rx="10" stroke="#38bdf8" stroke-width="2" width="160" x="782" y="78"></rect><text fill="#bfe6ff" text-anchor="middle" x="862" y="104">⛽ Monthly cost</text><text fill="#38bdf8" font-size="16" font-weight="800" text-anchor="middle" x="862" y="125">underused</text></g>
+</g>
+<!-- barra de custo ilustrativa -->
+<rect fill="#241a3a" height="14" rx="7" width="512" x="430" y="158"></rect>
+<rect fill="url(#m34-grad)" height="14" rx="7" width="190" x="430" y="158"></rect>
+<text fill="#9a86c0" font-family="Inter,sans-serif" font-size="11" x="430" y="196">pointer showing low usage—a sign to reassess the plan</text>
+<text fill="#7c6aa0" font-family="Inter,sans-serif" font-size="12" text-anchor="middle" x="687" y="276">Your system, your dashboard — start small and grow as needed. (illustrative)</text>
+</svg>
+</div>
+<h2 class="text-2xl font-bold mb-6">Detailed content</h2>
+<!-- TOPICO 1 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-1" data-inema-track="3" id="topico-1">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">🗺️ What is a "personal OS" for AI</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t1-p1">As you use Claude Code, things multiply: several projects, dozens of skills, specialized agents, multiple subscriptions. At some point, you lose sight of the big picture. The <strong class="text-purple-400">"personal operating system"</strong> is the layer that gives you that view—and it’s not a product you buy, but an arrangement of simple things you put together yourself.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Root folder + <code>CLAUDE.md</code> master + visual dashboard that gives you a unified view of your Claude Code usage.</p></div>
+<div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Without this layer, every project is an island; you don't know how many skills you have or how much you're spending. With it, you operate with a map instead of in the dark.</p></div>
+<div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Dashboard · single source of truth · system = data + visualization (not a closed app) · “start small and grow.”</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h3 class="text-lg font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">🚗</span> The car dashboard analogy</h3>
+<p class="text-neutral-300 text-sm">You don't look inside the engine all the time—you check the dashboard: speed, fuel, temperature. Your AI dashboard does the same: how many active projects, which skills exist, how much you spent this month, which subscription is underused.</p>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">📌</span> The bulletin board analogy</h3>
+<p class="text-neutral-300 text-sm">O <code>CLAUDE.md</code> master is the board at the entrance: everyone who arrives reads it first. It says where things are and what the rules are. The HTML dashboard is the “showcase” for that board—the polished, clickable version.</p>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">⭐</span> The golden rule</h3>
+<p class="text-neutral-300 text-sm"><em>The system is yours—so start small and grow as needed.</em> Don’t try to recreate a feature-packed dashboard on day 1. Build the structure, one <code>CLAUDE.md</code> master and a page that shows three things. Then you add cost, onboarding, agent. Each piece is optional and replaceable.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- TOPICO 2 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-2" data-inema-track="3" id="topico-2">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">📁 Folder structure: the backbone</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t2-p1">The dashboard can only show what’s organized. That’s why the <strong class="text-purple-400">folder structure</strong> comes before everything else: a root folder with subfolders for projects, skills, agents, knowledge, the dashboard, and—the key piece—a folder <code>dados/</code> with simple files that the dashboard and Claude can read.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A root folder (e.g., <code>meu-os/</code>) with subfolders by category and a <code>dados/</code> for the JSON files.</p></div>
+<div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">The structure is what makes everything else possible and automatable. Without it, there is nothing for the dashboard to read.</p></div>
+<div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Root folder as an index · one subfolder per category · data in a simple format (JSON/markdown) that the dashboard and Claude can read.</p></div>
+</div>
+<!-- CAIXA DE CÓDIGO: estrutura de pastas -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Suggested root folder structure</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre">meu-os/
+├── CLAUDE.md            ← o "quadro de avisos" (mestre)
+├── projetos/            ← um diretório por projeto seu
+├── skills/              ← suas skills
+├── agentes/             ← seus subagentes
+├── conhecimento/        ← memória longa (notas, referências)
+├── dados/               ← o painel LÊ daqui
+│   ├── projetos.json
+│   ├── skills.json
+│   ├── agentes.json
+│   └── custo.json
+└── painel/
+    └── index.html       ← a "vitrine" clicável</pre>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Create the root folder</h4><p class="text-neutral-300 text-sm">Something like <code>meu-os/</code>. It's the index of everything.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Create one subfolder per category</h4><p class="text-neutral-300 text-sm"><code>projetos/</code>, <code>skills/</code>, <code>agentes/</code>, <code>conhecimento/</code>, <code>painel/</code>, <code>dados/</code>.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Set aside <code>dados/</code> for the dashboard</h4><p class="text-neutral-300 text-sm">It’s where <code>projetos.json</code>, <code>custo.json</code> and the like.</p></div>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- TOPICO 3 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-3" data-inema-track="3" id="topico-3">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">📋 The master CLAUDE.md: who's in charge of the whole thing</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t3-p1">O <code>CLAUDE.md</code> at the root of the <code>meu-os/</code> é o <strong class="text-purple-400">system's brain</strong>: describes where everything goes, the general rules, and how Claude should update the data. When you ask "update my dashboard" in any chat, Claude reads this file and knows exactly what to do.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A short file in the root that describes the entire system: folder map, rules, and maintenance instructions.</p></div>
+<div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">It’s the source of truth that makes the system follow natural language commands in any new chat.</p></div>
+<div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Folder map · global rules · maintenance instructions ("when adding a skill, record it in <code>dados/skills.json</code>") · stays short and stable (~250 words).</p></div>
+</div>
+<!-- CAIXA DE CÓDIGO: esqueleto do CLAUDE.md mestre -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Skeleton of the <code>meu-os/CLAUDE.md</code> (~250 words)</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap"># Meu OS pessoal — Claude Code
+
+## Mapa de pastas
+- projetos/      → um diretório por projeto
+- skills/        → minhas skills
+- agentes/       → meus subagentes
+- conhecimento/  → memória longa
+- dados/         → JSON que o painel lê
+- painel/        → index.html (a vitrine)
+
+## Arquivos de dados
+- dados/projetos.json  → nome, status, objetivo
+- dados/skills.json    → nome, descrição, modelo
+- dados/custo.json     → serviço, gasto, % de uso
+
+## Regras de manutenção
+- Ao adicionar projeto/skill/custo, edite SÓ o JSON
+  correto em dados/.
+- Nunca invente preços ou valores — pergunte se faltar.
+- Mantenha este arquivo curto; detalhes vão nos JSON.</pre>
+</div>
+<details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+<summary class="cursor-pointer font-semibold text-purple-400">Going deeper (optional): why ~250 words?</summary>
+<p class="text-neutral-300 text-sm mt-3">One <code>CLAUDE.md</code> bloated gets read in full in every chat—it uses up context and becomes outdated quickly. Keep only what’s stable (map + rules). Everything that changes constantly (the project list, expenses) lives in the JSON files for <code>dados/</code> and in <code>conhecimento/</code>, which Claude reads only when needed.</p>
+</details>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- TOPICO 4 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-4" data-inema-track="3" id="topico-4">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">🖥️ The HTML dashboard that reads JSON: the clickable showcase</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t4-p1">The dashboard is a <strong class="text-purple-400">single page <code>index.html</code></strong> that reads the files from <code>dados/</code> and displays project cards, a list of skills/agents, and a cost summary. No build, no backend, no framework — opens directly in the browser (<code>file://</code>) and turns raw data into the “car dashboard.”</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A page that loads local JSON via <code>fetch</code> and renders visual blocks; Claude generates and updates the HTML for you.</p></div>
+<div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">It’s what lets you glance over and understand your usage instead of opening five files.</p></div>
+<div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">A page · no build/backend · reads JSON via <code>fetch</code> · start with three blocks: Projects, Skills, Monthly cost.</p></div>
+</div>
+<!-- CAIXA DE CÓDIGO: exemplo de painel (fetch + render mínimo) -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Example dashboard — the heart of <code>painel/index.html</code></p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">&lt;div id="projetos"&gt;&lt;/div&gt;
+&lt;div id="custo"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+async function carregar() {
+  // lê os JSON de dados/ (caminho relativo ao index.html)
+  const proj  = await fetch('../dados/projetos.json').then(r =&gt; r.json());
+  const custo = await fetch('../dados/custo.json').then(r =&gt; r.json());
+
+  // cards de projetos
+  document.getElementById('projetos').innerHTML =
+    proj.map(p =&gt; `&lt;article&gt;&lt;b&gt;${p.nome}&lt;/b&gt; — ${p.status}&lt;/article&gt;`).join('');
+
+  // soma de custo + alerta de subuso
+  const total = custo.reduce((s, c) =&gt; s + c.gasto, 0);
+  const subuso = custo.filter(c =&gt; c.uso &lt; 40);
+  document.getElementById('custo').innerHTML =
+    `Total do mês: R$ ${total.toFixed(2)}` +
+    (subuso.length ? ` · ⚠️ subutilizado: ${subuso.map(c =&gt; c.servico).join(', ')}` : '');
+}
+carregar();
+&lt;/script&gt;</pre>
+<p class="text-xs text-neutral-500 mt-2">Illustrative mockup—Claude builds the complete HTML/style for you; what matters is the pattern: <em>read JSON → render → add up/alert</em>.</p>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Practical tip</h3>
+<p class="text-neutral-300 text-sm">Some browsers block <code>fetch</code> of local files for security. If the dashboard opens empty in <code>file://</code>, ask Claude to spin up a simple local server (one line) or embed the data directly in the HTML while you test.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- TOPICO 5 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-5" data-inema-track="3" id="topico-5">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">💸 Track costs and usage across models</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t5-p1">O <code>dados/custo.json</code> é o <strong class="text-purple-400">fuel gauge</strong>: you log spending and usage by model/subscription, and the dashboard adds it up and highlights underuse. This is where the system "pays for itself" — spotting an underused subscription could lead you to switch plans and save money.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A file with one entry per service (model, cost, % used) that the dashboard totals and analyzes.</p></div>
+<div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">It’s the system’s most concrete return: clarity about where your AI money is going (and where it’s sitting idle).</p></div>
+<div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Manual or semi-automated tracking · one item per service · spending and usage fields · prices come from the official page — <strong>never guess values</strong>.</p></div>
+</div>
+<!-- CAIXA DE CÓDIGO: exemplo de custo.json -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Example of <code>dados/custo.json</code></p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">[
+  { "servico": "Claude (assinatura)", "gasto": 100.00, "uso": 78 },
+  { "servico": "API Claude (avulso)", "gasto":  35.00, "uso": 55 },
+  { "servico": "Editor IA",            "gasto":  50.00, "uso": 20 }
+]</pre>
+<p class="text-xs text-neutral-500 mt-2">Values are examples. Use your own; for the API, see the <a class="text-sky-400 hover:text-sky-300" href="https://www.anthropic.com/pricing" target="_blank">official prices</a>. The service with <code>uso</code> low (here, 20%) is what the dashboard flags for you to reassess.</p>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">List one item per service</h4><p class="text-neutral-300 text-sm">Model/subscription, monthly spending, and usage percentage.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Ask Claude to add up and mark sub-usage</h4><p class="text-neutral-300 text-sm">Monthly total + alert for low-usage services.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Show the total and alerts on the dashboard</h4><p class="text-neutral-300 text-sm">At a glance, you decide whether to keep, downgrade, or cancel a plan.</p></div>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- TOPICO 6 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-6" data-inema-track="3" id="topico-6">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">🚀 Skills/Agents Onboarding and Catalog</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t6-p1">Two pieces complete the system. The <strong class="text-purple-400">onboarding</strong> has Claude scan your machine (read-only), discover the tools you use, and fill in the initial data. The <strong class="text-purple-400">catalog</strong> keeps a record of every skill and agent—with the right model for each task—so you never reinvent the wheel.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Onboarding = detecting tools in PATH with confirmation before saving. Catalog = <code>skills.json</code> e <code>agentes.json</code> with a name, description, and recommended model.</p></div>
+<div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Onboarding gets the system “ready to run” on your machine without manual typing; the catalog helps you remember what you already have.</p></div>
+<div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Safe, read-only commands · confirmation before writing · a strong model for deep reasoning, a lightweight model for repetitive tasks · nothing is fixed; everything is editable.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">✓ Onboarding best practices</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Detect via binaries in PATH and known configs — read-only.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Show the list and ask for confirmation before writing.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Save in <code>dados/ferramentas.json</code>; you can add anything missing later.</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ What to avoid</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Let Claude write without having you review the list.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Catalog without the recommended model field.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Treating what wasn’t detected as “impossible”—you just need to add it.</span></li>
+</ul>
+</div>
+</div>
+<!-- CAIXA DE CÓDIGO: exemplo de skills.json -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Example of <code>dados/skills.json</code> (catalog)</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">[
+  { "nome": "revisar-texto", "faz": "revisa ortografia e clareza",
+    "modelo": "leve (tarefa repetitiva)" },
+  { "nome": "arquiteto", "faz": "planeja arquitetura de projeto",
+    "modelo": "forte (raciocínio profundo)" }
+]</pre>
+</div>
+<details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+<summary class="cursor-pointer font-semibold text-purple-400">Going deeper (optional): goals and an open-source agent</summary>
+<p class="text-neutral-300 text-sm mt-3">To make the system more dynamic, record medium-term goals in a <code>dados/metas.json</code> that the dashboard displays as progress, and turn on <code>conhecimento/</code> as long-term memory. If you want to talk about your goals, you can plug in an agent <strong>open-source</strong> and free — for example, the <a class="text-sky-400 hover:text-sky-300" href="https://github.com/NousResearch/hermes-agent" target="_blank">Hermes Agent</a>, completely optional and with no hidden costs. None of this is required: the dashboard works very well on its own.</p>
+</details>
+<!-- Checagem leve opcional -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-3-4#q1">
+<p class="font-medium mb-4">Self-check (optional): what enables the HTML dashboard to stay up to date through natural language commands?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">A backend running around the clock on a paid server.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">Data centralized in JSON + a master CLAUDE.md that tells Claude which file to edit.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">Memorize special commands and type them in the right order.</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- EXEMPLO PRÁTICO GUIADO -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">🧪 Guided Hands-On Example</h2>
+<p class="text-neutral-300 text-sm mb-6">Build a minimum viable version of your personal OS, from scratch to a dashboard open in your browser.</p>
+<div class="space-y-4">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">1.</span> Create the structure</h3><p class="text-neutral-300 text-sm">In the terminal or by asking Claude, build <code>meu-os/</code> with the subfolders and empty JSON files (use the tree from topic 2).</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">2.</span> Open <code>meu-os/</code> in Claude Code</h3><p class="text-neutral-300 text-sm">Point Claude to the root folder.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">3.</span> Write the <code>CLAUDE.md</code> master</h3><p class="text-neutral-300 text-sm">Use Prompt 1. Include the folder map and maintenance rules.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">4.</span> Enter the information</h3><p class="text-neutral-300 text-sm">2–3 real projects in <code>projetos.json</code>; your subscriptions in <code>custo.json</code>; 3 skills in <code>skills.json</code>.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">5.</span> Generate the dashboard</h3><p class="text-neutral-300 text-sm">Ask <code>painel/index.html</code> reading the three JSON files: project cards, skills list, and total cost with an underuse alert.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">6.</span> Open in the browser</h3><p class="text-neutral-300 text-sm">Two clicks on <code>painel/index.html</code>. You should see your data.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">7.</span> Test maintenance</h3><p class="text-neutral-300 text-sm">In one <strong>new chat</strong>, ask: "Add project X and update the dashboard." If Claude edits the right JSON by reading only the <code>CLAUDE.md</code>, the system is working.</p></div>
+</div>
+</section>
+<!-- EXERCICIOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">✏️ Exercises</h2>
+<div class="space-y-4">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. Build the backbone <span class="text-xs text-neutral-500">(easy)</span></h3><p class="text-neutral-300 text-sm">Create the root folder with all subfolders and empty files. <span class="text-purple-400">Criterion:</span> the folder tree exists and matches the example.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Write the <code>CLAUDE.md</code> master <span class="text-xs text-neutral-500">(medium)</span></h3><p class="text-neutral-300 text-sm">Maximum ~250 words, with a folder map and maintenance rules. <span class="text-purple-400">Criterion:</span> in a new chat, Claude describes the system just by reading this file.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Generate the Minimum Dashboard <span class="text-xs text-neutral-500">(medium)</span></h3><p class="text-neutral-300 text-sm">Do the <code>index.html</code> show projects, skills, and cost from JSON files. <span class="text-purple-400">Criterion:</span> opens in the browser and displays your real data.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Track actual costs <span class="text-xs text-neutral-500">(medium)</span></h3><p class="text-neutral-300 text-sm">Fill in <code>custo.json</code> with your subscriptions and mark the one you use least. <span class="text-purple-400">Criterion:</span> the dashboard highlights the underused service.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Maintenance command <span class="text-xs text-neutral-500">(difficult)</span></h3><p class="text-neutral-300 text-sm">In a new chat, ask Claude to add a new skill. <span class="text-purple-400">Criterion:</span> <code>skills.json</code> is updated, and the skill appears in the panel without you editing it by hand.</p></div>
+</div>
+</section>
+<!-- PROMPTS PRONTOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⌨️ Ready-to-use prompts</h2>
+<p class="text-neutral-300 text-sm mb-6">Paste these into Claude Code pointed at the folder <code>meu-os/</code>. They assemble each part of the system. The complete database is in the <a class="text-sky-400 hover:text-sky-300" href="../trilha4/modulo-4-1.html">Library → Prompts</a>.</p>
+<div class="space-y-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">1. Create the <code>CLAUDE.md</code> master</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Esta pasta é o meu "sistema operacional pessoal" para o Claude Code.
+Crie um CLAUDE.md mestre, curto (~250 palavras), com:
+- mapa de pastas (projetos, skills, agentes, conhecimento, dados, painel);
+- o que cada arquivo em dados/ contém (projetos.json, skills.json, custo.json);
+- regras de manutenção: ao eu pedir para adicionar projeto/skill/custo,
+  atualize o JSON correto em dados/ e nunca invente valores.
+Não escreva HTML aqui, só o CLAUDE.md.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">2. Generate the simple HTML dashboard</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Crie painel/index.html: uma única página, sem framework e sem backend,
+que carrega via fetch os arquivos dados/projetos.json, dados/skills.json
+e dados/custo.json e mostra três blocos: cards de Projetos, lista de Skills
+e resumo de Custo do mês. Deve abrir direto no navegador (file://).
+Visual limpo e escuro. Comente o código.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">3. Detect Installed Tools (Onboarding)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Vasculhe minha máquina e detecte quais ferramentas de IA e dev eu uso
+(CLIs, editores, terminais, agentes). Use comandos seguros, só de leitura.
+Me mostre a lista para eu confirmar antes de salvar.
+Depois grave o resultado em dados/ferramentas.json.
+O que não achar, eu adiciono depois.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">4. System maintenance command</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Vou pedir mudanças no meu OS pessoal (adicionar projeto, skill, custo ou meta).
+Sempre leia o CLAUDE.md mestre primeiro, edite só o JSON correto em dados/
+e me diga o que mudou. Se algo não existir, me pergunte antes de criar.</pre></div>
+</div>
+</section>
+<!-- ERROS COMUNS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⚠️ Common errors</h2>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Wanting everything on day 1.</strong> Try to reproduce a dashboard packed with features all at once. <em>Fix:</em> start with a root folder + <code>CLAUDE.md</code> + three blocks in the panel; grow as needed.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Scattered, unformatted data.</strong> Saving information in random places that the dashboard doesn’t read. <em>Fix:</em> centralize in <code>dados/</code> with simple, consistent JSON.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Guess prices and expenses.</strong> Make up values in the cost tracking. <em>Fix:</em> use only what you provide or the official prices.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong><code>CLAUDE.md</code> bloated master.</strong> Fill it with details that keep changing. <em>Fix:</em> keep it to ~250 words; details go in the JSON files and <code>conhecimento/</code>.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Treat the system as closed.</strong> Thinking it’s “all or nothing” and getting stuck when something isn’t detected. <em>Fix:</em> everything is editable; add anything missing by asking Claude.</span></li>
+</ul>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Module summary</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>The personal OS</strong><span class="text-neutral-400"> — a layer you put together (not buy): root folder + <code>CLAUDE.md</code> master + dashboard.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>Structure and data</strong><span class="text-neutral-400"> — one subfolder per category and simple JSON in <code>dados/</code> that the dashboard reads.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>The dashboard</strong><span class="text-neutral-400"> — a page that reads JSON and displays projects, skills, and costs at a glance.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>Cost, onboarding, and catalog</strong><span class="text-neutral-400"> — the system pays for itself, installs itself, and never lets you reinvent the wheel.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-purple-400 mb-3">Completion checklist</h3>
+<ul class="space-y-2 text-sm text-neutral-300">
+<li>☐ I created the root folder <code>meu-os/</code> with all the subfolders.</li>
+<li>☐ I wrote a <code>CLAUDE.md</code> master (~250 words) with a folder map and maintenance rules.</li>
+<li>☐ I filled in <code>projetos.json</code>, <code>skills.json</code> e <code>custo.json</code> with real data.</li>
+<li>☐ I generated <code>painel/index.html</code> and it opens in the browser showing my data.</li>
+<li>☐ The cost tracker adds up expenses and highlights an underused service.</li>
+<li>☐ I tested a maintenance command in a new chat, and the correct JSON was updated.</li>
+<li>☐ (Optional) I recorded a goal and/or explored an open-source agent.</li>
+</ul>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-purple-400 mb-2">You've reached the end of the learning journey:</h3>
+<p class="text-neutral-300">This is the last module of the course. The next step is <strong>Library</strong> — your collection of prompts, skills, and agents, ready to consult whenever you need them.</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Back to the track</a>
+<a class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors" href="../trilha4/index.html">Explore the Library →</a>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FOOTER -->
+<footer class="border-t border-dark-600 py-8 mt-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+<p>Claude Code in Practice — <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p>
+</div>
+</footer>
+<!-- SCRIPTS: nucleo v1 -->
+<script>
+    function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp) e.classList.remove('active'); });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync();
+      tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+    function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }
+    function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  </script>
+<!-- Camada de aprendizagem -->
+<script>
+    window.addEventListener('DOMContentLoaded', function(){
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-3-4#q1', {
+          answer: 1,
+          explain: {
+            0: 'Não precisa — o painel é uma página estática que lê JSON local; sem servidor pago.',
+            1: 'Isso! Dados centralizados em JSON + um CLAUDE.md mestre que diz qual arquivo editar é o que deixa tudo manutenível por linguagem natural.',
+            2: 'Não há comandos secretos — o que conta é a estrutura (JSON + CLAUDE.md), não decorar fórmulas.'
+          }
+        });
+      }
+    });
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>

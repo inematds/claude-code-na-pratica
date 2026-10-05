@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="claude-na-pratica" name="inema-course"/>
+<title>1.4 Power Features: supercharge your workflow | Claude Code in Practice</title>
+<!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'emerald');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.emerald;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    section[data-inema-topic], [id^="topico-"], [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    /* Light mode - acento T1 emerald */
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5,150,105,0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5,150,105,0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5,150,105,0.18); }
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    /* SVG adapta ao tema claro */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    /* Pulso do SVG */
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s}
+    }
+  </style>
+<link href="https://inematds.github.io/claude-code-na-pratica/curso/trilha1/modulo-1-4.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/en/curso/trilha1/modulo-1-4.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/es/curso/trilha1/modulo-1-4.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha1/modulo-1-4.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="modulo-1-4.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">EN</a><a href="../../../es/curso/trilha1/modulo-1-4.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
+<a class="skip" href="#conteudo">Skip to content</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">⚡</span>
+<span class="font-bold text-lg hidden sm:inline">Claude Code in Practice</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10" href="index.html"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentals</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Build</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operate &amp; Profit</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Library</span></a>
+<button class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" data-inema-journey-open="" title="My journey" type="button">
+<span aria-hidden="true">◷</span><span class="hidden lg:inline">Journey</span>
+<span aria-hidden="true" class="inema-journey-badge hidden"></span>
+</button>
+<button aria-label="Toggle light/dark theme" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Light/dark theme">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Navigation track" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-emerald-400" href="../../index.html">Home</a>
+<span>/</span>
+<a class="hover:text-emerald-400" href="index.html">Fundamentals</a>
+<span>/</span>
+<span class="text-emerald-400">Module 1.4</span>
+</div>
+</nav>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">MODULE 1.4</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">⚡ Power Features: from lone assistant to turbocharged team</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">The lesson that turns Claude Code from a "helper" into a "team." Slash commands, context management, skills, MCP, parallel subagents, and the critique loop — the features that multiply your results.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">6</div><div class="text-xs text-neutral-400">Topics</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">~60</div><div class="text-xs text-neutral-400">Minutes</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Intermediate.</div><div class="text-xs text-neutral-400">Level</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Practice</div><div class="text-xs text-neutral-400">Type</div></div>
+</div>
+<!-- Medidor de progresso do modulo -->
+<div class="mt-6 max-w-2xl">
+<div aria-label="Module 1.4 progress" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:1-4" role="progressbar">
+<span class="inema-meter-pct" data-inema-meter-pct="">0%</span> <span class="inema-meter-count text-neutral-400 text-sm" data-inema-meter-frac="">0 of 6</span>
+</div>
+</div>
+</div>
+</header>
+<!-- CONTEUDO + TOC -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10" id="conteudo">
+<!-- TOC sticky -->
+<nav aria-label="Page index" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Section <span class="inema-toc-pos">1</span> of <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400" href="#topico-1">1. Slash commands</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400" href="#topico-2">2. Context and tokens</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400" href="#topico-3">3. Skills</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400" href="#topico-4">4. MCP</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400" href="#topico-5">5. Subagents</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-emerald-400" href="#topico-6">6. Critique loop</a></li>
+</ul>
+</nav>
+<div class="inema-prose">
+<!-- SVG orquestração / fan-out -->
+<div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
+<svg aria-label="Claude Code at the center orchestrates five power features: slash commands, skills, MCP, parallel subagents, and a critique loop, on top of a context bar managed with /clear" class="w-full h-auto" role="img" viewbox="0 0 1000 300">
+<defs>
+<lineargradient id="m14-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#34d399"></stop><stop offset="1" stop-color="#10b981"></stop></lineargradient>
+<filter height="180%" id="m14-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m14-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#10b981" opacity="0.12" r="1.3"></circle></pattern>
+<marker id="m14-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#34d399"></path></marker>
+<marker id="m14-ahc" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"></path></marker>
+</defs>
+<rect fill="url(#m14-grid)" height="300" width="1000" x="0" y="0"></rect>
+<!-- nucleo Claude Code -->
+<g filter="url(#m14-glow)"><rect fill="#0e2018" height="64" rx="16" stroke="url(#m14-grad)" stroke-width="2.8" width="188" x="406" y="96"></rect></g>
+<text fill="#34d399" font-family="Inter,sans-serif" font-size="18" font-weight="700" text-anchor="middle" x="500" y="124">⚡ Claude Code</text>
+<text fill="#9fe7c9" font-family="Inter,sans-serif" font-size="11.5" text-anchor="middle" x="500" y="144">team orchestrator</text>
+<!-- raios para os 5 features (fan-out) -->
+<g fill="none" opacity="0.55" stroke="#38bdf8" stroke-width="1.8">
+<path d="M406,128 C300,128 240,52 168,52" marker-end="url(#m14-ahc)"></path>
+<path d="M406,128 C320,128 280,108 232,108" marker-end="url(#m14-ahc)"></path>
+<path d="M594,128 C680,128 720,108 768,108" marker-end="url(#m14-ahc)"></path>
+<path d="M594,128 C700,128 760,52 832,52" marker-end="url(#m14-ahc)"></path>
+</g>
+<!-- subagentes (tres circulos paralelos) -->
+<g fill="none" opacity="0.6" stroke="#34d399" stroke-width="1.8">
+<path d="M500,160 L420,196" marker-end="url(#m14-ah)"></path>
+<path d="M500,160 L500,196" marker-end="url(#m14-ah)"></path>
+<path d="M500,160 L580,196" marker-end="url(#m14-ah)"></path>
+</g>
+<!-- caixas dos features -->
+<g font-family="Inter,sans-serif" font-size="12.5" font-weight="600">
+<g class="wf-a"><rect fill="#0e1b26" height="32" rx="9" stroke="#38bdf8" stroke-width="2" width="128" x="40" y="36"></rect><text fill="#bfe6ff" text-anchor="middle" x="104" y="57">/ slash commands</text></g>
+<g class="wf-a"><rect fill="#0e1b26" height="32" rx="9" stroke="#38bdf8" stroke-width="2" width="128" x="104" y="92"></rect><text fill="#bfe6ff" text-anchor="middle" x="168" y="113">🎯 skills</text></g>
+<g class="wf-a"><rect fill="#0e1b26" height="32" rx="9" stroke="#38bdf8" stroke-width="2" width="128" x="768" y="92"></rect><text fill="#bfe6ff" text-anchor="middle" x="832" y="113">🔌 MCP</text></g>
+<g class="wf-a"><rect fill="#0e1b26" height="32" rx="9" stroke="#38bdf8" stroke-width="2" width="128" x="832" y="36"></rect><text fill="#bfe6ff" text-anchor="middle" x="896" y="57">🔁 critique</text></g>
+</g>
+<!-- subagentes circulos -->
+<g font-family="Inter,sans-serif" font-size="11" font-weight="600">
+<circle cx="420" cy="214" fill="#0e2018" r="18" stroke="#34d399" stroke-width="2"></circle><text fill="#9fe7c9" text-anchor="middle" x="420" y="218">A1</text>
+<circle cx="500" cy="214" fill="#0e2018" r="18" stroke="#34d399" stroke-width="2"></circle><text fill="#9fe7c9" text-anchor="middle" x="500" y="218">A2</text>
+<circle cx="580" cy="214" fill="#0e2018" r="18" stroke="#34d399" stroke-width="2"></circle><text fill="#9fe7c9" text-anchor="middle" x="580" y="218">A3</text>
+<text fill="#6b7280" font-size="11" font-weight="400" text-anchor="middle" x="500" y="250">parallel subagents (each with its own context)</text>
+</g>
+<!-- barra de contexto -->
+<rect fill="#0e1b26" height="14" rx="7" stroke="#374151" stroke-width="1.4" width="800" x="40" y="270"></rect>
+<rect fill="url(#m14-grad)" height="10" opacity="0.7" rx="5" width="300" x="42" y="272"></rect>
+<text fill="#6b7280" font-family="Inter,sans-serif" font-size="10.5" x="40" y="266">context (finite window)</text>
+<g><rect fill="#0e2018" height="22" rx="7" stroke="#34d399" stroke-width="2" width="104" x="856" y="266"></rect><text fill="#9fe7c9" font-family="Inter,sans-serif" font-size="12" font-weight="600" text-anchor="middle" x="908" y="281">/clear ↺</text></g>
+</svg>
+</div>
+<h2 class="text-2xl font-bold mb-6">Detailed content</h2>
+<!-- TOPICO 1 -->
+<section class="mb-16" data-inema-module="1-4" data-inema-topic="modulo-1-4#topico-1" data-inema-track="1" id="topico-1">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">⚡ Slash commands: time-saving shortcuts</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t1-p1">You type <code class="text-emerald-400 font-mono">/</code> and a list of actions appears immediately. These are the <strong class="text-emerald-400">slash commands</strong> — the cheapest way to control your session state. Two are essential from here on: <code class="text-emerald-400 font-mono">/context</code> shows how much of the context window has already been used, and <code class="text-emerald-400 font-mono">/clear</code> clears the conversation and starts from scratch.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-emerald-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Quick actions built into Claude Code, triggered by typing <code class="font-mono text-emerald-400">/</code>. Think of keyboard shortcuts, but in text.</p></div>
+<div><span class="text-emerald-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">They’re the cheapest way to manage the session. Knowing what takes up space and when to reset prevents quality from dropping.</p></div>
+<div><span class="text-emerald-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm"><code class="font-mono text-emerald-400">/clear</code> = open a new tab (fresh context) · custom commands · skills become commands when installed.</p></div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">The two commands you’ll use most in this module</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">/context     # quanto da janela já foi consumido
+/clear       # zera a conversa — igual a abrir uma aba nova
+/            # abre a lista de todos os comandos disponíveis</pre>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Practical tip</h3>
+<p class="text-neutral-300 text-sm">Several skills appear as slash commands when installed. When you're not sure what's available, just type <code class="font-mono text-emerald-400">/</code> and scroll through the list — it’s your session “menu.”</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- TOPICO 2 -->
+<section class="mb-16" data-inema-module="1-4" data-inema-topic="modulo-1-4#topico-2" data-inema-track="1" id="topico-2">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">🧠 Context and Tokens: The Invisible Cliff</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t2-p1">Every conversation has a cliff. The longer it gets, the worse the performance—a phenomenon called <strong class="text-emerald-400">context rot</strong>. It's the #1 beginner mistake: using the same window all day. Managing context is exactly what separates a good result from a mediocre one.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-emerald-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm"><em>Context rot</em> is the drop in performance as the conversation grows. The more history piles up, the more the model loses track.</p></div>
+<div><span class="text-emerald-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Context is a finite resource. Treat it as disposable, and quality will stay high from one task to the next.</p></div>
+<div><span class="text-emerald-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">One task, one window · when you're done, discard it (<code class="font-mono text-emerald-400">/clear</code>) · <code class="font-mono text-emerald-400">/context</code> to see the usage · the right model for the task.</p></div>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Open and measure</h4><p class="text-neutral-300 text-sm">Run <code class="font-mono text-emerald-400">/context</code> at the beginning to see the current window usage.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Do one focused task</h4><p class="text-neutral-300 text-sm">A small, well-defined task. Don't mix five topics in the same window.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Done? Discard</h4><p class="text-neutral-300 text-sm">Run <code class="font-mono text-emerald-400">/clear</code> before starting something new. Fresh context, preserved quality.</p></div>
+</div>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">📊</span> The right model for the right task</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>Not every task requires the heaviest model—simple tasks run well on lighter models.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>Using the lightweight model for simple tasks saves money and scales better.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>Save the strongest model for difficult reasoning and critical review.</span></li>
+</ul>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- TOPICO 3 -->
+<section class="mb-16" data-inema-module="1-4" data-inema-topic="modulo-1-4#topico-3" data-inema-track="1" id="topico-3">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">🎯 Skills: the expert's recipe book</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t3-p1">A <strong class="text-emerald-400">skill</strong> is a set of instructions—a file <code class="font-mono text-emerald-400">SKILL.md</code> with a name, description, and step-by-step instructions—which Claude loads automatically when the task fits. Without a skill, the model improvises; with a skill, it follows a tested recipe and consistently delivers the same quality standard.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-emerald-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A reusable procedure packaged in a <code class="font-mono text-emerald-400">SKILL.md</code>. Ask "put together a presentation" and the presentation skill kicks in without you naming it.</p></div>
+<div><span class="text-emerald-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Skills are "the science behind the output." Every task you repeat is a candidate for a skill — encode it once and benefit from the pattern forever.</p></div>
+<div><span class="text-emerald-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">The skill is discovered by <strong>description</strong> (the trigger) · check what’s available by typing <code class="font-mono text-emerald-400">/</code> + a name · three parts: name, description, content.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">✓ Well-made skill</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Clear description of the <em>when</em> use it—it’s what makes the skill "kick in" at the right time.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>A short, direct procedure that's easy to follow.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>Tested: you request the task and the skill triggers automatically.</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Skill that doesn’t light up</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Vague or generic description — Claude never knows when to apply it.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>A long, confusing step-by-step process full of exceptions.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Never tested — you only find out it doesn’t trigger when it matters.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Build your skill from scratch—ask like this</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Vamos criar uma skill para padronizar meu resumo de reunião.
+Comece pela DESCRIÇÃO (quando ela deve ser usada),
+depois o passo a passo. Entregue como um SKILL.md pronto para revisar.</pre>
+</div>
+<details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+<summary class="cursor-pointer font-semibold text-emerald-400">Going deeper (optional): the description is everything</summary>
+<p class="text-neutral-300 text-sm mt-3">Claude chooses the skill by reading the <strong>description</strong>, not the body. A generic description ("help with texts") rarely triggers; a specific one ("use when the user asks for a meeting summary with decisions and next steps") fires at the right time. Give it your best, as if it were the trigger—because it is.</p>
+</details>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- TOPICO 4 -->
+<section class="mb-16" data-inema-module="1-4" data-inema-topic="modulo-1-4#topico-4" data-inema-track="1" id="topico-4">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">🔌 MCP: the universal outlet</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t4-p1">O <strong class="text-emerald-400">Model Context Protocol (MCP)</strong> is an open standard that lets the model talk to APIs and services without you writing the integration. An API is a technical manual machines use to talk to other machines; MCP is the <strong class="text-emerald-400">standardized adapter</strong> on top of it. You don't code the "glue"—you list the MCP server and ask in English.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-emerald-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">An open standard (announced by Anthropic in late 2024) that gives Claude a window into your tools: email, data, scrapers, services.</p></div>
+<div><span class="text-emerald-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Instead of memorizing endpoints and writing integration code, you talk to the tool. Today, almost every serious tool has an MCP server.</p></div>
+<div><span class="text-emerald-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">API = machine-to-machine · MCP = wrapper that exposes only what’s needed · Local MCP keeps your key on your machine, with no intermediary.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-emerald-900/20 rounded-xl border border-emerald-500/30 p-6">
+<h4 class="font-bold text-emerald-400 mb-4">✓ With MCP</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>You ask in Portuguese: "pull up my latest unread emails".</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>The key stays in an environment variable, never in the chat.</span></li>
+<li class="flex items-start space-x-2"><span class="text-emerald-400">✓</span><span>One standard works for any tool with an MCP server.</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Without MCP (raw API)</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>You memorize endpoints and write the integration "cheat sheet" by hand.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Risk of pasting a key in the wrong place.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>A different codebase to maintain for each service.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Create a local MCP (example: video service)—ask like this</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">I want to create a local MCP for [SERVICE].
+The API key is already set as an environment variable.
+List the available features, choose the ones most useful for my needs,
+and create the local MCP. At the end, explain how to call it in a conversation.</pre>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🔒</span> Never put keys in chat</h3>
+<p class="text-neutral-300 text-sm">The API key lives in a local environment variable — never pasted into the conversation or a versioned file. A local MCP runs directly on your machine and keeps the key there, away from any intermediary.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- TOPICO 5 -->
+<section class="mb-16" data-inema-module="1-4" data-inema-topic="modulo-1-4#topico-5" data-inema-track="1" id="topico-5">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">👥 Subagents: delegate to finish faster</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t5-p1">Instead of one worker doing everything in sequence, you open a <strong class="text-emerald-400">team</strong>. <strong class="text-emerald-400">Subagents</strong> are agents launched for separate tasks, each with its own context window. Independent work runs in parallel and finishes sooner.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-emerald-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Parallelization: multiple agents working at the same time, each with their own context.</p></div>
+<div><span class="text-emerald-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Great for multi-angle research and breaking a project into workstreams. Independent tasks finish sooner.</p></div>
+<div><span class="text-emerald-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Delegate parts that don’t depend on each other · each subagent returns only the conclusion (not the raw history) · this protects your main context.</p></div>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Break it into independent parts</h4><p class="text-neutral-300 text-sm">Break the task into workstreams that don't depend on each other (X, Y, Z).</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Launch the subagents</h4><p class="text-neutral-300 text-sm">"Create three subagents — one analyzes X, another Y, and another Z." Each returns only the conclusions.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Collect and consolidate</h4><p class="text-neutral-300 text-sm">Bring the results together in a comparison table in the main agent.</p></div>
+</div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Parallel fan-out — ask like this</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Do [TASK]. Create three independent subagents:
+- subagent 1: analyzes [angle X]
+- subagent 2: analyzes [angle Y]
+- subagent 3: analyzes [angle Z]
+Each one returns only its conclusions. Then consolidate them into a comparison table.</pre>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- TOPICO 6 -->
+<section class="mb-16" data-inema-module="1-4" data-inema-topic="modulo-1-4#topico-6" data-inema-track="1" id="topico-6">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">🔁 Critique loop: one creates, another reviews</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Flag a question on this topic" type="button"><span aria-hidden="true">?</span><span>I have a question</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m1-4-t6-p1">"Claude evaluates Claude’s work." Ask it to <strong class="text-emerald-400">create</strong> is one thing; asking <strong class="text-emerald-400">review</strong> is completely different—and greatly improves the result. Automatic review catches errors the author doesn’t see.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-emerald-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A workflow where one agent creates the deliverable and another takes on the role of critical reviewer, pointing out gaps and returning the corrected version.</p></div>
+<div><span class="text-emerald-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Review catches what the author can’t see. You can even use a different model as the reviewer to bring in a second point of view.</p></div>
+<div><span class="text-emerald-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Separate the roles (author vs. critic) · explicitly ask for critique · iterate for one or two rounds · other model CLIs can join as external reviewers.</p></div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Switch roles to review—ask like this</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Você acabou de criar [ENTREGÁVEL]. Agora mude de papel:
+seja um revisor crítico e rigoroso. Aponte furos, vieses e o que faltou.
+Em seguida entregue a versão final corrigida.</pre>
+</div>
+<details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+<summary class="cursor-pointer font-semibold text-emerald-400">Going deeper (optional): why separating roles works</summary>
+<p class="text-neutral-300 text-sm mt-3">When the same agent creates and judges in the same breath, it tends to defend its own draft. By explicitly asking “now be the critic,” you reset its stance: the goal becomes finding problems, not justifying choices. One or two rounds are usually enough — more than that has diminishing returns.</p>
+</details>
+<!-- Checagem leve opcional -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-1-4#q1">
+<p class="font-medium mb-4">Self-check (optional): what is the best way to avoid the <em>context rot</em>?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">Using the same window all day to "avoid losing the history".</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">One task per window and run <code class="font-mono">/clear</code> when finished.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">Always switch to the most powerful model available.</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Mark as read</span><span class="inema-label-done">Read</span></button>
+</div>
+</section>
+<!-- EXEMPLO PRATICO GUIADO -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">🧪 Guided Hands-On Example: Mini-Research “Where to Live”</h2>
+<p class="text-neutral-300 text-sm mb-6">Let's bring together <strong class="text-emerald-400">skills + subagents + critique loop</strong> on a real task — and see context management in practice.</p>
+<div class="space-y-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Clean session</h4><p class="text-neutral-300 text-sm">Run <code class="font-mono text-emerald-400">/clear</code> and then <code class="font-mono text-emerald-400">/context</code> to confirm it's at zero.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Launch subagents</h4><p class="text-neutral-300 text-sm">"Research the best place to live. Three subagents: finance/tax, quality of life, climate and safety. Each returns only the conclusions."</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Consolidate</h4><p class="text-neutral-300 text-sm">When all three come back, ask the lead agent for a comparison table.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">4</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Critique loop</h4><p class="text-neutral-300 text-sm">"Now act as a critical reviewer: point out gaps, biases, and what’s missing. Then deliver the corrected final version."</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center"><span class="text-emerald-400 font-bold">5</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Check the context</h4><p class="text-neutral-300 text-sm">Run <code class="font-mono text-emerald-400">/context</code>. Notice how much the window has grown — and why you'll want to <code class="font-mono text-emerald-400">/clear</code> before the next task.</p></div>
+</div>
+</div>
+</section>
+<!-- EXERCICIOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">✏️ Exercises</h2>
+<div class="space-y-4">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. Context hygiene <span class="text-xs text-neutral-500">(easy)</span></h3><p class="text-neutral-300 text-sm">Run <code class="font-mono text-emerald-400">/context</code>, do a short task, run <code class="font-mono text-emerald-400">/context</code> again and then <code class="font-mono text-emerald-400">/clear</code>. <span class="text-emerald-400">Criterion:</span> you know how much the task consumed, and the window resets to zero after the <code class="font-mono text-emerald-400">/clear</code>.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Use a Ready-Made Skill <span class="text-xs text-neutral-500">(medium)</span></h3><p class="text-neutral-300 text-sm">Install a collection of skills from a trusted source, verify a skill with <code class="font-mono text-emerald-400">/</code> + a name and use it for a real task. <span class="text-emerald-400">Criterion:</span> the skill appears in the list and produces output in its format.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Your First Skill <span class="text-xs text-neutral-500">(medium)</span></h3><p class="text-neutral-300 text-sm">Create a skill for a task you repeat (e.g., standardizing meeting summaries). <span class="text-emerald-400">Criterion:</span> when you request the task, the skill is triggered and the result is consistent.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Local MCP <span class="text-xs text-neutral-500">(medium)</span></h3><p class="text-neutral-300 text-sm">Connect a tool you use via MCP (with the key in the environment). <span class="text-emerald-400">Criterion:</span> you call the tool in Portuguese without writing the endpoint, and the key never appeared in the chat.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Critical work in parallel <span class="text-xs text-neutral-500">(difficult)</span></h3><p class="text-neutral-300 text-sm">Ask for any creation, then launch a reviewer subagent to critique it and return the final version. <span class="text-emerald-400">Criterion:</span> the final version fixes at least one issue identified in the critique.</p></div>
+</div>
+</section>
+<!-- PROMPTS PRONTOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⌨️ Ready-to-use prompts</h2>
+<p class="text-neutral-300 text-sm mb-6">Four instructions for activating the power features. Use them as a starting point and adapt them to your situation. The full library is in the <a class="text-sky-400 hover:text-sky-300" href="../trilha4/modulo-4-1.html">Library → Prompts</a>.</p>
+<div class="space-y-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Check and clear context</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Antes de começarmos, me diga: o que está ocupando minha janela de contexto agora?
+Se passar de metade, sugira o que descartar. (equivalente a /context)</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Create a skill from scratch (canonical)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quero criar uma skill para [TAREFA QUE REPITO].
+Primeiro escreva a DESCRIÇÃO (quando esta skill deve ser usada).
+Depois o passo a passo que você deve seguir toda vez.
+Entregue como um SKILL.md pronto para eu revisar.</pre><p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p><pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">I want to create a skill for [REPEATED TASK].
+First write the DESCRIPTION (when this skill should trigger).
+Then the step-by-step you must follow every time.
+Output it as a ready-to-review SKILL.md.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Launch subagents in parallel</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Do [TASK]. Create three independent subagents:
+- subagent 1: analyzes [angle X]
+- subagent 2: analyzes [angle Y]
+- subagent 3: analyzes [angle Z]
+Each one returns only its conclusions. Then consolidate them into a comparison table.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Audit a third-party skill before installing it</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Vou instalar esta skill de terceiros. Leia o SKILL.md, me diga em bullets
+o que ela executa, que acessos ela pede e qualquer sinal de risco.
+Só recomende usar se for seguro.</pre></div>
+</div>
+</section>
+<!-- ERROS COMUNS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⚠️ Common errors</h2>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Use the same window all day.</strong> Long conversation = <em>context rot</em> = quality drop. One task per window; <code class="font-mono">/clear</code> when finished.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Install a skill from a questionable source.</strong> A skill is code that runs on your machine. Read the <code class="font-mono">SKILL.md</code> and install only from trusted sources.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Pasting API keys into chat.</strong> Keys belong in local environment variables, never in the conversation text or version-controlled files.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Skip the review.</strong> Accepting the first draft without a critique loop lets errors slip through. Creating and reviewing are different steps.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Parallelize dependent tasks.</strong> Subagents shine at independent work. If part B depends on A, running them in parallel only creates rework.</span></li>
+</ul>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-emerald-900/40 via-dark-800 to-dark-800 rounded-xl border border-emerald-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Module summary</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>Slash commands and context</strong><span class="text-neutral-400"> — <code class="font-mono">/context</code> measures, <code class="font-mono">/clear</code> resets; one task per window beats the <em>context rot</em>.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>Skills</strong><span class="text-neutral-400"> — the recipe book: they standardize the output; the description is the trigger. You can use ready-made ones or create your own.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>MCP</strong><span class="text-neutral-400"> — the universal plug: connects to external tools without integration code, with the key in the environment.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-emerald-400 mt-1">✓</span><div><strong>Subagents and critique loop</strong><span class="text-neutral-400"> — delegate in parallel and separate the author from the critic to multiply speed and quality.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-emerald-400 mb-3">Completion checklist</h3>
+<ul class="space-y-2 text-sm text-neutral-300">
+<li>☐ I know how to use <code class="font-mono">/context</code> e <code class="font-mono">/clear</code> and understand what <em>context rot</em>.</li>
+<li>☐ I installed and used a ready-made skill from a trusted source.</li>
+<li>☐ I created at least one skill from scratch (name + description + step-by-step instructions).</li>
+<li>☐ I connected an external tool via MCP, with the key in the environment.</li>
+<li>☐ I launched subagents in parallel and consolidated the results.</li>
+<li>☐ I ran a critique loop (create → review → final version).</li>
+<li>☐ I can choose the right model for simple vs. complex tasks.</li>
+</ul>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-emerald-400 mb-2">🎉 End of Track 1!</h3>
+<p class="text-neutral-300">You've completed the Fundamentals. <strong>Next track: Build</strong> — start with module 2.1, from building a website from scratch to deployment.</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Back to the track</a>
+<a class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors" href="../trilha2/modulo-2-1.html">Next track: Build →</a>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FOOTER -->
+<footer class="border-t border-dark-600 py-8 mt-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+<p>Claude Code in Practice — <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p>
+</div>
+</footer>
+<!-- SCRIPTS: nucleo v1 -->
+<script>
+    function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp) e.classList.remove('active'); });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync();
+      tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+    function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }
+    function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  </script>
+<!-- Camada de aprendizagem -->
+<script>
+    window.addEventListener('DOMContentLoaded', function(){
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-1-4#q1', {
+          answer: 1,
+          explain: {
+            0: 'É justamente o erro nº 1 — a mesma janela o dia inteiro acumula context rot e derruba a qualidade.',
+            1: 'Isso! Uma tarefa por janela e /clear ao terminar mantém o contexto fresco e o resultado consistente.',
+            2: 'Não é sobre o modelo mais pesado — tarefas simples rodam bem em modelos leves; o que importa é gerenciar a janela.'
+          }
+        });
+      }
+    });
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>

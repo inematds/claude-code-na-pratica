@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="inema-course" content="claude-na-pratica">
-  <title>2.3 Construa qualquer coisa: a stack universal | Claude Code na Prática</title>
 
-  <!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
-  <script>
+<html class="dark" lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="claude-na-pratica" name="inema-course"/>
+<title>2.3 Construa qualquer coisa: a stack universal | Claude Code na Prática</title>
+<!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
+<script>
   (function () {
     try {
       var html = document.documentElement;
@@ -37,16 +37,14 @@
     } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
   })();
   </script>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
     tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/learn.css">
-
-  <!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
-  <script type="application/json" data-inema-manifest>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../assets/learn.css" rel="stylesheet"/>
+<!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
+<script data-inema-manifest="" type="application/json">
   {
     "course": "claude-na-pratica",
     "tracks": [
@@ -76,8 +74,7 @@
     ]
   }
   </script>
-
-  <style>
+<style>
     body { font-family: 'Inter', sans-serif; }
     .dark body { background-color: #111827; }
     .topic-explanation { display: none; }
@@ -128,498 +125,477 @@
       .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s}
     }
   </style>
-</head>
-<body class="bg-dark-900 text-neutral-100 min-h-screen">
-  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
-
-  <!-- NAV -->
-  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-14">
-        <div class="flex items-center space-x-4">
-          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
-            <span class="text-2xl">⚡</span>
-            <span class="font-bold text-lg hidden sm:inline">Claude Code na Prática</span>
-          </a>
-          <span class="text-neutral-600">|</span>
-          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
-        </div>
-        <div class="flex items-center space-x-1 sm:space-x-2">
-          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
-          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
-          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar &amp; Lucrar</span></a>
-          <a href="../trilha4/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
-          <button type="button" data-inema-journey-open class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" title="Minha jornada">
-            <span aria-hidden="true">◷</span><span class="hidden lg:inline">Jornada</span>
-            <span class="inema-journey-badge hidden" aria-hidden="true"></span>
-          </button>
-          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" title="Tema claro/escuro" aria-label="Alternar tema claro/escuro">
-            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- BREADCRUMB -->
-  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
-    <div class="flex items-center space-x-2 text-sm text-neutral-400">
-      <a href="../../index.html" class="hover:text-blue-400">Início</a>
-      <span>/</span>
-      <a href="index.html" class="hover:text-blue-400">Construir</a>
-      <span>/</span>
-      <span class="text-blue-400">Módulo 2.3</span>
-    </div>
-  </nav>
-
-  <!-- HEADER -->
-  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MÓDULO 2.3</span>
-      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🧩 Construa qualquer coisa: a stack universal</h1>
-      <p class="text-lg text-neutral-400 max-w-3xl">Se você imagina, você constrói. Aqui você aprende a pensar por primeiros princípios, reconhecer a stack universal de qualquer projeto com IA e montar um fluxo real de captação de leads — com a mentalidade de alta agência por trás.</p>
-      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">6</div><div class="text-xs text-neutral-400">Tópicos</div></div>
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">~45</div><div class="text-xs text-neutral-400">Minutos</div></div>
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Iniciante</div><div class="text-xs text-neutral-400">Nível</div></div>
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Conceito+Prática</div><div class="text-xs text-neutral-400">Tipo</div></div>
-      </div>
-      <!-- Medidor de progresso do modulo -->
-      <div class="mt-6 max-w-2xl">
-        <div data-inema-meter="modulo:2-3" class="inema-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 2.3">
-          <span data-inema-meter-pct class="inema-meter-pct">0%</span> <span data-inema-meter-frac class="inema-meter-count text-neutral-400 text-sm">0 de 6</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- CONTEUDO + TOC -->
-  <main id="conteudo" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
-
-    <!-- TOC sticky -->
-    <nav data-inema-toc aria-label="Índice da página" class="hidden lg:block sticky top-24 self-start">
-      <p class="text-sm text-neutral-400 mb-3">Seção <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
-      <ul class="space-y-1 text-sm">
-        <li><a href="#topico-1" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">1. Primeiros princípios</a></li>
-        <li><a href="#topico-2" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">2. Protocolo de 5 passos</a></li>
-        <li><a href="#topico-3" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">3. A stack universal</a></li>
-        <li><a href="#topico-4" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">4. ICP + raspar leads</a></li>
-        <li><a href="#topico-5" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">5. Validar + empacotar</a></li>
-        <li><a href="#topico-6" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">6. Alta agência + meta-prompt</a></li>
-      </ul>
-    </nav>
-
-    <div class="inema-prose">
-
-      <!-- SVG: a stack universal (equação A+B=C / fan-out) -->
-      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
-        <svg viewBox="0 0 1000 240" class="w-full h-auto" role="img" aria-label="As cinco peças da stack universal — pensar, guardar, criar visuais, raspar e conectar — somadas resultam em qualquer projeto construído">
-          <defs>
-            <linearGradient id="m23-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/></linearGradient>
-            <filter id="m23-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <pattern id="m23-grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#3b82f6" opacity="0.12"/></pattern>
-            <marker id="m23-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"/></marker>
-            <marker id="m23-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#22d3ee"/></marker>
-          </defs>
-          <rect x="0" y="0" width="1000" height="240" fill="url(#m23-grid)"/>
-          <!-- 5 peças empilhadas (lado A da equação) -->
-          <g font-family="Inter,sans-serif" font-size="12.5" font-weight="600">
-            <g class="wf-a"><rect x="30" y="20" width="200" height="34" rx="9" fill="#0e1622" stroke="#60a5fa" stroke-width="2"/><text x="130" y="42" text-anchor="middle" fill="#bfdbfe">🧠 Pensar (IA)</text></g>
-            <g class="wf-a"><rect x="30" y="62" width="200" height="34" rx="9" fill="#0e1622" stroke="#60a5fa" stroke-width="2"/><text x="130" y="84" text-anchor="middle" fill="#bfdbfe">🗄️ Guardar (banco)</text></g>
-            <g class="wf-a"><rect x="30" y="104" width="200" height="34" rx="9" fill="#0e1622" stroke="#60a5fa" stroke-width="2"/><text x="130" y="126" text-anchor="middle" fill="#bfdbfe">🎨 Criar visuais</text></g>
-            <g class="wf-a"><rect x="30" y="146" width="200" height="34" rx="9" fill="#0e1622" stroke="#60a5fa" stroke-width="2"/><text x="130" y="168" text-anchor="middle" fill="#bfdbfe">🕷️ Raspar dados</text></g>
-            <g class="wf-a"><rect x="30" y="188" width="200" height="34" rx="9" fill="#0e1622" stroke="#60a5fa" stroke-width="2"/><text x="130" y="210" text-anchor="middle" fill="#bfdbfe">🔌 Conectar (automação)</text></g>
-          </g>
-          <!-- sinal de + ao lado -->
-          <text x="262" y="128" text-anchor="middle" fill="#22d3ee" font-family="Inter,sans-serif" font-weight="800" font-size="34">+</text>
-          <!-- fan-in para o hub central -->
-          <g fill="none" stroke="#3b82f6" stroke-width="1.8" opacity="0.5">
-            <path d="M230,37 C360,37 380,121 470,121" marker-end="url(#m23-ahc)"/>
-            <path d="M230,79 C360,79 380,121 470,121" marker-end="url(#m23-ahc)"/>
-            <path d="M230,121 L470,121" marker-end="url(#m23-ahc)"/>
-            <path d="M230,163 C360,163 380,121 470,121" marker-end="url(#m23-ahc)"/>
-            <path d="M230,205 C360,205 380,121 470,121" marker-end="url(#m23-ahc)"/>
-          </g>
-          <!-- hub Claude Code -->
-          <g filter="url(#m23-glow)"><rect x="470" y="90" width="190" height="62" rx="13" fill="#0e1b26" stroke="url(#m23-grad)" stroke-width="2.5"/></g>
-          <text x="565" y="116" text-anchor="middle" fill="#dbeafe" font-family="Inter,sans-serif" font-weight="600" font-size="15">Claude Code</text>
-          <text x="565" y="136" text-anchor="middle" fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11.5">orquestra as 5 peças</text>
-          <!-- sinal de = -->
-          <text x="700" y="130" text-anchor="middle" fill="#22d3ee" font-family="Inter,sans-serif" font-weight="800" font-size="30">=</text>
-          <!-- resultado: qualquer coisa -->
-          <g filter="url(#m23-glow)"><rect x="740" y="78" width="220" height="86" rx="16" fill="#0e2230" stroke="#22d3ee" stroke-width="2.5"/></g>
-          <text x="850" y="116" text-anchor="middle" fill="#a5f3fc" font-family="Inter,sans-serif" font-weight="700" font-size="20">qualquer coisa</text>
-          <text x="850" y="140" text-anchor="middle" fill="#7dd3e8" font-family="Inter,sans-serif" font-size="12">site · app · fluxo · dashboard</text>
-          <!-- arco "imaginou → construiu" -->
-          <path d="M130,16 C420,-22 700,-22 850,72" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="5 6" opacity="0.6" marker-end="url(#m23-ah)"/>
-          <text x="500" y="14" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-size="12" font-weight="600">imaginou → construiu</text>
-          <!-- rodapé protocolo -->
-          <text x="850" y="200" text-anchor="middle" fill="#6b7280" font-family="Inter,sans-serif" font-size="11">Questionar · Deletar · Simplificar · Acelerar · Automatizar</text>
-        </svg>
-      </div>
-
-      <h2 class="text-2xl font-bold mb-6">Conteúdo detalhado</h2>
-
-      <!-- TOPICO 1 -->
-      <section id="topico-1" data-inema-topic="modulo-2-3#topico-1" data-inema-module="2-3" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
-            <h2 class="text-2xl font-bold">🧱 Primeiros princípios: tira as suposições, conta os átomos</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-3-t1-p1" class="text-neutral-300 mb-6 leading-relaxed">Todo problema é uma <strong class="text-blue-400">pilha de suposições em cima de átomos</strong>. Pensar por primeiros princípios é tirar as suposições, contar os átomos e reconstruir. A maioria das pessoas raciocina por analogia — copia o que os outros fazem com pequenas variações. É por isso que quase ninguém dá grandes saltos.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Uma forma de raciocínio que recusa o "porque sim". Você desmonta o problema até as verdades que pode verificar sozinho e reconstrói a partir delas.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É como você sai do "copiar com leve ajuste" e chega a soluções que pareciam impossíveis. O único limite real é a física, não a convenção.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Suposição vs. átomo · recomendação disfarçada de lei · "qual é a restrição real aqui?"</p></div>
-        </div>
-        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🔋</span> Analogia: a bateria de 600 dólares</h3>
-          <p class="text-neutral-300 text-sm">Em 2012 dizia-se que uma bateria custava 600 dólares por kWh e que isso era um "piso intransponível". Alguém decompôs a bateria nos metais que a formam, conferiu o preço de cada um na bolsa e chegou a ~80 dólares por kWh. O "piso" era convenção; a matéria-prima contava outra história.</p>
-        </div>
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Pergunta-guia</h3>
-          <p class="text-neutral-300 text-sm">Tudo que parece fixo — preço, prazo, número de pessoas, "o jeito certo" — costuma ser <em>recomendação disfarçada de lei</em>. O que de fato sustenta (load-bearing) é a física: energia, custo do átomo, tempo. Em qualquer projeto, pergunte: <strong class="text-primary">qual é a restrição real aqui?</strong></p>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- TOPICO 2 -->
-      <section id="topico-2" data-inema-topic="modulo-2-3#topico-2" data-inema-module="2-3" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
-            <h2 class="text-2xl font-bold">🗑️ O protocolo de 5 passos (a ordem importa)</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-3-t2-p1" class="text-neutral-300 mb-6 leading-relaxed">Antes de construir, enxugue. O erro nº 1 em automações é <strong class="text-blue-400">automatizar algo que nunca deveria ter existido</strong>. Pular um passo faz você otimizar o que não devia existir — por isso a ordem é sagrada.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Um processo de engenharia em cinco passos para enxugar qualquer sistema ou ideia antes de construir.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Se você otimiza antes de deletar, gasta esforço polindo lixo. Deletar primeiro economiza tudo o que vem depois.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Requisito com dono · deletar ~10% de volta · otimizar só depois · enunciar até ficar entediante.</p></div>
-        </div>
-        <div class="space-y-4 mb-6">
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Questione cada requisito</h4><p class="text-neutral-300 text-sm">Cada exigência tem que ter o <strong class="text-blue-400">nome de uma pessoa</strong> por trás, nunca "o jurídico pediu". Requisito sem dono é suspeito.</p></div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Delete a parte ou o passo</h4><p class="text-neutral-300 text-sm">Se depois você não precisar devolver pelo menos ~10% do que tirou, é porque não deletou o suficiente.</p></div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Simplifique e otimize</h4><p class="text-neutral-300 text-sm">Só <em>depois</em> de deletar. Otimizar antes é o clássico erro.</p></div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">4</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Acelere o ciclo</h4><p class="text-neutral-300 text-sm">Agora que o sistema está enxuto, deixe cada volta mais rápida.</p></div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">5</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Automatize</h4><p class="text-neutral-300 text-sm">Por último, para não tocar mais naquilo.</p></div>
-          </div>
-        </div>
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🧠</span> Passo a passo mental</h3>
-          <p class="text-neutral-300 text-sm">Quebre tudo em partes → o que é dado? o que é substantivo? o que é restrição? → reduza até a pergunta essencial ficar nua → <strong class="text-primary">enuncie o problema até ele ficar entediante</strong> → só então escreva código.</p>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- TOPICO 3 -->
-      <section id="topico-3" data-inema-topic="modulo-2-3#topico-3" data-inema-module="2-3" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
-            <h2 class="text-2xl font-bold">🧩 A stack universal: pensar + guardar + criar + raspar + conectar</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-3-t3-p1" class="text-neutral-300 mb-6 leading-relaxed">Iniciantes acham que precisam de dezenas de ferramentas confusas. Não precisam. Quase tudo que se constrói com IA se reduz a <strong class="text-blue-400">cinco funções</strong>. Saber disso tira a paralisia.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">O conjunto mínimo de ferramentas para construir praticamente qualquer coisa. Surpreendentemente curto.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Você adiciona ferramentas só quando uma das cinco funções pedir — nunca por moda.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Pensar · guardar · criar visuais · raspar · conectar.</p></div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-2xl mb-2">🧠</div><h4 class="font-semibold text-blue-400 mb-1">Pensar</h4><p class="text-neutral-300 text-xs">Uma IA que raciocina e executa (Claude Code).</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-2xl mb-2">🗄️</div><h4 class="font-semibold text-blue-400 mb-1">Guardar</h4><p class="text-neutral-300 text-xs">Um lugar para os dados (um banco, com API pronta).</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-2xl mb-2">🎨</div><h4 class="font-semibold text-blue-400 mb-1">Criar visuais</h4><p class="text-neutral-300 text-xs">Geração de imagens, assets e telas bonitas.</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-2xl mb-2">🕷️</div><h4 class="font-semibold text-blue-400 mb-1">Raspar dados</h4><p class="text-neutral-300 text-xs">Buscar informação pública lá fora (raspadores prontos).</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-2xl mb-2">🔌</div><h4 class="font-semibold text-blue-400 mb-1">Conectar</h4><p class="text-neutral-300 text-xs">Automações que ligam as peças (a própria IA, ou controle visual fino).</p></div>
-          <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5"><div class="text-2xl mb-2">✨</div><h4 class="font-semibold text-blue-400 mb-1">Só isso</h4><p class="text-neutral-300 text-xs">Você quase nunca precisa de mais. Combine as cinco e construa.</p></div>
-        </div>
-        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🍳</span> Analogia: a stack como uma cozinha</h3>
-          <p class="text-neutral-300 text-sm">Construir é montar uma cozinha completa: o chef que <strong>pensa</strong> (a IA), a despensa pra <strong>guardar</strong> ingredientes (o banco), o prato pra <strong>emplatar</strong> bonito (os visuais), a feira pra <strong>buscar</strong> ingredientes frescos lá fora (o raspador) e a brigada que faz tudo andar sozinho (as automações). Faltou uma estação, o prato não sai.</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
-            <h4 class="font-bold text-blue-400 mb-4">🛣️ Piloto automático (IA)</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>O Claude Code assume a maior parte do caminho.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Ideal para a maior parte do percurso, sem você dirigir.</span></li>
-            </ul>
-          </div>
-          <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
-            <h4 class="font-bold text-blue-400 mb-4">🎛️ Pegar o volante (automação visual)</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Ferramentas visuais dão controle fino em trechos específicos.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>É bom saber dirigir o carro nos dois modos.</span></li>
-            </ul>
-          </div>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- TOPICO 4 -->
-      <section id="topico-4" data-inema-topic="modulo-2-3#topico-4" data-inema-module="2-3" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
-            <h2 class="text-2xl font-bold">🎯 Quem você procura + raspar com a loja de raspadores</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-3-t4-p1" class="text-neutral-300 mb-6 leading-relaxed">Sem público definido, nenhum raspador serve para nada. Primeiro defina o <strong class="text-blue-400">Perfil de Cliente Ideal (ICP)</strong> — quem exatamente você quer alcançar — e só então saia coletando dados.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Definir nicho + lugar + sinais (ex.: "telhadistas em São Paulo com presença em redes") antes de abrir qualquer ferramenta, e então raspar dados públicos.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Captação de leads é jogo de volume: pense em centenas, não em dezenas. E você é pago pelo valor que cria e por quanto desse valor consegue capturar/replicar.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">ICP · jogo de volume · chave de API · "actor" (cada raspador) · multicanal.</p></div>
-        </div>
-        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🕷️</span> Passo a passo: raspar leads</h3>
-          <ol class="space-y-2 text-neutral-300 text-sm list-decimal list-inside">
-            <li>Defina o ICP: nicho, cidade/região e sinais. Anote antes de abrir qualquer ferramenta.</li>
-            <li>Crie conta numa loja de raspadores (ex.: <strong>Apify</strong>, em apify.com) e faça login.</li>
-            <li>Vá em <em>Settings → API &amp; Integrations</em> e copie sua chave de API.</li>
-            <li>Conecte a loja ao Claude Code (via conector/MCP ou colando o token na configuração).</li>
-            <li>Peça em linguagem natural o que você quer. A IA encontra o melhor "actor", roda e devolve os dados.</li>
-          </ol>
-        </div>
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">⚖️</span> Custo vs. tempo</h3>
-          <p class="text-neutral-300 text-sm">Existem caminhos gratuitos e pagos. Lembre que <strong class="text-primary">seu tempo também tem custo</strong>. Se você tem mais capital que tempo, plataformas que já entregam contatos validados (como o <strong>Apollo</strong>, apollo.io) poupam etapas. Se tem mais tempo que capital, monte o fluxo peça por peça com um raspador + um validador.</p>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- TOPICO 5 -->
-      <section id="topico-5" data-inema-topic="modulo-2-3#topico-5" data-inema-module="2-3" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
-            <h2 class="text-2xl font-bold">✅ Validar, enriquecer e empacotar o resultado</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-3-t5-p1" class="text-neutral-300 mb-6 leading-relaxed">Lista grande não vale nada se os e-mails quicam — e dado num terminal não é resultado. Você <strong class="text-blue-400">valida</strong> os contatos e depois <strong class="text-blue-400">empacota</strong> num formato que usa de verdade: a tela onde você abre e já liga para o contato.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Validar e-mails (existem? estão ativos?), enriquecer contatos e transformar os dados crus num HTML/dashboard utilizável.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">E-mail inválido derruba a reputação do seu envio e queima a lista. Validar é barato perto do prejuízo.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Validação em lote · "resultado desejado" no prompt · atualização agendada · deploy + repositório.</p></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
-            <h4 class="font-bold text-blue-400 mb-4">🔎 Validar e enriquecer</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Com uma plataforma de prospecção (ex.: <strong>Apollo</strong>, apollo.io) já vem embutido — você pula esta etapa.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Com orçamento enxuto, use um validador em lote (ex.: <strong>Anymail Finder</strong>, anymailfinder.com): busca, valida e encontra e-mails que faltam, e tem API.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Entregue a chave ao Claude Code e peça para validar a lista raspada — sem subir arquivo manualmente.</span></li>
-            </ul>
-          </div>
-          <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
-            <h4 class="font-bold text-blue-400 mb-4">📊 Empacotar em algo utilizável</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Peça uma página HTML/dashboard com os campos que importam (nome, e-mail, redes, um fato interessante).</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Abra localmente para revisar.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Se for recorrente, hospede e agende a atualização (ex.: a cada 7 dias) — monta uma vez, esquece.</span></li>
-            </ul>
-          </div>
-        </div>
-        <div class="bg-dark-800 border border-dark-600 rounded-xl p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🍳</span> Exemplo prático guiado</h3>
-          <p class="text-neutral-300 text-sm mb-3"><strong>Meta:</strong> uma lista utilizável de 10 telhadistas em São Paulo, com nome, e-mail, redes e um fato interessante — para iniciar conversas.</p>
-          <ol class="space-y-1.5 text-neutral-300 text-sm list-decimal list-inside">
-            <li>Defina o ICP: "telhadistas, São Paulo, com presença online".</li>
-            <li>Conecte a loja de raspadores ao Claude Code (chave de API copiada).</li>
-            <li>Peça a raspagem em português. A IA escolhe o melhor "actor" e traz os dados.</li>
-            <li>Valide os e-mails com a chave do validador e receba a versão limpa.</li>
-            <li>Peça uma página HTML bonita com os 10 contatos e abra localmente.</li>
-            <li>Avalie a economia: qual o custo por lead? Quantos converto a partir disso?</li>
-          </ol>
-          <p class="text-neutral-400 text-xs mt-3">Repare: você usou quatro das cinco peças — pensar, raspar, validar e criar visual. Faltou só "guardar", que entra quando quiser persistir a lista num banco.</p>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- TOPICO 6 -->
-      <section id="topico-6" data-inema-topic="modulo-2-3#topico-6" data-inema-module="2-3" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
-            <h2 class="text-2xl font-bold">🧠 Alta agência + o meta-prompt de clarificação</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-3-t6-p1" class="text-neutral-300 mb-6 leading-relaxed"><strong class="text-blue-400">Alta agência</strong> é a crença de que você consegue resolver, contornar e fazer acontecer, mesmo quando o caminho óbvio está fechado. E quando você não souber o caminho, o melhor movimento é fazer a IA te entrevistar primeiro.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">A postura de quem resolve sem esperar permissão, combinada com um prompt que destrava qualquer problema mal definido.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">~80% das vezes o problema não é técnico — é falta de clareza sobre qual é o gargalo. O meta-prompt resolve isso fazendo a IA esclarecer suas intenções antes de propor solução.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Restrição como recomendação · agir sem permissão · declarar objetivo + resultado desejado · pensar a solução em conjunto.</p></div>
-        </div>
-        <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">📞</span> O teste mental da alta agência</h3>
-          <p class="text-neutral-300 text-sm">Se você estivesse preso e tivesse uma única ligação para alguém que com certeza atenderia e te ajudaria, quem você chamaria? Essa pessoa é o seu modelo de alta agência. A meta é virar essa pessoa: tratar restrições como recomendações até prova em contrário.</p>
-        </div>
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💬</span> O movimento que destrava tudo</h3>
-          <p class="text-neutral-300 text-sm">Sempre que travar, mande o meta-prompt <em>"me faça perguntas pra esclarecer"</em> (está pronto na seção de prompts abaixo) e responda às perguntas que a IA fizer. Muitas vezes a clareza que surge das perguntas já é metade da solução.</p>
-        </div>
-        <details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
-          <summary class="cursor-pointer font-semibold text-blue-400">Indo mais fundo (opcional): por que perguntas vêm antes de respostas</summary>
-          <p class="text-neutral-300 text-sm mt-3">Pedir solução para um problema mal definido força a IA a adivinhar — e ela vai chutar. Quando você inverte e pede que ela te entreviste, cada pergunta expõe uma suposição escondida. Ao final, o gargalo real costuma caber em uma frase. Aí, sim, a solução é quase trivial.</p>
-        </details>
-        <!-- Checagem leve opcional -->
-        <div data-inema-check="modulo-2-3#q1" class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6">
-          <p class="font-medium mb-4">Auto-checagem (opcional): na ordem do protocolo de 5 passos, o que vem ANTES de simplificar e otimizar?</p>
-          <div class="inema-check-options space-y-2">
-            <button type="button" data-inema-check-option="0" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Automatizar o passo o quanto antes.</button>
-            <button type="button" data-inema-check-option="1" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Questionar cada requisito e deletar o que não tem dono.</button>
-            <button type="button" data-inema-check-option="2" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Acelerar o ciclo para ganhar velocidade.</button>
-          </div>
-          <div data-inema-check-feedback class="mt-4 text-sm" role="status" aria-live="polite"></div>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- EXERCICIOS -->
-      <section class="mb-16">
-        <h2 class="text-2xl font-bold mb-6">✏️ Exercícios</h2>
-        <div class="space-y-4">
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. Desmonte com primeiros princípios <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Pegue uma "regra fixa" do seu trabalho ("isso leva 3 dias", "precisa de tal aprovação"). Liste as suposições e separe física de convenção. <span class="text-blue-400">Critério:</span> identificou ao menos uma "lei" que era só recomendação e descreveu uma alternativa viável.</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Mapeie sua ideia na stack universal <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Escolha um projeto seu e preencha as cinco funções: pensar / guardar / criar / raspar / conectar. <span class="text-blue-400">Critério:</span> as cinco endereçadas, com justificativa para cada peça incluída ou dispensada.</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Rode o fluxo de leads <span class="text-xs text-neutral-500">(prático)</span></h3><p class="text-neutral-300 text-sm">Conecte uma loja de raspadores ao Claude Code e raspe 10 leads reais do seu ICP, em HTML. <span class="text-blue-400">Critério:</span> arquivo HTML aberto no navegador com 10 contatos contendo nome e um canal de contato.</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Aplique o protocolo de 5 passos <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Pegue uma automação que você tem (ou planeja) e passe pelos 5 passos na ordem. <span class="text-blue-400">Critério:</span> ao menos um passo/requisito deletado antes de qualquer otimização, com justificativa.</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Use o meta-prompt num problema travado <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Escolha algo que você não sabe resolver e mande o meta-prompt de clarificação. Responda às perguntas. <span class="text-blue-400">Critério:</span> você enuncia o gargalo real em uma frase clara depois da troca.</p></div>
-        </div>
-      </section>
-
-      <!-- PROMPTS PRONTOS -->
-      <section class="mb-16">
-        <h2 class="text-2xl font-bold mb-6">⌨️ Prompts prontos</h2>
-        <p class="text-neutral-300 text-sm mb-6">Comece sempre pelo <strong class="text-blue-400">meta-prompt de clarificação</strong> — é o mais importante. O banco completo está na <a href="../trilha4/modulo-4-1.html" class="text-sky-400 hover:text-sky-300">Biblioteca → Prompts</a>.</p>
-        <div class="space-y-5">
-          <div class="bg-dark-800 rounded-xl border border-blue-500/30 p-5"><p class="text-sm text-blue-400 font-semibold mb-2">⭐ Meta-prompt de clarificação (o mais importante)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Este é o resultado que eu quero: [descreva o resultado desejado].
+<link href="https://inematds.github.io/claude-code-na-pratica/curso/trilha2/modulo-2-3.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/en/curso/trilha2/modulo-2-3.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/es/curso/trilha2/modulo-2-3.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="modulo-2-3.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">PT</a><a href="../../en/curso/trilha2/modulo-2-3.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="../../es/curso/trilha2/modulo-2-3.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">⚡</span>
+<span class="font-bold text-lg hidden sm:inline">Claude Code na Prática</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10" href="index.html"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar &amp; Lucrar</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+<button class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" data-inema-journey-open="" title="Minha jornada" type="button">
+<span aria-hidden="true">◷</span><span class="hidden lg:inline">Jornada</span>
+<span aria-hidden="true" class="inema-journey-badge hidden"></span>
+</button>
+<button aria-label="Alternar tema claro/escuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Tema claro/escuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Trilha de navegação" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-blue-400" href="../../index.html">Início</a>
+<span>/</span>
+<a class="hover:text-blue-400" href="index.html">Construir</a>
+<span>/</span>
+<span class="text-blue-400">Módulo 2.3</span>
+</div>
+</nav>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MÓDULO 2.3</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🧩 Construa qualquer coisa: a stack universal</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">Se você imagina, você constrói. Aqui você aprende a pensar por primeiros princípios, reconhecer a stack universal de qualquer projeto com IA e montar um fluxo real de captação de leads — com a mentalidade de alta agência por trás.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">6</div><div class="text-xs text-neutral-400">Tópicos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">~45</div><div class="text-xs text-neutral-400">Minutos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Iniciante</div><div class="text-xs text-neutral-400">Nível</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Conceito+Prática</div><div class="text-xs text-neutral-400">Tipo</div></div>
+</div>
+<!-- Medidor de progresso do modulo -->
+<div class="mt-6 max-w-2xl">
+<div aria-label="Progresso do módulo 2.3" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:2-3" role="progressbar">
+<span class="inema-meter-pct" data-inema-meter-pct="">0%</span> <span class="inema-meter-count text-neutral-400 text-sm" data-inema-meter-frac="">0 de 6</span>
+</div>
+</div>
+</div>
+</header>
+<!-- CONTEUDO + TOC -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10" id="conteudo">
+<!-- TOC sticky -->
+<nav aria-label="Índice da página" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Seção <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-1">1. Primeiros princípios</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-2">2. Protocolo de 5 passos</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-3">3. A stack universal</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-4">4. ICP + raspar leads</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-5">5. Validar + empacotar</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-6">6. Alta agência + meta-prompt</a></li>
+</ul>
+</nav>
+<div class="inema-prose">
+<!-- SVG: a stack universal (equação A+B=C / fan-out) -->
+<div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
+<svg aria-label="As cinco peças da stack universal — pensar, guardar, criar visuais, raspar e conectar — somadas resultam em qualquer projeto construído" class="w-full h-auto" role="img" viewbox="0 0 1000 240">
+<defs>
+<lineargradient id="m23-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#60a5fa"></stop><stop offset="1" stop-color="#3b82f6"></stop></lineargradient>
+<filter height="180%" id="m23-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m23-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#3b82f6" opacity="0.12" r="1.3"></circle></pattern>
+<marker id="m23-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"></path></marker>
+<marker id="m23-ahc" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#22d3ee"></path></marker>
+</defs>
+<rect fill="url(#m23-grid)" height="240" width="1000" x="0" y="0"></rect>
+<!-- 5 peças empilhadas (lado A da equação) -->
+<g font-family="Inter,sans-serif" font-size="12.5" font-weight="600">
+<g class="wf-a"><rect fill="#0e1622" height="34" rx="9" stroke="#60a5fa" stroke-width="2" width="200" x="30" y="20"></rect><text fill="#bfdbfe" text-anchor="middle" x="130" y="42">🧠 Pensar (IA)</text></g>
+<g class="wf-a"><rect fill="#0e1622" height="34" rx="9" stroke="#60a5fa" stroke-width="2" width="200" x="30" y="62"></rect><text fill="#bfdbfe" text-anchor="middle" x="130" y="84">🗄️ Guardar (banco)</text></g>
+<g class="wf-a"><rect fill="#0e1622" height="34" rx="9" stroke="#60a5fa" stroke-width="2" width="200" x="30" y="104"></rect><text fill="#bfdbfe" text-anchor="middle" x="130" y="126">🎨 Criar visuais</text></g>
+<g class="wf-a"><rect fill="#0e1622" height="34" rx="9" stroke="#60a5fa" stroke-width="2" width="200" x="30" y="146"></rect><text fill="#bfdbfe" text-anchor="middle" x="130" y="168">🕷️ Raspar dados</text></g>
+<g class="wf-a"><rect fill="#0e1622" height="34" rx="9" stroke="#60a5fa" stroke-width="2" width="200" x="30" y="188"></rect><text fill="#bfdbfe" text-anchor="middle" x="130" y="210">🔌 Conectar (automação)</text></g>
+</g>
+<!-- sinal de + ao lado -->
+<text fill="#22d3ee" font-family="Inter,sans-serif" font-size="34" font-weight="800" text-anchor="middle" x="262" y="128">+</text>
+<!-- fan-in para o hub central -->
+<g fill="none" opacity="0.5" stroke="#3b82f6" stroke-width="1.8">
+<path d="M230,37 C360,37 380,121 470,121" marker-end="url(#m23-ahc)"></path>
+<path d="M230,79 C360,79 380,121 470,121" marker-end="url(#m23-ahc)"></path>
+<path d="M230,121 L470,121" marker-end="url(#m23-ahc)"></path>
+<path d="M230,163 C360,163 380,121 470,121" marker-end="url(#m23-ahc)"></path>
+<path d="M230,205 C360,205 380,121 470,121" marker-end="url(#m23-ahc)"></path>
+</g>
+<!-- hub Claude Code -->
+<g filter="url(#m23-glow)"><rect fill="#0e1b26" height="62" rx="13" stroke="url(#m23-grad)" stroke-width="2.5" width="190" x="470" y="90"></rect></g>
+<text fill="#dbeafe" font-family="Inter,sans-serif" font-size="15" font-weight="600" text-anchor="middle" x="565" y="116">Claude Code</text>
+<text fill="#9ad6ff" font-family="Inter,sans-serif" font-size="11.5" text-anchor="middle" x="565" y="136">orquestra as 5 peças</text>
+<!-- sinal de = -->
+<text fill="#22d3ee" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle" x="700" y="130">=</text>
+<!-- resultado: qualquer coisa -->
+<g filter="url(#m23-glow)"><rect fill="#0e2230" height="86" rx="16" stroke="#22d3ee" stroke-width="2.5" width="220" x="740" y="78"></rect></g>
+<text fill="#a5f3fc" font-family="Inter,sans-serif" font-size="20" font-weight="700" text-anchor="middle" x="850" y="116">qualquer coisa</text>
+<text fill="#7dd3e8" font-family="Inter,sans-serif" font-size="12" text-anchor="middle" x="850" y="140">site · app · fluxo · dashboard</text>
+<!-- arco "imaginou → construiu" -->
+<path d="M130,16 C420,-22 700,-22 850,72" fill="none" marker-end="url(#m23-ah)" opacity="0.6" stroke="#60a5fa" stroke-dasharray="5 6" stroke-width="1.5"></path>
+<text fill="#60a5fa" font-family="Inter,sans-serif" font-size="12" font-weight="600" text-anchor="middle" x="500" y="14">imaginou → construiu</text>
+<!-- rodapé protocolo -->
+<text fill="#6b7280" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="850" y="200">Questionar · Deletar · Simplificar · Acelerar · Automatizar</text>
+</svg>
+</div>
+<h2 class="text-2xl font-bold mb-6">Conteúdo detalhado</h2>
+<!-- TOPICO 1 -->
+<section class="mb-16" data-inema-module="2-3" data-inema-topic="modulo-2-3#topico-1" data-inema-track="2" id="topico-1">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">🧱 Primeiros princípios: tira as suposições, conta os átomos</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t1-p1">Todo problema é uma <strong class="text-blue-400">pilha de suposições em cima de átomos</strong>. Pensar por primeiros princípios é tirar as suposições, contar os átomos e reconstruir. A maioria das pessoas raciocina por analogia — copia o que os outros fazem com pequenas variações. É por isso que quase ninguém dá grandes saltos.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Uma forma de raciocínio que recusa o "porque sim". Você desmonta o problema até as verdades que pode verificar sozinho e reconstrói a partir delas.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É como você sai do "copiar com leve ajuste" e chega a soluções que pareciam impossíveis. O único limite real é a física, não a convenção.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Suposição vs. átomo · recomendação disfarçada de lei · "qual é a restrição real aqui?"</p></div>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🔋</span> Analogia: a bateria de 600 dólares</h3>
+<p class="text-neutral-300 text-sm">Em 2012 dizia-se que uma bateria custava 600 dólares por kWh e que isso era um "piso intransponível". Alguém decompôs a bateria nos metais que a formam, conferiu o preço de cada um na bolsa e chegou a ~80 dólares por kWh. O "piso" era convenção; a matéria-prima contava outra história.</p>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Pergunta-guia</h3>
+<p class="text-neutral-300 text-sm">Tudo que parece fixo — preço, prazo, número de pessoas, "o jeito certo" — costuma ser <em>recomendação disfarçada de lei</em>. O que de fato sustenta (load-bearing) é a física: energia, custo do átomo, tempo. Em qualquer projeto, pergunte: <strong class="text-primary">qual é a restrição real aqui?</strong></p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- TOPICO 2 -->
+<section class="mb-16" data-inema-module="2-3" data-inema-topic="modulo-2-3#topico-2" data-inema-track="2" id="topico-2">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">🗑️ O protocolo de 5 passos (a ordem importa)</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t2-p1">Antes de construir, enxugue. O erro nº 1 em automações é <strong class="text-blue-400">automatizar algo que nunca deveria ter existido</strong>. Pular um passo faz você otimizar o que não devia existir — por isso a ordem é sagrada.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Um processo de engenharia em cinco passos para enxugar qualquer sistema ou ideia antes de construir.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Se você otimiza antes de deletar, gasta esforço polindo lixo. Deletar primeiro economiza tudo o que vem depois.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Requisito com dono · deletar ~10% de volta · otimizar só depois · enunciar até ficar entediante.</p></div>
+</div>
+<div class="space-y-4 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Questione cada requisito</h4><p class="text-neutral-300 text-sm">Cada exigência tem que ter o <strong class="text-blue-400">nome de uma pessoa</strong> por trás, nunca "o jurídico pediu". Requisito sem dono é suspeito.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Delete a parte ou o passo</h4><p class="text-neutral-300 text-sm">Se depois você não precisar devolver pelo menos ~10% do que tirou, é porque não deletou o suficiente.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Simplifique e otimize</h4><p class="text-neutral-300 text-sm">Só <em>depois</em> de deletar. Otimizar antes é o clássico erro.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">4</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Acelere o ciclo</h4><p class="text-neutral-300 text-sm">Agora que o sistema está enxuto, deixe cada volta mais rápida.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">5</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-5 border border-dark-600"><h4 class="font-semibold mb-1">Automatize</h4><p class="text-neutral-300 text-sm">Por último, para não tocar mais naquilo.</p></div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🧠</span> Passo a passo mental</h3>
+<p class="text-neutral-300 text-sm">Quebre tudo em partes → o que é dado? o que é substantivo? o que é restrição? → reduza até a pergunta essencial ficar nua → <strong class="text-primary">enuncie o problema até ele ficar entediante</strong> → só então escreva código.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- TOPICO 3 -->
+<section class="mb-16" data-inema-module="2-3" data-inema-topic="modulo-2-3#topico-3" data-inema-track="2" id="topico-3">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">🧩 A stack universal: pensar + guardar + criar + raspar + conectar</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t3-p1">Iniciantes acham que precisam de dezenas de ferramentas confusas. Não precisam. Quase tudo que se constrói com IA se reduz a <strong class="text-blue-400">cinco funções</strong>. Saber disso tira a paralisia.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">O conjunto mínimo de ferramentas para construir praticamente qualquer coisa. Surpreendentemente curto.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Você adiciona ferramentas só quando uma das cinco funções pedir — nunca por moda.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Pensar · guardar · criar visuais · raspar · conectar.</p></div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-2xl mb-2">🧠</div><h4 class="font-semibold text-blue-400 mb-1">Pensar</h4><p class="text-neutral-300 text-xs">Uma IA que raciocina e executa (Claude Code).</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-2xl mb-2">🗄️</div><h4 class="font-semibold text-blue-400 mb-1">Guardar</h4><p class="text-neutral-300 text-xs">Um lugar para os dados (um banco, com API pronta).</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-2xl mb-2">🎨</div><h4 class="font-semibold text-blue-400 mb-1">Criar visuais</h4><p class="text-neutral-300 text-xs">Geração de imagens, assets e telas bonitas.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-2xl mb-2">🕷️</div><h4 class="font-semibold text-blue-400 mb-1">Raspar dados</h4><p class="text-neutral-300 text-xs">Buscar informação pública lá fora (raspadores prontos).</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><div class="text-2xl mb-2">🔌</div><h4 class="font-semibold text-blue-400 mb-1">Conectar</h4><p class="text-neutral-300 text-xs">Automações que ligam as peças (a própria IA, ou controle visual fino).</p></div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-5"><div class="text-2xl mb-2">✨</div><h4 class="font-semibold text-blue-400 mb-1">Só isso</h4><p class="text-neutral-300 text-xs">Você quase nunca precisa de mais. Combine as cinco e construa.</p></div>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🍳</span> Analogia: a stack como uma cozinha</h3>
+<p class="text-neutral-300 text-sm">Construir é montar uma cozinha completa: o chef que <strong>pensa</strong> (a IA), a despensa pra <strong>guardar</strong> ingredientes (o banco), o prato pra <strong>emplatar</strong> bonito (os visuais), a feira pra <strong>buscar</strong> ingredientes frescos lá fora (o raspador) e a brigada que faz tudo andar sozinho (as automações). Faltou uma estação, o prato não sai.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+<h4 class="font-bold text-blue-400 mb-4">🛣️ Piloto automático (IA)</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>O Claude Code assume a maior parte do caminho.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Ideal para a maior parte do percurso, sem você dirigir.</span></li>
+</ul>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">🎛️ Pegar o volante (automação visual)</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Ferramentas visuais dão controle fino em trechos específicos.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>É bom saber dirigir o carro nos dois modos.</span></li>
+</ul>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- TOPICO 4 -->
+<section class="mb-16" data-inema-module="2-3" data-inema-topic="modulo-2-3#topico-4" data-inema-track="2" id="topico-4">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">🎯 Quem você procura + raspar com a loja de raspadores</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t4-p1">Sem público definido, nenhum raspador serve para nada. Primeiro defina o <strong class="text-blue-400">Perfil de Cliente Ideal (ICP)</strong> — quem exatamente você quer alcançar — e só então saia coletando dados.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Definir nicho + lugar + sinais (ex.: "telhadistas em São Paulo com presença em redes") antes de abrir qualquer ferramenta, e então raspar dados públicos.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Captação de leads é jogo de volume: pense em centenas, não em dezenas. E você é pago pelo valor que cria e por quanto desse valor consegue capturar/replicar.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">ICP · jogo de volume · chave de API · "actor" (cada raspador) · multicanal.</p></div>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🕷️</span> Passo a passo: raspar leads</h3>
+<ol class="space-y-2 text-neutral-300 text-sm list-decimal list-inside">
+<li>Defina o ICP: nicho, cidade/região e sinais. Anote antes de abrir qualquer ferramenta.</li>
+<li>Crie conta numa loja de raspadores (ex.: <strong>Apify</strong>, em apify.com) e faça login.</li>
+<li>Vá em <em>Settings → API &amp; Integrations</em> e copie sua chave de API.</li>
+<li>Conecte a loja ao Claude Code (via conector/MCP ou colando o token na configuração).</li>
+<li>Peça em linguagem natural o que você quer. A IA encontra o melhor "actor", roda e devolve os dados.</li>
+</ol>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">⚖️</span> Custo vs. tempo</h3>
+<p class="text-neutral-300 text-sm">Existem caminhos gratuitos e pagos. Lembre que <strong class="text-primary">seu tempo também tem custo</strong>. Se você tem mais capital que tempo, plataformas que já entregam contatos validados (como o <strong>Apollo</strong>, apollo.io) poupam etapas. Se tem mais tempo que capital, monte o fluxo peça por peça com um raspador + um validador.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- TOPICO 5 -->
+<section class="mb-16" data-inema-module="2-3" data-inema-topic="modulo-2-3#topico-5" data-inema-track="2" id="topico-5">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">✅ Validar, enriquecer e empacotar o resultado</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t5-p1">Lista grande não vale nada se os e-mails quicam — e dado num terminal não é resultado. Você <strong class="text-blue-400">valida</strong> os contatos e depois <strong class="text-blue-400">empacota</strong> num formato que usa de verdade: a tela onde você abre e já liga para o contato.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Validar e-mails (existem? estão ativos?), enriquecer contatos e transformar os dados crus num HTML/dashboard utilizável.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">E-mail inválido derruba a reputação do seu envio e queima a lista. Validar é barato perto do prejuízo.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Validação em lote · "resultado desejado" no prompt · atualização agendada · deploy + repositório.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">🔎 Validar e enriquecer</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Com uma plataforma de prospecção (ex.: <strong>Apollo</strong>, apollo.io) já vem embutido — você pula esta etapa.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Com orçamento enxuto, use um validador em lote (ex.: <strong>Anymail Finder</strong>, anymailfinder.com): busca, valida e encontra e-mails que faltam, e tem API.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Entregue a chave ao Claude Code e peça para validar a lista raspada — sem subir arquivo manualmente.</span></li>
+</ul>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">📊 Empacotar em algo utilizável</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Peça uma página HTML/dashboard com os campos que importam (nome, e-mail, redes, um fato interessante).</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Abra localmente para revisar.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Se for recorrente, hospede e agende a atualização (ex.: a cada 7 dias) — monta uma vez, esquece.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-dark-800 border border-dark-600 rounded-xl p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">🍳</span> Exemplo prático guiado</h3>
+<p class="text-neutral-300 text-sm mb-3"><strong>Meta:</strong> uma lista utilizável de 10 telhadistas em São Paulo, com nome, e-mail, redes e um fato interessante — para iniciar conversas.</p>
+<ol class="space-y-1.5 text-neutral-300 text-sm list-decimal list-inside">
+<li>Defina o ICP: "telhadistas, São Paulo, com presença online".</li>
+<li>Conecte a loja de raspadores ao Claude Code (chave de API copiada).</li>
+<li>Peça a raspagem em português. A IA escolhe o melhor "actor" e traz os dados.</li>
+<li>Valide os e-mails com a chave do validador e receba a versão limpa.</li>
+<li>Peça uma página HTML bonita com os 10 contatos e abra localmente.</li>
+<li>Avalie a economia: qual o custo por lead? Quantos converto a partir disso?</li>
+</ol>
+<p class="text-neutral-400 text-xs mt-3">Repare: você usou quatro das cinco peças — pensar, raspar, validar e criar visual. Faltou só "guardar", que entra quando quiser persistir a lista num banco.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- TOPICO 6 -->
+<section class="mb-16" data-inema-module="2-3" data-inema-topic="modulo-2-3#topico-6" data-inema-track="2" id="topico-6">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">🧠 Alta agência + o meta-prompt de clarificação</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-3-t6-p1"><strong class="text-blue-400">Alta agência</strong> é a crença de que você consegue resolver, contornar e fazer acontecer, mesmo quando o caminho óbvio está fechado. E quando você não souber o caminho, o melhor movimento é fazer a IA te entrevistar primeiro.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">A postura de quem resolve sem esperar permissão, combinada com um prompt que destrava qualquer problema mal definido.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">~80% das vezes o problema não é técnico — é falta de clareza sobre qual é o gargalo. O meta-prompt resolve isso fazendo a IA esclarecer suas intenções antes de propor solução.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Restrição como recomendação · agir sem permissão · declarar objetivo + resultado desejado · pensar a solução em conjunto.</p></div>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">📞</span> O teste mental da alta agência</h3>
+<p class="text-neutral-300 text-sm">Se você estivesse preso e tivesse uma única ligação para alguém que com certeza atenderia e te ajudaria, quem você chamaria? Essa pessoa é o seu modelo de alta agência. A meta é virar essa pessoa: tratar restrições como recomendações até prova em contrário.</p>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💬</span> O movimento que destrava tudo</h3>
+<p class="text-neutral-300 text-sm">Sempre que travar, mande o meta-prompt <em>"me faça perguntas pra esclarecer"</em> (está pronto na seção de prompts abaixo) e responda às perguntas que a IA fizer. Muitas vezes a clareza que surge das perguntas já é metade da solução.</p>
+</div>
+<details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+<summary class="cursor-pointer font-semibold text-blue-400">Indo mais fundo (opcional): por que perguntas vêm antes de respostas</summary>
+<p class="text-neutral-300 text-sm mt-3">Pedir solução para um problema mal definido força a IA a adivinhar — e ela vai chutar. Quando você inverte e pede que ela te entreviste, cada pergunta expõe uma suposição escondida. Ao final, o gargalo real costuma caber em uma frase. Aí, sim, a solução é quase trivial.</p>
+</details>
+<!-- Checagem leve opcional -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-2-3#q1">
+<p class="font-medium mb-4">Auto-checagem (opcional): na ordem do protocolo de 5 passos, o que vem ANTES de simplificar e otimizar?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">Automatizar o passo o quanto antes.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">Questionar cada requisito e deletar o que não tem dono.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">Acelerar o ciclo para ganhar velocidade.</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- EXERCICIOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">✏️ Exercícios</h2>
+<div class="space-y-4">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. Desmonte com primeiros princípios <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Pegue uma "regra fixa" do seu trabalho ("isso leva 3 dias", "precisa de tal aprovação"). Liste as suposições e separe física de convenção. <span class="text-blue-400">Critério:</span> identificou ao menos uma "lei" que era só recomendação e descreveu uma alternativa viável.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Mapeie sua ideia na stack universal <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Escolha um projeto seu e preencha as cinco funções: pensar / guardar / criar / raspar / conectar. <span class="text-blue-400">Critério:</span> as cinco endereçadas, com justificativa para cada peça incluída ou dispensada.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Rode o fluxo de leads <span class="text-xs text-neutral-500">(prático)</span></h3><p class="text-neutral-300 text-sm">Conecte uma loja de raspadores ao Claude Code e raspe 10 leads reais do seu ICP, em HTML. <span class="text-blue-400">Critério:</span> arquivo HTML aberto no navegador com 10 contatos contendo nome e um canal de contato.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Aplique o protocolo de 5 passos <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Pegue uma automação que você tem (ou planeja) e passe pelos 5 passos na ordem. <span class="text-blue-400">Critério:</span> ao menos um passo/requisito deletado antes de qualquer otimização, com justificativa.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Use o meta-prompt num problema travado <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Escolha algo que você não sabe resolver e mande o meta-prompt de clarificação. Responda às perguntas. <span class="text-blue-400">Critério:</span> você enuncia o gargalo real em uma frase clara depois da troca.</p></div>
+</div>
+</section>
+<!-- PROMPTS PRONTOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⌨️ Prompts prontos</h2>
+<p class="text-neutral-300 text-sm mb-6">Comece sempre pelo <strong class="text-blue-400">meta-prompt de clarificação</strong> — é o mais importante. O banco completo está na <a class="text-sky-400 hover:text-sky-300" href="../trilha4/modulo-4-1.html">Biblioteca → Prompts</a>.</p>
+<div class="space-y-5">
+<div class="bg-dark-800 rounded-xl border border-blue-500/30 p-5"><p class="text-sm text-blue-400 font-semibold mb-2">⭐ Meta-prompt de clarificação (o mais importante)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Este é o resultado que eu quero: [descreva o resultado desejado].
 Antes de propor qualquer solução, me faça perguntas para esclarecer
 minhas intenções. Como devo pensar este problema? Depois vamos
 pensar a solução juntos.</pre><p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p><pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">This is what I am trying to achieve: [desired outcome].
 Ask me questions to clarify my intentions before proposing anything.
 How should I best think about this problem? Then we'll think about
 the solution together.</pre></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Desmontar por primeiros princípios</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quebre este problema em primeiros princípios. Liste as suposições,
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Desmontar por primeiros princípios</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quebre este problema em primeiros princípios. Liste as suposições,
 separe o que é restrição física real do que é só convenção
 ("sempre se fez assim"), e reconstrua a solução a partir do que
 não pode ser duvidado: [problema].</pre><p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p><pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">Break this problem down to first principles. List the assumptions,
 separate real physical constraints from mere convention
 ("this is how it's always done"), and rebuild the solution from
 what cannot be doubted: [problem].</pre></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Aplicar o protocolo de 5 passos</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Aplique o protocolo de 5 passos a este processo, na ordem:
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Aplicar o protocolo de 5 passos</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Aplique o protocolo de 5 passos a este processo, na ordem:
 (1) questionar cada requisito — cada um precisa do nome de uma
 pessoa responsável; (2) deletar partes; (3) simplificar e otimizar;
 (4) acelerar o ciclo; (5) automatizar. Processo: [descreva].</pre></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Mapear minha ideia na stack universal</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Tenho esta ideia: [ideia]. Mapeie-a na stack universal — pensar,
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Mapear minha ideia na stack universal</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Tenho esta ideia: [ideia]. Mapeie-a na stack universal — pensar,
 guardar, criar visuais, raspar dados, conectar com automações.
 Para cada uma das cinco funções, diga qual ferramenta usar ou se
 posso dispensar.</pre></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Raspar leads</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quero alcançar [nicho] em [cidade/região]. Use uma loja de
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Raspar leads</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quero alcançar [nicho] em [cidade/região]. Use uma loja de
 raspadores, encontre o melhor "actor" e me traga, de cada lead:
 nome, e-mail, redes sociais e um fato interessante. Me dê 10 para
 eu iniciar conversas. Pode entregar numa página HTML bonita.</pre></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Empacotar resultado em dashboard recorrente</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quero um dashboard com estes dados: [campos]. Meu resultado
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Empacotar resultado em dashboard recorrente</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quero um dashboard com estes dados: [campos]. Meu resultado
 desejado: [o que quero ver e fazer]. Gere em HTML, organize por
 [critério], e me explique como hospedar e agendar a atualização a
 cada 7 dias.</pre></div>
-        </div>
-      </section>
-
-      <!-- ERROS COMUNS -->
-      <section class="mb-16">
-        <h2 class="text-2xl font-bold mb-6">⚠️ Erros comuns</h2>
-        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
-          <ul class="space-y-3 text-neutral-300 text-sm">
-            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Otimizar antes de deletar.</strong> Você simplifica e automatiza um passo que nunca deveria existir. Sempre questione e delete primeiro.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Confundir convenção com física.</strong> Aceitar "não dá em uma semana" como lei. Quase sempre é recomendação — pergunte qual é a restrição <em>real</em>.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Raspar sem ICP.</strong> Coletar dados sem saber quem você procura gera uma lista grande e inútil. Defina o público antes.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Pular a validação de e-mails.</strong> Lista cheia de e-mails que quicam queima sua reputação de envio. Valide ou use uma fonte já validada.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Pedir solução sem clareza.</strong> Mandar a IA "resolver" um problema mal definido. Use o meta-prompt e deixe a IA te entrevistar primeiro.</span></li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- RESUMO -->
-      <section class="mb-12">
-        <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
-          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Resumo do módulo</h2>
-          <div class="space-y-4 mb-8">
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Primeiros princípios</strong><span class="text-neutral-400"> — tira as suposições, conta os átomos; separe física de convenção e pergunte qual é a restrição real.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Protocolo de 5 passos</strong><span class="text-neutral-400"> — questione → delete → simplifique → acelere → automatize. A ordem é sagrada.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Stack universal</strong><span class="text-neutral-400"> — pensar + guardar + criar + raspar + conectar. Quase tudo cabe nessas cinco.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Fluxo de leads</strong><span class="text-neutral-400"> — ICP → raspar → validar → empacotar num HTML utilizável.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Alta agência + meta-prompt</strong><span class="text-neutral-400"> — quando travar, faça a IA te entrevistar antes de propor.</span></div></div>
-          </div>
-          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
-            <h3 class="font-semibold text-blue-400 mb-3">Checklist de conclusão</h3>
-            <ul class="space-y-2 text-sm text-neutral-300">
-              <li>☐ Sei explicar, com minhas palavras, o que é pensamento de primeiros princípios e dei um exemplo próprio.</li>
-              <li>☐ Consigo separar, num problema real, o que é restrição física do que é só convenção.</li>
-              <li>☐ Sei recitar e aplicar o protocolo de 5 passos na ordem.</li>
-              <li>☐ Sei nomear as 5 peças da stack universal e mapear uma ideia minha nelas.</li>
-              <li>☐ Conectei uma loja de raspadores ao Claude Code e rodei uma raspagem de leads reais.</li>
-              <li>☐ Validei os e-mails de uma lista.</li>
-              <li>☐ Tenho o meta-prompt de clarificação salvo e já usei pelo menos uma vez.</li>
-            </ul>
-          </div>
-          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
-            <h3 class="font-semibold text-blue-400 mb-2">Próximo módulo:</h3>
-            <p class="text-neutral-300">2.4 — Design Systems: dar identidade visual consistente ao que você constrói</p>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-4">
-            <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Voltar para a trilha</a>
-            <a href="modulo-2-4.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">Próximo: 2.4 →</a>
-          </div>
-        </div>
-      </section>
-
-    </div>
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="border-t border-dark-600 py-8 mt-16">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
-      <p>Claude Code na Prática — <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a> · 2026</p>
-    </div>
-  </footer>
-
-  <!-- SCRIPTS: nucleo v1 -->
-  <script>
+</div>
+</section>
+<!-- ERROS COMUNS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⚠️ Erros comuns</h2>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Otimizar antes de deletar.</strong> Você simplifica e automatiza um passo que nunca deveria existir. Sempre questione e delete primeiro.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Confundir convenção com física.</strong> Aceitar "não dá em uma semana" como lei. Quase sempre é recomendação — pergunte qual é a restrição <em>real</em>.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Raspar sem ICP.</strong> Coletar dados sem saber quem você procura gera uma lista grande e inútil. Defina o público antes.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Pular a validação de e-mails.</strong> Lista cheia de e-mails que quicam queima sua reputação de envio. Valide ou use uma fonte já validada.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Pedir solução sem clareza.</strong> Mandar a IA "resolver" um problema mal definido. Use o meta-prompt e deixe a IA te entrevistar primeiro.</span></li>
+</ul>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Resumo do módulo</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Primeiros princípios</strong><span class="text-neutral-400"> — tira as suposições, conta os átomos; separe física de convenção e pergunte qual é a restrição real.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Protocolo de 5 passos</strong><span class="text-neutral-400"> — questione → delete → simplifique → acelere → automatize. A ordem é sagrada.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Stack universal</strong><span class="text-neutral-400"> — pensar + guardar + criar + raspar + conectar. Quase tudo cabe nessas cinco.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Fluxo de leads</strong><span class="text-neutral-400"> — ICP → raspar → validar → empacotar num HTML utilizável.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Alta agência + meta-prompt</strong><span class="text-neutral-400"> — quando travar, faça a IA te entrevistar antes de propor.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-blue-400 mb-3">Checklist de conclusão</h3>
+<ul class="space-y-2 text-sm text-neutral-300">
+<li>☐ Sei explicar, com minhas palavras, o que é pensamento de primeiros princípios e dei um exemplo próprio.</li>
+<li>☐ Consigo separar, num problema real, o que é restrição física do que é só convenção.</li>
+<li>☐ Sei recitar e aplicar o protocolo de 5 passos na ordem.</li>
+<li>☐ Sei nomear as 5 peças da stack universal e mapear uma ideia minha nelas.</li>
+<li>☐ Conectei uma loja de raspadores ao Claude Code e rodei uma raspagem de leads reais.</li>
+<li>☐ Validei os e-mails de uma lista.</li>
+<li>☐ Tenho o meta-prompt de clarificação salvo e já usei pelo menos uma vez.</li>
+</ul>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-blue-400 mb-2">Próximo módulo:</h3>
+<p class="text-neutral-300">2.4 — Design Systems: dar identidade visual consistente ao que você constrói</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Voltar para a trilha</a>
+<a class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors" href="modulo-2-4.html">Próximo: 2.4 →</a>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FOOTER -->
+<footer class="border-t border-dark-600 py-8 mt-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+<p>Claude Code na Prática — <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p>
+</div>
+</footer>
+<!-- SCRIPTS: nucleo v1 -->
+<script>
     function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp) e.classList.remove('active'); });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
     (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
       function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
@@ -629,9 +605,8 @@ cada 7 dias.</pre></div>
     function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
     document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
   </script>
-
-  <!-- Camada de aprendizagem -->
-  <script>
+<!-- Camada de aprendizagem -->
+<script>
     window.addEventListener('DOMContentLoaded', function(){
       if (window.INEMA && INEMA.registerCheck) {
         INEMA.registerCheck('modulo-2-3#q1', {
@@ -645,7 +620,7 @@ cada 7 dias.</pre></div>
       }
     });
   </script>
-  <script src="../../assets/learn.js"></script>
-  <script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+<script src="../../assets/learn.js"></script>
+<script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
 </body>
 </html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="claude-na-pratica" name="inema-course"/>
+<title>Track 3 — Operate &amp; Earn | Claude Code in Practice</title>
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'emerald');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.emerald;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124,58,237,0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124,58,237,0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124,58,237,0.18); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) { .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; } .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s} }
+  </style>
+<link href="https://inematds.github.io/claude-code-na-pratica/curso/trilha3/" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/en/curso/trilha3/" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/es/curso/trilha3/" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha3/" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="./" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">EN</a><a href="../../../es/curso/trilha3/" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
+<a class="skip" href="#conteudo">Skip to content</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html"><span class="text-2xl">⚡</span><span class="font-bold text-lg hidden sm:inline">Claude Code in Practice</span></a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentals</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Build</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10" href="index.html"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operate &amp; Profit</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Library</span></a>
+<button class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" data-inema-journey-open="" title="My journey" type="button"><span aria-hidden="true">◷</span><span class="hidden lg:inline">Journey</span><span aria-hidden="true" class="inema-journey-badge hidden"></span></button>
+<button aria-label="Toggle light/dark theme" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Light/dark theme">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">TRACK 3</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">📈 Operate &amp; Profit</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">Take your skills further: a personal always-on agent, security and maintenance, and how to turn it all into revenue.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">4</div><div class="text-xs text-neutral-400">Modules</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">24</div><div class="text-xs text-neutral-400">Topics</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">~3h45</div><div class="text-xs text-neutral-400">Duration</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Intermediate</div><div class="text-xs text-neutral-400">Level</div></div>
+</div>
+<div class="mt-6 max-w-2xl">
+<div aria-label="Track 3 progress" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="trilha:3" role="progressbar"><span class="inema-meter-pct" data-inema-meter-pct="">0%</span> <span class="inema-meter-count text-neutral-400 text-sm" data-inema-meter-frac="">0 of 24</span></div>
+</div>
+<!-- HERO SVG -->
+<div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mt-8 overflow-hidden">
+<svg aria-label="Four progressively advanced stages — personal agent, compliance and maintenance, monetization, and operating system — taking you from skill to revenue" class="w-full h-auto" role="img" viewbox="0 0 1000 200">
+<defs>
+<lineargradient id="t3-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#c084fc"></stop><stop offset="1" stop-color="#a855f7"></stop></lineargradient>
+<filter height="180%" id="t3-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="t3-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#a855f7" opacity="0.12" r="1.3"></circle></pattern>
+</defs>
+<rect fill="url(#t3-grid)" height="200" width="1000" x="0" y="0"></rect>
+<path d="M70,160 L300,128 L540,96 L780,64" fill="none" opacity="0.5" stroke="#38bdf8" stroke-dasharray="8 8" stroke-width="1.8"></path>
+<g font-family="Inter,sans-serif">
+<g class="wf-a"><rect fill="#1a1230" height="44" rx="11" stroke="#c084fc" stroke-width="2" width="150" x="40" y="138"></rect><text fill="#d8b4fe" font-size="14" font-weight="600" text-anchor="middle" x="115" y="165">1 · Agent</text></g>
+<g class="wf-a"><rect fill="#1a1230" height="44" rx="11" stroke="#c084fc" stroke-width="2" width="150" x="270" y="106"></rect><text fill="#d8b4fe" font-size="14" font-weight="600" text-anchor="middle" x="345" y="133">2 · Security</text></g>
+<g class="wf-a"><rect fill="#1a1230" height="44" rx="11" stroke="#c084fc" stroke-width="2" width="150" x="510" y="74"></rect><text fill="#d8b4fe" font-size="14" font-weight="600" text-anchor="middle" x="585" y="101">3 · Recipe</text></g>
+<g filter="url(#t3-glow)"><rect fill="#1a1230" height="48" rx="12" stroke="url(#t3-grad)" stroke-width="2.5" width="170" x="750" y="40"></rect></g>
+<text fill="#c084fc" font-size="14" font-weight="600" text-anchor="middle" x="835" y="69">Your personal OS</text>
+</g>
+</svg>
+</div>
+</div>
+</header>
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="conteudo">
+<!-- MAPA DA TRILHA -->
+<section class="mb-12">
+<h2 class="text-2xl font-bold mb-6">Learning path map</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all" href="#modulo-3-1"><div class="flex items-center justify-between mb-2"><span class="text-purple-400 font-bold text-sm">3.1</span><span class="text-xs text-neutral-500">~60 min</span></div><h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">🤖 Personal Agent</h3><p class="text-xs text-neutral-400">Chief of staff in your pocket</p></a>
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all" href="#modulo-3-2"><div class="flex items-center justify-between mb-2"><span class="text-purple-400 font-bold text-sm">3.2</span><span class="text-xs text-neutral-500">~55 min</span></div><h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">🛡️ Compliance &amp; Maintenance</h3><p class="text-xs text-neutral-400">Red team yourself</p></a>
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all" href="#modulo-3-3"><div class="flex items-center justify-between mb-2"><span class="text-purple-400 font-bold text-sm">3.3</span><span class="text-xs text-neutral-500">~50 min</span></div><h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">💼 Monetization</h3><p class="text-xs text-neutral-400">Skills become recipes</p></a>
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-purple-500/30 p-5 transition-all" href="#modulo-3-4"><div class="flex items-center justify-between mb-2"><span class="text-purple-400 font-bold text-sm">3.4</span><span class="text-xs text-neutral-500">~60 min</span></div><h3 class="font-semibold mb-1 group-hover:text-purple-400 transition-colors">🖥️ Your operating system</h3><p class="text-xs text-neutral-400">Your control panel</p></a>
+</div>
+</section>
+<h2 class="text-2xl font-bold mb-6">Detailed content</h2>
+<!-- MODULO 3-1 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-3-1">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-purple-400 font-bold">3.1</span><span class="text-xs text-neutral-500">~60 min</span></div>
+<h3 class="text-2xl font-bold mb-2">🤖 Always-On Personal Agent</h3>
+<p class="text-neutral-400 text-sm">An AI chief of staff in your pocket: a channel on your phone, connected tools, and tasks that run on their own.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-3-1-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">💻</span><div><span class="font-medium">Desktop × mobile</span><span class="text-neutral-500 text-sm ml-2">- where the agent lives</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-1-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Run the agent on a machine that stays on and talk to it from your phone.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">You call the shots from anywhere, without being tied to your desktop.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Always-on · remote access · phone as the controller.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-1-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">🤵</span><div><span class="font-medium">The AI chief of staff</span><span class="text-neutral-500 text-sm ml-2">- the concept</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-1-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">An agent that organizes, remembers, and handles tasks for you.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Get out of your head what you can delegate to a machine.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Delegate · personal assistant · persistent context.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-1-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">📱</span><div><span class="font-medium">Mobile channel</span><span class="text-neutral-500 text-sm ml-2">- message them</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-1-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A messaging channel for talking with the agent on your phone.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">It’s the most natural way to ask for things while on the go.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Messaging · bridge · a reply in your pocket.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-1-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">🔌</span><div><span class="font-medium">Connect your tools</span><span class="text-neutral-500 text-sm ml-2">- calendar, email, notes</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-1-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Connect the agent to your calendar, email, and notes through connectors.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Without access to your data, the agent can only talk—it can't act.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">MCP · integrations · minimum permissions.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-1-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">⏰</span><div><span class="font-medium">Tasks that run on their own</span><span class="text-neutral-500 text-sm ml-2">- scheduling</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-1-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Scheduled routines that trigger without you having to ask each time.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Repeated work goes on autopilot.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Cron · trigger · daily summary.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-1-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">📦</span><div><span class="font-medium">Docker isolation</span><span class="text-neutral-500 text-sm ml-2">- secure box</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-1-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Run the agent inside a container isolated from everything else.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Limits the damage if something goes wrong or is malicious.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Container · sandbox · minimal surface.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-3-1')">View in Modal</button>
+<a class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors" href="modulo-3-1.html">View Complete</a>
+</div>
+</div>
+<!-- MODULO 3-2 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-3-2">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-purple-400 font-bold">3.2</span><span class="text-xs text-neutral-500">~55 min</span></div>
+<h3 class="text-2xl font-bold mb-2">🛡️ Compliance &amp; Maintenance</h3>
+<p class="text-neutral-400 text-sm">Red-team yourself: security, privacy, LGPD, backups, and risk checklists.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-3-2-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">🎯</span><div><span class="font-medium">Red team yourself</span><span class="text-neutral-500 text-sm ml-2">- think like an attacker</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-2-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Attack your own system before someone else does.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Finding issues first is cheaper than fixing them later.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Red team · attack surface · realistic threat.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-2-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">🔒</span><div><span class="font-medium">Security, privacy, and Brazil’s LGPD</span><span class="text-neutral-500 text-sm ml-2">- the basics that protect you</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-2-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">The minimum rules for handling data legally and securely.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Fines and loss of trust are costly.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">LGPD · consent · data minimization.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-2-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">🗃️</span><div><span class="font-medium">Customer data</span><span class="text-neutral-500 text-sm ml-2">- segregate and protect</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-2-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Separate and protect data that doesn't belong to you.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">A customer data leak is the worst-case scenario.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Segregation · restricted access · disposal.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-2-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">💽</span><div><span class="font-medium">Backups</span><span class="text-neutral-500 text-sm ml-2">- before you need it</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-2-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Automatic, tested backups.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">A backup that has never been restored is not a backup.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">3-2-1 · automatic · restore test.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-2-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">⚡</span><div><span class="font-medium">Response speed</span><span class="text-neutral-500 text-sm ml-2">- latency and SLA</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-2-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">How long the agent takes to respond and act.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Slow performance erodes trust in the system.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Latency · SLA · user expectations.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-2-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">📋</span><div><span class="font-medium">Maintenance and risk checklists</span><span class="text-neutral-500 text-sm ml-2">- living routine</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-2-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Routines and lists to keep everything healthy and up to date.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">A system without maintenance quietly rots.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Checklist · periodic review · update.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-3-2')">View in Modal</button>
+<a class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors" href="modulo-3-2.html">View Complete</a>
+</div>
+</div>
+<!-- MODULO 3-3 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-3-3">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-purple-400 font-bold">3.3</span><span class="text-xs text-neutral-500">~50 min</span></div>
+<h3 class="text-2xl font-bold mb-2">💼 Monetization</h3>
+<p class="text-neutral-400 text-sm">Turn your skill into revenue: find the constraint, move up the service ladder, and charge based on value.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-3-3-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">🔍</span><div><span class="font-medium">Find the constraint</span><span class="text-neutral-500 text-sm ml-2">- the client bottleneck</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-3-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Find the bottleneck that most limits the client's results.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">The money is in targeting the right constraint.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Bottleneck · leverage · pain people will pay to solve.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-3-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">🔁</span><div><span class="font-medium">The loop: more→better→new</span><span class="text-neutral-500 text-sm ml-2">- how to grow</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-3-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Sell more, deliver better, and create something new, in a cycle.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Gives you a clear direction for where to invest effort.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">More · better · new.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-3-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">🪜</span><div><span class="font-medium">The ladder: audit→build→retainer</span><span class="text-neutral-500 text-sm ml-2">- offerings</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-3-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Start with an audit, move on to implementation, and close with a retainer.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Each step builds trust and recurring revenue.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Audit · project · retainer.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-3-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">💰</span><div><span class="font-medium">Price by value</span><span class="text-neutral-500 text-sm ml-2">- not right now</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-3-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Charge for the results delivered, not the hours spent.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">AI reduces your hours — hourly pricing penalizes you for that.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Value · outcome · anchoring.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-3-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">🤝</span><div><span class="font-medium">Prospect respectfully</span><span class="text-neutral-500 text-sm ml-2">- no spam</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-3-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Reach out to clients in a personalized and helpful way.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Respect opens doors; spam burns your reputation.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Research · value first · follow-up.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-3-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">💳</span><div><span class="font-medium">Deliver and get paid (Stripe)</span><span class="text-neutral-500 text-sm ml-2">- truly receive</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-3-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Deliver the service and collect payment through a reliable payment method.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Without simple payment processing, the sale stalls at the end.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Stripe · payment link · receipt.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-3-3')">View in Modal</button>
+<a class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors" href="modulo-3-3.html">View Complete</a>
+</div>
+</div>
+<!-- MODULO 3-4 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-3-4">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-purple-400 font-bold">3.4</span><span class="text-xs text-neutral-500">~60 min</span></div>
+<h3 class="text-2xl font-bold mb-2">🖥️ Your operating system</h3>
+<p class="text-neutral-400 text-sm">Build your control panel: folder structure, master CLAUDE.md, dashboard, and cost tracking.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-3-4-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">🖥️</span><div><span class="font-medium">What a “personal OS” is</span><span class="text-neutral-500 text-sm ml-2">- the idea</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-4-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A system of your own for organizing projects, data, and routines.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Everything in one coherent place multiplies your productivity.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Personal system · consistency · one place.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-4-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">🗂️</span><div><span class="font-medium">The folder structure</span><span class="text-neutral-500 text-sm ml-2">- skeleton</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-4-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A predictable folder structure for everything you do.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">AI and you find things without thinking.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Convention · buckets · predictable.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-4-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">📋</span><div><span class="font-medium">The master CLAUDE.md</span><span class="text-neutral-500 text-sm ml-2">- global rules</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-4-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A top-level manual with rules that apply to everything.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Define your standard once, and it applies to every project.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Global · inheritance · single default.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-4-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">📊</span><div><span class="font-medium">The HTML dashboard that reads JSON</span><span class="text-neutral-500 text-sm ml-2">- dashboard</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-4-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A simple page that reads JSON and displays its state.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Seeing the whole picture at a glance prevents surprises.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Dashboard · JSON · no backend.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-4-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">🧾</span><div><span class="font-medium">Cost tracking</span><span class="text-neutral-500 text-sm ml-2">- know what it costs</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-4-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">Track how much each project and routine consumes.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Hidden costs become a surprise at the end of the month.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Tokens · budget · alert.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-3-4-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">📚</span><div><span class="font-medium">Onboarding and catalog</span><span class="text-neutral-500 text-sm ml-2">- scale in an orderly way</span></div></button><div class="topic-explanation px-6 pb-4" id="t-3-4-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-purple-400 font-semibold">What it is:</span><p class="text-neutral-300 text-sm">A catalog of what you do and a way to get started quickly.</p></div><div><span class="text-purple-400 font-semibold">Why learn:</span><p class="text-neutral-300 text-sm">Makes it easier to reuse, teach, and delegate.</p></div><div><span class="text-purple-400 font-semibold">Key concepts:</span><p class="text-neutral-300 text-sm">Catalog · onboarding · reuse.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-3-4')">View in Modal</button>
+<a class="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors" href="modulo-3-4.html">View Complete</a>
+</div>
+</div>
+<!-- NAVEGACAO ENTRE TRILHAS -->
+<div class="flex flex-col sm:flex-row gap-4 mt-10">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="../trilha2/index.html">← Previous track: Build</a>
+<a class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors" href="../trilha4/index.html">Explore the Library →</a>
+</div>
+</main>
+<!-- MODAIS -->
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-3-1" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-purple-400 font-bold">3.1</span><span class="font-semibold">Always-on personal agent</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-3-1.html" title="Module 3.1"></iframe></div></div>
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-3-2" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-purple-400 font-bold">3.2</span><span class="font-semibold">Compliance &amp; Maintenance</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-3-2.html" title="Module 3.2"></iframe></div></div>
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-3-3" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-purple-400 font-bold">3.3</span><span class="font-semibold">Monetization</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-3-3.html" title="Module 3.3"></iframe></div></div>
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-3-4" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-purple-400 font-bold">3.4</span><span class="font-semibold">Your operating system</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-3-4.html" title="Module 3.4"></iframe></div></div>
+<footer class="border-t border-dark-600 py-8 mt-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>Claude Code in Practice — <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p></div>
+</footer>
+<script>
+    function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp){ e.classList.remove('active'); var b=e.parentElement.querySelector('button[aria-expanded]'); if(b) b.setAttribute('aria-expanded','false'); } });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync(); tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+    function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }
+    function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>

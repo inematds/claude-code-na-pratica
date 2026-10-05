@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="claude-na-pratica" name="inema-course"/>
+<title>Banco de Prompts | Biblioteca · Claude Code na Prática</title>
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'emerald');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.emerald;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    [id^="modulo-"] { scroll-margin-top: 5rem; }
+    [id^="cat-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-amber-400 { color: #92400e; }
+    html:not(.dark) .bg-amber-500\/20 { background-color: rgba(217,119,6,0.12); }
+    html:not(.dark) .bg-amber-500\/10 { background-color: rgba(217,119,6,0.08); }
+    html:not(.dark) .border-amber-500\/30 { border-color: rgba(217,119,6,0.25); }
+    html:not(.dark) .hover\:bg-amber-500\/30:hover { background-color: rgba(217,119,6,0.18); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    .prompt-pre { max-height: 22rem; overflow:auto; }
+  </style>
+<link href="https://inematds.github.io/claude-code-na-pratica/curso/trilha4/modulo-4-1.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/en/curso/trilha4/modulo-4-1.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/es/curso/trilha4/modulo-4-1.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha4/modulo-4-1.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha4/modulo-4-1.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="modulo-4-1.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="skip" href="#conteudo">Saltar al contenido</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html"><span class="text-2xl">⚡</span><span class="font-bold text-lg hidden sm:inline">Claude Code en la práctica</span></a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar y ganar</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-amber-400 bg-amber-500/10" href="index.html"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+<button class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" data-inema-journey-open="" title="Mi recorrido" type="button"><span aria-hidden="true">◷</span><span class="hidden lg:inline">Recorrido</span><span aria-hidden="true" class="inema-journey-badge hidden"></span></button>
+<button aria-label="Alternar entre tema claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Tema claro/oscuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+<nav aria-label="Ruta de navegación" class="text-sm text-neutral-500">
+<a class="hover:text-amber-400" href="../../index.html">Inicio</a>
+<span class="mx-2">/</span>
+<a class="hover:text-amber-400" href="index.html">Biblioteca</a>
+<span class="mx-2">/</span>
+<span class="text-neutral-300">Banco de Prompts</span>
+</nav>
+</div>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-amber-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-semibold rounded-full mb-4">BIBLIOTECA · CATÁLOGO</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">⌨️ Banco de Prompts</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">48 prompts en portugués brasileño (P01–P48), listos para pegar en Claude Code. Donde haya personalización, cambia los campos <code class="text-amber-400">[ENTRE COLCHETES]</code>. Los marcados <span class="text-amber-400 font-semibold">CANÓNICO</span> conservan la redacción original. Usa el botón <strong class="text-amber-400">Copiar</strong> en cada tarjeta.</p>
+<a class="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm font-semibold transition-colors" download="" href="../../../biblioteca/prompts/banco-de-prompts.md">⬇ Descargar la base de datos completa (.md)</a>
+</div>
+</header>
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="conteudo">
+<!-- INDICE DE CATEGORIAS -->
+<section class="mb-12">
+<h2 class="text-2xl font-bold mb-6">Categorías</h2>
+<div class="flex flex-wrap gap-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-setup">Configuración (4)</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-memoria">Memoria (7)</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-power">Funciones avanzadas (8)</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-website">Sitio web (8)</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-apps">Apps (5)</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-build">Build Anything (4)</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-design">Sistemas de diseño (3)</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-agente">Agente personal (3)</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-compliance">Cumplimiento (4)</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-os">Panel / OS (2)</a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/30 transition-colors" href="#cat-slash">Slash commands</a>
+</div>
+</section>
+<!-- ===== SETUP ===== -->
+<section class="mb-12" id="cat-setup">
+<h2 class="text-2xl font-bold mb-2">🛡️ Configuración</h2>
+<p class="text-neutral-400 text-sm mb-6">Fundamentos y primer contacto: instalar, validar, conectar y enseñar el tono.</p>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P01</span></div>
+<h3 class="font-semibold mb-1">Instalar Claude Code</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> primera instalación en una máquina nueva.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">¡Hola! Quiero que instales Claude Code en mi computadora e instales también cualquier otra dependencia necesaria para ejecutarlo aquí. Cuando termines, avísame.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P02</span></div>
+<h3 class="font-semibold mb-1">Prueba de creación de archivos</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> validar que Claude puede crear carpetas/archivos en tu sistema.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Créame una carpeta llamada "cafe-gelado" en mi escritorio y escribe dos archivos dentro: uno llamado "por-que-cafe-e-otimo" y otro "por-que-cafe-nao-e-otimo".</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P03</span></div>
+<h3 class="font-semibold mb-1">Conectar/reconectar GitHub vía CLI</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> cuando se perdió la conexión con GitHub o nunca se estableció.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quiero que puedas acceder a mis repositorios de GitHub. Conéctate a GitHub por CLI y confírmalo. Si no estás conectado, actualiza/restablece la conexión, por favor.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P04</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Estilo de comunicación (instrucciones para Claude)</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> configurar cómo Claude te habla (va en CLAUDE.md / system).</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Tom direto e informal — nada de enrolação, nada de "corporativês". Sem bullet points a menos que eu peça. Sem travessões (entrega de texto de IA). Nunca use palavras de preenchimento como "certamente", "com certeza", "ótima pergunta" ou "fico feliz em ajudar". Mantenha o texto direto e focado em resultado, não em features. Antecipe problemas (olhe além das curvas), desafie meu raciocínio, seja NÃO-bajulador (não concorde com tudo que eu disser) e seja máximo em busca da verdade. Eu sou: [INSERIR 2 FRASES sobre você/seu trabalho].</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+</div>
+</section>
+<!-- ===== MEMORIA ===== -->
+<section class="mb-12" id="cat-memoria">
+<h2 class="text-2xl font-bold mb-2">🧠 Memoria</h2>
+<p class="text-neutral-400 text-sm mb-6">Organizar el contexto en baldes, un CLAUDE.md por proyecto y memoria de largo plazo.</p>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P05</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Organizar la vida en «baldes» (buckets)</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> estructurar memoria a corto plazo a partir de todo lo que haces.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Con base en todo lo que sabes sobre mí y en todo lo que hago, quiero que organices mi vida en seis a ocho categorías.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P06</span></div>
+<h3 class="font-semibold mb-1">Materializar los contenedores en carpetas con CLAUDE.md</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> convertir los baldes en una estructura real de carpetas.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Créame estas seis a ocho carpetas en mi escritorio, cada una con un archivo CLAUDE.md dentro.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P07</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Completar el CLAUDE.md por proyecto (briefing)</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> documentar el contexto completo de cada carpeta/proyecto.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Adicione um CLAUDE.md em cada uma dessas pastas e depois me faça perguntas sobre cada projeto, para eu te dar o briefing completo. Para cada projeto capture: o que é a pasta; qual é o objetivo (ex.: "maximizar o valor que cada pessoa recebe, crescer a base"); por que ele existe; o stack; as decisões (ex.: "nada de posts gerados por IA"); um mapa de memória; e referências.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P08</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Regla de «guardar memoria» en el CLAUDE.md</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> definir dónde guardar las conversaciones cuando pidas «guardar/wrap up».</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quando eu pedir explicitamente para salvar, guardar, "fechar" (wrap up) ou lembrar a conversa, salve aqui: [INSERIR LOCAL DA PASTA/WIKI]. Haverá uma subpasta relevante para o tema — escolha a subpasta correta e adicione essa informação nela. (Adicione isto na seção de memória do CLAUDE.md.)</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P09</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Skill de cierre para el segundo cerebro</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> al final de cualquier conversación, guardar lo esencial en la wiki correcta.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Escríbeme una skill de "wrap-up": cuando esté teniendo cualquier conversación con cualquier modelo en mi computadora, debe captar la esencia de esa conversación y guardarla en el wiki pertinente dentro de mi vault de notas. Después, cambia el nombre de la skill a "wrap-up".</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P10</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Skill "Ask" (consulta a la wiki)</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> responder preguntas consultando tu segundo cerebro local.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Tengo en mi escritorio una carpeta de vault de notas con todo lo que hago. Crea una skill llamada "ask". Siempre que te haga una pregunta relacionada con cualquier cosa que hago, consulta esa base de datos si es relevante para dar una respuesta específica y sigue todas las instrucciones que haya dentro.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P11</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Memoria a largo plazo con Pinecone</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> vectorizar la wiki y tener skills vectoriales de wrap-up/ask.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Construye para mí una skill con Pinecone. Te daré una API key de Pinecone. Vectoriza todo lo que existe dentro de mi carpeta [INSERTAR] y almacénalo en Pinecone (crea un índice/vault si no existe). Después construye una skill de wrap-up: cuando la active, toma toda la esencia de la conversación y guárdala en una carpeta específica dentro de Pinecone. Agrega una segunda skill, "ask Pinecone": cuando te lo pida, consulta esa base de datos y tráeme la información.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+</div>
+</section>
+<!-- ===== POWER FEATURES ===== -->
+<section class="mb-12" id="cat-power">
+<h2 class="text-2xl font-bold mb-2">⚡ Funciones avanzadas</h2>
+<p class="text-neutral-400 text-sm mb-6">Skills, MCP y subagentes — empaquetar procesos y trabajar en paralelo.</p>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P12</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Crear una skill a partir de una API</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> empaquetar un proceso repetible (p. ej., un acortador de URL) como skill.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quero criar uma skill com você. O processo é: eu te dou [INSERIR ENTRADA, ex.: uma URL] e você [INSERIR AÇÃO, ex.: converte em um link curto via Bitly]. (Se já existir uma skill parecida e você quiser um build limpo, apague-a primeiro.) Me avise quando estiver pronto para a minha API key. Em seguida, com essa API key, construa a skill.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P13</span></div>
+<h3 class="font-semibold mb-1">Inspeccionar una skill del marketplace</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> evaluar una skill antes de adoptarla.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Háblame de la skill [INSERTAR NOMBRE, ej.: brand guidelines] — quiero entender qué hace y después quiero probarla y descubrir si funciona.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P14</span></div>
+<h3 class="font-semibold mb-1">Exportar skills para portabilidad</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> llevar tus skills a otro entorno/modelo.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Guarda todas mis skills en mi escritorio, en una carpeta "Claude skills", con instrucciones y todos los detalles de cada skill, para que pueda llevarlas a otro entorno.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P15</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Crear un MCP local a partir de una API</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> exponer una API (ej.: YouTube Data) como herramientas de Claude.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quiero crear un MCP de [INSERTAR SERVICIO, ej.: YouTube]. Ya tienes una API key de [INSERTAR SERVICIO] en este sistema. Primero, dame una lista de las funcionalidades disponibles. Después, construye para mí un MCP local, el más útil para mí según todo lo que sabes sobre mí. A continuación, adelante y constrúyelo.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P16</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Tres subagentes con veredicto condensado</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> investigación paralela desde múltiples perspectivas con una única síntesis.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quero que você pesquise sobre [INSERIR TEMA] e crie três subagentes. O subagente 1 olha do ponto de vista de [INSERIR ÂNGULO 1]. O agente 2, da perspectiva de [INSERIR ÂNGULO 2]. O agente 3, de um ângulo holístico/todos-os-lados [INSERIR ÂNGULO 3]. Seu trabalho é olhar todos e me dar uma visão condensada, rodando o máximo de iterações possível.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P17</span></div>
+<h3 class="font-semibold mb-1">Rutina para redactar correos electrónicos</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> automatizar respuestas de la bandeja de entrada.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quiero que revises todos mis correos de la bandeja de entrada y, para cualquiera que no tenga respuesta ni borrador y esté sin leer, redactes una respuesta.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P18</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Flujo de trabajo de consulta al cliente (activador vía API)</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> responder a los leads que llegan por el sitio web.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Vas a recibir información de un cliente que solicitó mis servicios a través de mi sitio web. Toma su correo electrónico y redacta una respuesta. Después, agenda una cita en un horario conveniente entre las 9:00 y las 17:00 según mi zona horaria.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P19</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Ciclo de crítica con modelo externo</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> crítica y refinamiento con una segunda opinión.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Crea un agente de crítica y revisa tú mismo el trabajo. Cuando termines, trae [INSERIR MODELO EXTERNO] con una perspectiva fresca para comprobarlo.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+</div>
+</section>
+<!-- ===== WEBSITE ===== -->
+<section class="mb-12" id="cat-website">
+<h2 class="text-2xl font-bold mb-2">🌐 Sitio web</h2>
+<p class="text-neutral-400 text-sm mb-6">Desde la investigación de la competencia hasta el SEO, UI/UX y la revisión crítica del sitio.</p>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P20</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Investigación de la competencia con matriz de evaluación</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> mapear y clasificar a los mejores competidores antes de construir.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quero criar um site para [INSERIR NEGÓCIO], que [INSERIR DESCRIÇÃO]. Use a conexão do Firecrawl e encontre os melhores/mais bem-sucedidos [INSERIR CATEGORIA]. Vou operar em [INSERIR GEOGRAFIA] (mas pode ser internacional). Identifique uma lista grande e depois o top 5 — pode avaliar do jeito que quiser (Google reviews, ranqueamento de SEO, etc.). Desenvolva uma matriz de julgamento para avaliar isso. Entregue um relatório dos cinco e uma análise profunda do que os cinco melhores têm em comum que os cinco piores não têm, para usarmos esses princípios. Me faça as perguntas que precisar para clarear o entendimento.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P21</span></div>
+<h3 class="font-semibold mb-1">Interiorizar el briefing antes de construir</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> después de guardar la investigación en un <code class="text-amber-400">melhores-principios.md</code> en el proyecto.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Familiarízate con el documento de mejores principios de la izquierda. Vamos a construir juntos un sitio que sea [INSERIR TIPO]. Avísame cuando hayas entendido el briefing y entonces comenzamos.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P22</span></div>
+<h3 class="font-semibold mb-1">Construir el sitio inspirándose en un repo/HTML</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> usar un design system o HTML descargado como inspiración visual.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Construa um site para [INSERIR TIPO] usando os melhores-princípios à esquerda, mas com a inspiração de design deste repo do GitHub: [INSERIR URL DO REPO]. (Alternativa: use como inspiração o HTML que eu acabei de baixar no computador.)</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P23</span></div>
+<h3 class="font-semibold mb-1">Versiones en paralelo en carpetas numeradas</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> generar 2-3 variaciones del mismo sitio y elegir la mejor.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Crie uma pasta à esquerda chamada "[INSERIR NÚMERO]" e coloque seus designs dentro. (Repita com outros agentes/terminais para ter 2-3 sites em pastas diferentes.) Quando terminar: abra para mim em um localhost.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P24</span></div>
+<h3 class="font-semibold mb-1">Guardar la API key y generar imágenes de la sección</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> guardar una clave de forma segura y generar imágenes (hero, etc.).</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Guarda esta API key en mi computadora de forma segura, para que puedas acceder a ella en el futuro. Después genera imágenes hermosas de [INSERTAR TIPO] —o imágenes que consideres relevantes— para esta sección que estás implementando aquí.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P25</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Optimización SEO a partir de un repo</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> investigar palabras clave y aplicar SEO equilibrando atención y conversión.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quiero mejorar el SEO de esta página. Primero, entiende cuáles son las keywords para las que quiero posicionarme en esta página: busca un equilibrio entre captar la atención, convertir esa atención y el posicionamiento SEO. Usa todos los insights de este repo de GitHub para hacerlo realidad: [INSERTAR URL DEL REPO DE SEO]. Al terminar, dame una lista detallada con marcas verdes de lo que hiciste, explicando cada mejora; después publícalo en GitHub y Vercel.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P26</span></div>
+<h3 class="font-semibold mb-1">Aplicar a fondo los principios de UI/UX</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> refinar un sitio web existente con una lista de verificación de diseño (en paralelo al SEO).</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quero usar este repo para melhorar este site — é sobre UI e UX. Olhe todos os melhores princípios e aplique-os sem dó ao meu site real. Vou ter um agente separado cuidando do SEO, então parte do texto pode mudar no caminho.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P27</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Revisión crítica/adversarial del sitio</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> en una ventana limpia, encontrar inconsistencias de copy/diseño/UX.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quiero que actúes como una persona muy exigente y crítica. Recorre el sitio y encuentra inconsistencias, textos que no tienen sentido, mal diseño, y devuélveme una lista de ideas clasificadas en crítico, alto, medio y bajo. No hace falta que inventes errores críticos donde no los haya, pero revísalo de verdad para ayudarme a mejorar, para que este sitio sea lo más eficaz, honesto y bien diseñado posible. Incluye cualquier repo de GitHub que consideres necesario.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+</div>
+</section>
+<!-- ===== APPS ===== -->
+<section class="mb-12" id="cat-apps">
+<h2 class="text-2xl font-bold mb-2">📦 Apps</h2>
+<p class="text-neutral-400 text-sm mb-6">Backend autenticado, pagos, rate limit y copy de conversión.</p>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P28</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Formulario de captura de leads</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> agregar un lead magnet con preguntas y guardar los datos en la base de datos.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Adicione um formulário de captura de e-mail. Peça o nome, o e-mail e mais uma pergunta — algo como "quanto dinheiro você está faturando", com cinco opções de R$0 até R$1 milhão+. Depois adicione mais uma: "qual é o maior problema que você tem agora?". Quando estiver pronto, salve todas essas informações no Supabase.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P29</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Registro, inicio de sesión y dashboard autenticado</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> construir un backend autenticado con un panel de valor.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Agora quero uma seção de cadastro e login, toda autenticada e gerenciada no Supabase. O usuário cria conta e entra. Ao entrar, quero ver o site dele em um dashboard lindo, no mesmo estilo do site. Mostre métricas diferentes, raspe alguns dados do site dele com um script em background, rode análise de SEO (procure repos no GitHub que façam isso) e deixe essa página o mais valiosa humanamente possível — tudo autenticado e conectado ao Supabase.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P30</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Integración de pagos con Stripe</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> agregar planes pagos (standard/premium) a la app.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quero integrar o Stripe. No dashboard quero uma seção com cores: standard e premium. O premium é [INSERIR PREÇO] por mês. Me guie no setup do Stripe da forma mais sucinta possível, conferindo a documentação mais recente, com instruções claras e nada mais longas que o necessário. Eu te dou os arquivos necessários. Seu objetivo é exigir o mínimo de mim e, ao mesmo tempo, deixar tudo o mais seguro possível.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P31</span></div>
+<h3 class="font-semibold mb-1">Enrutamiento de modelos + límite de solicitudes (OpenRouter)</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> controlar el costo de las funciones de IA de la app.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Para as features de IA, use a API key do OpenRouter. Use o modelo Sonnet até o usuário atingir no máximo 10 mensagens por dia; a partir daí, caia para um modelo mais barato. Implemente rate limits para não dar abuso e fique de olho no gasto total de créditos.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P32</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Copy de conversión mediante subagentes</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> investigación profunda de copy de conversión, sintetizada de forma crítica.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Inicia algunos subagentes. Investiga a fondo las mejores prácticas de copy para este tipo de sitio, con el objetivo de convertir. Mira qué sitios están destacando en este segmento, qué podemos aprender y cómo mejorar nuestro copy para que sea lo más eficaz posible. Usa varios subagentes; analiza críticamente sus aportes y sintetízalos para generar un buen resultado. Sé minucioso y detallado, pero no sobreanalices.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+</div>
+</section>
+<!-- ===== BUILD ANYTHING ===== -->
+<section class="mb-12" id="cat-build">
+<h2 class="text-2xl font-bold mb-2">🧩 Build Anything</h2>
+<p class="text-neutral-400 text-sm mb-6">Extracción de leads, dashboards de datos y metaprompts para desbloquear.</p>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P33</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Extracción de leads (Apify)</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> armar una lista de prospectos para prospección.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quiero llegar a [INSERTAR NICHO] que estén en [INSERTAR LUGAR]. Usa Apify — encuentra el mejor actor/ejemplo que puedas — y tráeme, de cada uno: nombre, correo electrónico, redes sociales que encuentres y un dato interesante. Tráeme [INSERTAR NÚMERO, ej.: 10] para que pueda conversar con ellos. Pon todo en un HTML bonito para que pueda verlo.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P34</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Dashboard de contenido "outlier"</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> descubrir contenido viral/fuera de lo común de un nicho con métricas.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quiero un dashboard que haga lo siguiente. Resultado que quiero obtener: entender cuáles son los outliers — el contenido que se está volviendo viral ahora — y, a partir de eso, saber cuántas visualizaciones tuvo, los «me gusta», los comentarios, la interacción, la duración y cuándo se publicó. Quiero poder organizarlo por outlier. Y quiero saber qué creadores seguir; además, sugiéreme algunos.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P35</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Metaprompt de "cuello de botella" para desbloquear</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> cuando no sabes la solución y quieres pensar el problema en conjunto.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Esto es lo que intento lograr: [INSERTAR OBJETIVO]. Hazme preguntas para aclarar mis intenciones. Y este es el resultado deseado: [INSERTAR RESULTADO]. ¿Cómo debería analizar mejor el problema? Después pensemos juntos en la solución.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P36</span></div>
+<h3 class="font-semibold mb-1">Validar/enriquecer correos mediante API</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> limpiar una lista de leads antes del outreach.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Use a API key do [INSERIR VERIFICADOR DE E-MAIL] e valide todos os e-mails desta lista para mim. API key: [INSERIR].</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+</div>
+</section>
+<!-- ===== DESIGN SYSTEMS ===== -->
+<section class="mb-12" id="cat-design">
+<h2 class="text-2xl font-bold mb-2">🎨 Design Systems</h2>
+<p class="text-neutral-400 text-sm mb-6">Diseño como código: clonar un framework, generar presentaciones al estilo de una marca.</p>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P37</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Configuración del framework de diseño (clonar y aprender)</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> iniciar un sistema de diseño como código para slides/sitios web.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Quiero crear diapositivas hermosas. Usa el repo de abajo: instálalo, clónalo, aprende todo sobre él y luego dame algunos ejemplos de marcas que podría usar para crear diapositivas bonitas. [INSERTAR URL DEL REPO DEL SISTEMA DE DISEÑO]</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P38</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Deck al estilo de una marca + imágenes</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> generar una presentación alineada con la marca de referencia.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Vamos a crear un deck de [INSERIR N] páginas sobre [INSERIR MARCA]. Ve al sitio de la marca para obtener algunos assets y usa mi API key de [INSERIR GERADOR DE IMAGEM] para generar algunas imágenes que encajen perfectamente con el estilo de marca, como consideres adecuado.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P39</span></div>
+<h3 class="font-semibold mb-1">Ejecutar la skill de extracción de marca</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> definir los colores, las fuentes, el espaciado y el diseño de una marca.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Baixe isto, descompacte e siga as instruções. (A skill vai te perguntar qual é a marca/site e do que é o seu negócio, e então gerar um design blueprint capturando espaçamento, cores, fontes e princípios de layout.)</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+</div>
+</section>
+<!-- ===== AGENTE PESSOAL ===== -->
+<section class="mb-12" id="cat-agente">
+<h2 class="text-2xl font-bold mb-2">🤖 Agente personal</h2>
+<p class="text-neutral-400 text-sm mb-6">El "sistema operativo" de agentes: instalar, planificar objetivos y hacer copias de seguridad.</p>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P40</span></div>
+<h3 class="font-semibold mb-1">Instalar el sistema operativo de agentes</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> subir el paquete del agente personal (zip) y configurarlo.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Acabei de baixar este sistema operacional. Abra-o e siga as instruções, e fique à disposição para me ajudar a configurar se for preciso. (Tudo que ele precisa para se configurar e se conectar a este computador está no CLAUDE.md dentro do pacote.)</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P41</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Centro de control: planificar metas</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> descomponer una meta de mediano plazo en pasos accionables.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Esto es el "mission control": planificación de metas a mediano y largo plazo. Mi meta a mediano plazo es: [INSERTAR META, p. ej.: "llegar a 500 suscriptores" o "lanzar una lista de correo con 1.000 personas"]. Conversa conmigo sobre todo y luego divide esta meta en aproximadamente 4 a 10 prompts individuales y secuenciales; indica cuáles debes ejecutar tú (la IA) y cuáles debo ejecutar yo, y prepara una hoja de ruta atractiva que pueda seguir paso a paso.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P42</span></div>
+<h3 class="font-semibold mb-1">Backup diario del agente en GitHub</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> proteger toda la configuración/memoria del agente.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Conéctate a GitHub y haz una copia de seguridad diaria de todo este sistema, todos los días, para que —si algo sale mal en mi computadora o cometo un error— podamos volver atrás en el tiempo y restaurarlo.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+</div>
+</section>
+<!-- ===== COMPLIANCE ===== -->
+<section class="mb-12" id="cat-compliance">
+<h2 class="text-2xl font-bold mb-2">🔐 Cumplimiento</h2>
+<p class="text-neutral-400 text-sm mb-6">Seguridad, costo de la API y verificaciones de estado para mantener el sistema en funcionamiento.</p>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P43</span><span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-semibold">Canónico</span></div>
+<h3 class="font-semibold mb-1">Red team de seguridad ofensiva (megaprompt)</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> auditar la seguridad de un codebase/proyecto antes de producción.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Você é um engenheiro sênior de segurança ofensiva contratado para fazer red-team neste codebase. Seu trabalho é invadir, exfiltrar dados e quebrar o negócio. Seja paranoico e minucioso — não assuma nada. Método: percorra o repositório inteiro de forma sistemática. Para cada arquivo que ler, pergunte: "Se eu fosse um atacante que já tem acesso de leitura, o que eu faria com isto?". Superfícies de ataque a cobrir: segredos e credenciais; segurança de banco (ex.: Supabase) e autorização; LLM / prompt injection; webhooks; dependências e cadeia de suprimentos; logging e exposição. Saída: achados ordenados por severidade, o caminho do exploit e a correção concreta de cada um. Não escreva um scanner — recomende poucos scanners open-source consagrados (ex.: Gitleaks, Semgrep, Trivy), diga quais três adicionar ao meu pre-commit, e assuma que isso barra ~80% dos problemas.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P44</span></div>
+<h3 class="font-semibold mb-1">Clave de API desde la terminal (fuera del chat)</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> evitar pegar una API key en el registro de Claude.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Crie um comando de terminal para eu atualizar a minha API key de [INSERIR SERVIÇO]. (Depois rode esse comando você mesmo no terminal, de modo que o Claude nunca veja a chave em si.)</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P45</span></div>
+<h3 class="font-semibold mb-1">Límite fijo de gasto en API</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> evitar pérdidas si se filtra una clave.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Para cualquier API de costo variable, define un límite de gasto fijo y estricto. Configura la API key con un costo total que yo acepte y define la frecuencia de renovación. Limita el gasto antes de limitar el riesgo.</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P46</span></div>
+<h3 class="font-semibold mb-1">Mapa de verificación del estado del sistema</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> garantizar que el sistema siga funcionando con el tiempo.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Pense no meu sistema inteiro e em toda a jornada do usuário, e defina quais devem ser os health checks — o que um sistema funcional teria. Escreva isso como testes para eu saber que continua funcionando. Inclua a checagem de logs de erro e do lado financeiro/pagamentos (ex.: Stripe).</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+</div>
+</section>
+<!-- ===== PAINEL / OS ===== -->
+<section class="mb-12" id="cat-os">
+<h2 class="text-2xl font-bold mb-2">🖥️ Panel / OS</h2>
+<p class="text-neutral-400 text-sm mb-6">Ampliar el sistema operativo de agentes con nuevas herramientas y fuentes.</p>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P47</span></div>
+<h3 class="font-semibold mb-1">Agregar una herramienta desconocida al OS</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> cuando el agente personal no detectó una de tus herramientas.</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Uso [INSERIR FERRAMENTA/SISTEMA] y no lo veo en el sistema operativo. ¿Puedes agregarlo aquí por mí?</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5">
+<div class="flex items-center justify-between mb-1"><span class="text-amber-400 font-bold text-sm">P48</span></div>
+<h3 class="font-semibold mb-1">Consultar una base de conocimiento mediante un agente</h3>
+<p class="text-xs text-neutral-400 mb-3"><span class="text-amber-400 font-semibold">Cuándo usar:</span> el agente busca/crea notebooks en una herramienta externa (p. ej., NotebookLM).</p>
+<pre class="prompt-pre font-mono text-xs bg-dark-700/50 rounded-lg p-3 whitespace-pre-wrap text-neutral-300">Tienes la skill de NotebookLM en "pantheon"; mantenla totalmente actualizada. Ve a mi NotebookLM, encuentra la última infografía que generé y luego crea un cuaderno nuevo sobre [INSERTAR TEMA].</pre>
+<button class="mt-3 px-3 py-1.5 text-xs bg-dark-600 hover:bg-amber-500/30 rounded-lg transition-colors" onclick="copyPrompt(this)">Copiar</button>
+</div>
+</div>
+</section>
+<!-- ===== SLASH COMMANDS ===== -->
+<section class="mb-12" id="cat-slash">
+<h2 class="text-2xl font-bold mb-2">⌘ Slash commands y comandos triviales</h2>
+<p class="text-neutral-400 text-sm mb-6">No son prompts, pero forman parte del flujo de trabajo.</p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+<ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-neutral-300">
+<li><code class="text-amber-400">/init</code> (effort alto) — hacer que Claude entienda todo el codebase.</li>
+<li><code class="text-amber-400">/clear</code> — reiniciar la conversación (evitar "context rot").</li>
+<li><code class="text-amber-400">/context</code> — inspeccionar el uso de la ventana de contexto.</li>
+<li><code class="text-amber-400">/compact</code> — comprimir el contexto manteniendo lo esencial.</li>
+<li><code class="text-amber-400">/model</code> — cambiar entre Opus / Sonnet / Haiku.</li>
+<li><code class="text-amber-400">/cost</code> — ver el gasto de tokens de la sesión.</li>
+<li><code class="text-amber-400">/agents</code> — gestionar subagentes.</li>
+<li><code class="text-amber-400">/memory</code> — abrir/editar los archivos de memoria (CLAUDE.md).</li>
+<li><code class="text-amber-400">/&lt;nome-da-skill&gt;</code> — invocar una skill.</li>
+<li><code class="text-amber-400">/newbot</code> (BotFather de Telegram) — crear un bot para el agente personal.</li>
+</ul>
+</div>
+</section>
+<!-- NAVEGACAO -->
+<div class="flex flex-col sm:flex-row gap-4 mt-10">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Volver a la Biblioteca</a>
+<a class="flex-1 text-center px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-500 transition-colors" href="modulo-4-2.html">Siguiente: Skills →</a>
+</div>
+</main>
+<footer class="border-t border-dark-600 py-8 mt-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>Claude Code en la práctica — <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p></div>
+</footer>
+<script>
+    function copyPrompt(btn){
+      var card = btn.closest('.bg-dark-800'); if(!card) return;
+      var pre = card.querySelector('pre'); if(!pre) return;
+      var txt = pre.innerText;
+      function done(){ var o=btn.textContent; btn.textContent='Copiado ✓'; setTimeout(function(){ btn.textContent=o; }, 1600); }
+      if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done, function(){ fallback(txt, done); }); }
+      else { fallback(txt, done); }
+    }
+    function fallback(txt, done){ try{ var ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }catch(e){} }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync(); tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>

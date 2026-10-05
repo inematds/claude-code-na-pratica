@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="claude-na-pratica" name="inema-course"/>
+<title>Ruta 1 — Fundamentos | Claude Code en la práctica</title>
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'emerald');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.emerald;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-emerald-400 { color: #059669; }
+    html:not(.dark) .bg-emerald-500\/20 { background-color: rgba(5,150,105,0.12); }
+    html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(5,150,105,0.08); }
+    html:not(.dark) .border-emerald-500\/30 { border-color: rgba(5,150,105,0.25); }
+    html:not(.dark) .hover\:bg-emerald-500\/30:hover { background-color: rgba(5,150,105,0.18); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) { .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; } .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s} }
+  </style>
+<link href="https://inematds.github.io/claude-code-na-pratica/curso/trilha1/" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/en/curso/trilha1/" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/es/curso/trilha1/" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha1/" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha1/" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="./" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="skip" href="#conteudo">Saltar al contenido</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html"><span class="text-2xl">⚡</span><span class="font-bold text-lg hidden sm:inline">Claude Code en la práctica</span></a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-400 bg-emerald-500/10" href="index.html"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar y ganar</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+<button class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" data-inema-journey-open="" title="Mi recorrido" type="button"><span aria-hidden="true">◷</span><span class="hidden lg:inline">Recorrido</span><span aria-hidden="true" class="inema-journey-badge hidden"></span></button>
+<button aria-label="Alternar entre tema claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Tema claro/oscuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-emerald-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-full mb-4">RUTA 1</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🧱 Fundamentos</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">La base de todo. Instalas Claude Code, entiendes cómo piensa, enseñas a la IA a recordar tu contexto y descubres los recursos que multiplican tus resultados. Al final, manejas la herramienta con seguridad.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">4</div><div class="text-xs text-neutral-400">Módulos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">24</div><div class="text-xs text-neutral-400">Temas</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">~3h30</div><div class="text-xs text-neutral-400">Duración</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-emerald-400">Principiante</div><div class="text-xs text-neutral-400">Nivel</div></div>
+</div>
+<div class="mt-6 max-w-2xl">
+<div aria-label="Progreso de la Ruta 1" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="trilha:1" role="progressbar"><span class="inema-meter-pct" data-inema-meter-pct="">0%</span> <span class="inema-meter-count text-neutral-400 text-sm" data-inema-meter-frac="">0 de 24</span></div>
+</div>
+<!-- HERO SVG -->
+<div class="rounded-2xl border border-emerald-500/30 bg-dark-900/40 p-3 sm:p-4 mt-8 overflow-hidden">
+<svg aria-label="Cuatro fundamentos en escalera — instalación, conversación, memoria y funciones avanzadas — que te llevan de principiante a operador seguro" class="w-full h-auto" role="img" viewbox="0 0 1000 200">
+<defs>
+<lineargradient id="t1-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#34d399"></stop><stop offset="1" stop-color="#10b981"></stop></lineargradient>
+<filter height="180%" id="t1-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="t1-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#10b981" opacity="0.12" r="1.3"></circle></pattern>
+</defs>
+<rect fill="url(#t1-grid)" height="200" width="1000" x="0" y="0"></rect>
+<path d="M70,160 L300,128 L540,96 L780,64" fill="none" opacity="0.5" stroke="#38bdf8" stroke-dasharray="8 8" stroke-width="1.8"></path>
+<g font-family="Inter,sans-serif">
+<g class="wf-a"><rect fill="#0e2018" height="44" rx="11" stroke="#34d399" stroke-width="2" width="150" x="40" y="138"></rect><text fill="#9fe7c9" font-size="14" font-weight="600" text-anchor="middle" x="115" y="165">1 · Instalar</text></g>
+<g class="wf-a"><rect fill="#0e2018" height="44" rx="11" stroke="#34d399" stroke-width="2" width="150" x="270" y="106"></rect><text fill="#9fe7c9" font-size="14" font-weight="600" text-anchor="middle" x="345" y="133">2 · Memoria</text></g>
+<g class="wf-a"><rect fill="#0e2018" height="44" rx="11" stroke="#34d399" stroke-width="2" width="150" x="510" y="74"></rect><text fill="#9fe7c9" font-size="14" font-weight="600" text-anchor="middle" x="585" y="101">3 · Power</text></g>
+<g filter="url(#t1-glow)"><rect fill="#0e2018" height="48" rx="12" stroke="url(#t1-grad)" stroke-width="2.5" width="170" x="750" y="40"></rect></g>
+<text fill="#34d399" font-size="14" font-weight="600" text-anchor="middle" x="835" y="69">Operador seguro</text>
+</g>
+</svg>
+</div>
+</div>
+</header>
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="conteudo">
+<!-- MAPA DA TRILHA -->
+<section class="mb-12">
+<h2 class="text-2xl font-bold mb-6">Mapa de la ruta</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all" href="#modulo-1-1"><div class="flex items-center justify-between mb-2"><span class="text-emerald-400 font-bold text-sm">1.1</span><span class="text-xs text-neutral-500">~25 min</span></div><h3 class="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">🌅 Bienvenida</h3><p class="text-xs text-neutral-400">Imagina y construye</p></a>
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all" href="#modulo-1-2"><div class="flex items-center justify-between mb-2"><span class="text-emerald-400 font-bold text-sm">1.2</span><span class="text-xs text-neutral-500">~75 min</span></div><h3 class="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">🛡️ Fundamentos y configuración</h3><p class="text-xs text-neutral-400">Desde cero hasta el primer comando</p></a>
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all" href="#modulo-1-3"><div class="flex items-center justify-between mb-2"><span class="text-emerald-400 font-bold text-sm">1.3</span><span class="text-xs text-neutral-500">~45 min</span></div><h3 class="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">🧠 Sistema de memoria</h3><p class="text-xs text-neutral-400">Para que la IA no te olvide</p></a>
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-emerald-500/30 p-5 transition-all" href="#modulo-1-4"><div class="flex items-center justify-between mb-2"><span class="text-emerald-400 font-bold text-sm">1.4</span><span class="text-xs text-neutral-500">~60 min</span></div><h3 class="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">⚡ Funciones avanzadas</h3><p class="text-xs text-neutral-400">Uno se convierte en un equipo</p></a>
+</div>
+</section>
+<h2 class="text-2xl font-bold mb-6">Contenido detallado</h2>
+<!-- MODULO 1-1 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-1-1">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-emerald-400 font-bold">1.1</span><span class="text-xs text-neutral-500">~25 min</span></div>
+<h3 class="text-2xl font-bold mb-2">🌅 Bienvenida: imagina y construye</h3>
+<p class="text-neutral-400 text-sm">La apertura: qué es Claude Code, la mentalidad del curso y cómo estudiar.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-1-1-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">🌅</span><div><span class="font-medium">El mundo se convirtió en</span><span class="text-neutral-500 text-sm ml-2">- por qué ahora</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-1-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Con describirlo en portugués basta para crear software.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">La barrera cayó; quien lo entiende primero toma la delantera.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Lenguaje natural → código · habilidad transferible.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-1-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">🧠</span><div><span class="font-medium">La mentalidad</span><span class="text-neutral-500 text-sm ml-2">- imaginar es especificar</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-1-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Tratar tus ideas como proyectos ejecutables.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">El mayor obstáculo es creer que «esto no es para mí».</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">La imaginación como especificación · tú eres quien dirige.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-1-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">🤖</span><div><span class="font-medium">Qué es Claude Code</span><span class="text-neutral-500 text-sm ml-2">- y lo que no es</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-1-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Un agente en la terminal que escribe, prueba y corrige código.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Evita expectativas equivocadas y muestra por qué supera al no-code.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Terminal · agente de código · capa de abstracción.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-1-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">🛠️</span><div><span class="font-medium">Construir, no solo estudiar</span><span class="text-neutral-500 text-sm ml-2">- manos a la obra</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-1-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Aprender creando cosas reales, con un proyecto como evaluación.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">El conocimiento que se convierte en proyecto permanece; el disperso se evapora.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Aprender haciendo · portafolio · sin relleno.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-1-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">🗺️</span><div><span class="font-medium">Panorama de las 3 rutas</span><span class="text-neutral-500 text-sm ml-2">- el mapa</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-1-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Tres rutas progresivas + la Biblioteca de recursos.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Ver el mapa reduce la ansiedad y ayuda a elegir el ritmo.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Fundamentos · Construir · Operar y lucrar.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-1-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">📚</span><div><span class="font-medium">Cómo estudiar</span><span class="text-neutral-500 text-sm ml-2">- método</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-1-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Secuencia, enfoque y práctica antes de avanzar.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">El beneficio está en las pequeñas técnicas.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Secuencia · enfoque · curso vivo.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-1-1')">Ver en Modal</button>
+<a class="px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors" href="modulo-1-1.html">Ver completo</a>
+</div>
+</div>
+<!-- MODULO 1-2 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-1-2">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-emerald-400 font-bold">1.2</span><span class="text-xs text-neutral-500">~75 min</span></div>
+<h3 class="text-2xl font-bold mb-2">🛡️ Fundamentos y configuración</h3>
+<p class="text-neutral-400 text-sm">Instalar, entender modelo×entorno, permisos, contexto y slash commands.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-1-2-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">🛡️</span><div><span class="font-medium">Modelo × Entorno</span><span class="text-neutral-500 text-sm ml-2">- la armadura</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-2-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">El modelo es la inteligencia; el entorno (IDE/terminal) es la armadura.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Separar los dos evita confusiones al configurarlos.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Modelo · entorno · IDE.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-2-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">💻</span><div><span class="font-medium">Instalando</span><span class="text-neutral-500 text-sm ml-2">- paso a paso</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-2-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Descargar, autenticar y abrir Claude Code.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Una configuración correcta evita el 80% de los problemas iniciales.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Descarga · inicio de sesión · primer comando.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-2-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">🧭</span><div><span class="font-medium">La interfaz</span><span class="text-neutral-500 text-sm ml-2">- por dentro</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-2-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Dónde están los comandos, los archivos y el chat.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Conocer la interfaz agiliza todo después.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Prompt · archivos · historial.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-2-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">🔐</span><div><span class="font-medium">Modos de permisos</span><span class="text-neutral-500 text-sm ml-2">- control</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-2-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Cuánto puede hacer el agente por su cuenta.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Equilibra velocidad y seguridad.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Aprobar · aceptar automáticamente · riesgo.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-2-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">🧠</span><div><span class="font-medium">Ventana de contexto</span><span class="text-neutral-500 text-sm ml-2">- el "deterioro"</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-2-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">El límite de memoria de trabajo de la IA por sesión.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Una conversación demasiado larga empeora las respuestas (context rot).</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Tokens · context rot · limpiar la sesión.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-2-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">⌨️</span><div><span class="font-medium">Slash commands y plan</span><span class="text-neutral-500 text-sm ml-2">- atajos</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-2-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Comandos con «/» y el modo de planificar antes de actuar.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Ahorran tiempo y te dan control sobre lo que se hará.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">/clear · /context · plan mode.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-1-2')">Ver en Modal</button>
+<a class="px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors" href="modulo-1-2.html">Ver completo</a>
+</div>
+</div>
+<!-- MODULO 1-3 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-1-3">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-emerald-400 font-bold">1.3</span><span class="text-xs text-neutral-500">~45 min</span></div>
+<h3 class="text-2xl font-bold mb-2">🧠 Sistema de memoria</h3>
+<p class="text-neutral-400 text-sm">Memoria a corto, mediano y largo plazo — y el CLAUDE.md como manual del proyecto.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-1-3-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">🧠</span><div><span class="font-medium">Los tres niveles</span><span class="text-neutral-500 text-sm ml-2">- panorama</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-3-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Corta (sesión), mediana (proyecto) y larga (base de conocimiento).</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Cada nivel resuelve un problema diferente de «olvido».</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Corta · mediana · larga.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-3-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">⏱️</span><div><span class="font-medium">Memoria a corto plazo</span><span class="text-neutral-500 text-sm ml-2">- deterioro del contexto</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-3-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Lo que cabe en la sesión actual y se degrada cuando se llena.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Saber cuándo limpiar mantiene la calidad.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Sesión · limpiar · empezar de nuevo.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-3-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">🪣</span><div><span class="font-medium">Organiza en «baldes»</span><span class="text-neutral-500 text-sm ml-2">- carpetas</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-3-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Separa los proyectos en carpetas dedicadas (5–8 contenedores).</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Contexto organizado = respuestas más precisas.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Carpetas · alcance · 1 manual por carpeta.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-3-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">📋</span><div><span class="font-medium">CLAUDE.md</span><span class="text-neutral-500 text-sm ml-2">- el manual</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-3-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Un archivo que le explica el proyecto a la IA (≈200 palabras).</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Es la memoria promedio que no se pierde entre sesiones.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Manual del proyecto · breve · 1 por carpeta.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-3-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">🗄️</span><div><span class="font-medium">Memoria a largo plazo</span><span class="text-neutral-500 text-sm ml-2">- la base que crece</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-3-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Una base de conocimiento que acumula lo que importa.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Dejas de repetir el mismo contexto cada vez.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Base de conocimientos · subcarpetas · acumulación.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-3-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">💾</span><div><span class="font-medium">"memory save"</span><span class="text-neutral-500 text-sm ml-2">- registra lo que importa</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-3-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Una rutina para guardar conclusiones en la carpeta correcta.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Convierte conversaciones en conocimiento reutilizable.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Guardar · subcarpeta correcta · reutilización.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-1-3')">Ver en Modal</button>
+<a class="px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors" href="modulo-1-3.html">Ver completo</a>
+</div>
+</div>
+<!-- MODULO 1-4 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-1-4">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-emerald-400 font-bold">1.4</span><span class="text-xs text-neutral-500">~60 min</span></div>
+<h3 class="text-2xl font-bold mb-2">⚡ Funciones avanzadas</h3>
+<p class="text-neutral-400 text-sm">Slash commands, skills, MCP y subagentes: de trabajar a solas a un equipo potenciado.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-1-4-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">⚡</span><div><span class="font-medium">Slash commands</span><span class="text-neutral-500 text-sm ml-2">- atajos</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-4-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Comandos rápidos que activan acciones habituales.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Ahorran escritura y estandarizan tareas.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">/comando · atajo · repetible.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-4-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">🧠</span><div><span class="font-medium">Contexto y tokens</span><span class="text-neutral-500 text-sm ml-2">- el precipicio</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-4-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Cómo afecta el uso del contexto al costo y la calidad.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Gestionar el contexto evita respuestas peores y gastos.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Tokens · /context · limpiar.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-4-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">🎯</span><div><span class="font-medium">Skills</span><span class="text-neutral-500 text-sm ml-2">- libro de recetas</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-4-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Paquetes de instrucciones que dan a la IA una habilidad lista para usar.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Reutiliza la experiencia sin reescribirlo todo.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Skill · instalar · usar.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-4-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">🔌</span><div><span class="font-medium">MCP</span><span class="text-neutral-500 text-sm ml-2">- el enchufe universal</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-4-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Un estándar para conectar la IA con herramientas externas.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Abre el agente al mundo (apps, datos, APIs).</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Protocolo · conector · integración.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-4-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">👥</span><div><span class="font-medium">Subagentes</span><span class="text-neutral-500 text-sm ml-2">- delegar</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-4-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Varios agentes trabajando en paralelo en una tarea.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Terminan más rápido y cubren más terreno.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Paralelo · delegar · orquestar.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-1-4-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">🔁</span><div><span class="font-medium">Ciclo de crítica</span><span class="text-neutral-500 text-sm ml-2">- uno crea, otro revisa</span></div></button><div class="topic-explanation px-6 pb-4" id="t-1-4-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-emerald-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Un agente produce, otro revisa y señala fallas.</p></div><div><span class="text-emerald-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">La calidad mejora mucho con una revisión adversarial.</p></div><div><span class="text-emerald-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Crear · revisar · iterar.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-1-4')">Ver en Modal</button>
+<a class="px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors" href="modulo-1-4.html">Ver completo</a>
+</div>
+</div>
+<!-- NAVEGACAO ENTRE TRILHAS -->
+<div class="flex flex-col sm:flex-row gap-4 mt-10">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="../../index.html">← Inicio del curso</a>
+<a class="flex-1 text-center px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-500 transition-colors" href="../trilha2/index.html">Siguiente ruta: Construir →</a>
+</div>
+</main>
+<!-- MODAIS -->
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-1-1" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-emerald-400 font-bold">1.1</span><span class="font-semibold">Bienvenida</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-1-1.html" title="Módulo 1.1"></iframe></div></div>
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-1-2" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-emerald-400 font-bold">1.2</span><span class="font-semibold">Fundamentos y configuración</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-1-2.html" title="Módulo 1.2"></iframe></div></div>
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-1-3" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-emerald-400 font-bold">1.3</span><span class="font-semibold">Sistema de memoria</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-1-3.html" title="Módulo 1.3"></iframe></div></div>
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-1-4" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-emerald-400 font-bold">1.4</span><span class="font-semibold">Power Features</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-1-4.html" title="Módulo 1.4"></iframe></div></div>
+<footer class="border-t border-dark-600 py-8 mt-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>Claude Code en la práctica — <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p></div>
+</footer>
+<script>
+    function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp){ e.classList.remove('active'); var b=e.parentElement.querySelector('button[aria-expanded]'); if(b) b.setAttribute('aria-expanded','false'); } });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync(); tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+    function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }
+    function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>

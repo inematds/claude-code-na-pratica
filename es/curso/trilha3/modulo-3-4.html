@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="claude-na-pratica" name="inema-course"/>
+<title>3.4 Tu sistema operativo para Claude Code | Claude Code na Prática</title>
+<!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'purple' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'purple');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.purple;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    section[data-inema-topic], [id^="topico-"], [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    /* Light mode - acento T3 purple */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124,58,237,0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124,58,237,0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124,58,237,0.18); }
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    /* SVG adapta ao tema claro */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    /* Pulso do SVG */
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s}
+    }
+  </style>
+<link href="https://inematds.github.io/claude-code-na-pratica/curso/trilha3/modulo-3-4.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/en/curso/trilha3/modulo-3-4.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/es/curso/trilha3/modulo-3-4.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha3/modulo-3-4.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha3/modulo-3-4.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="modulo-3-4.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="skip" href="#conteudo">Saltar al contenido</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">⚡</span>
+<span class="font-bold text-lg hidden sm:inline">Claude Code en la práctica</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10" href="index.html"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar y ganar</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+<button class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" data-inema-journey-open="" title="Mi recorrido" type="button">
+<span aria-hidden="true">◷</span><span class="hidden lg:inline">Recorrido</span>
+<span aria-hidden="true" class="inema-journey-badge hidden"></span>
+</button>
+<button aria-label="Alternar entre tema claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Tema claro/oscuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Ruta de navegación" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-purple-400" href="../../index.html">Inicio</a>
+<span>/</span>
+<a class="hover:text-purple-400" href="index.html">Operar y ganar</a>
+<span>/</span>
+<span class="text-purple-400">Módulo 3.4</span>
+</div>
+</nav>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MÓDULO 3.4</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🖥️ Crea tu propio «sistema operativo» para Claude Code</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">El módulo adicional / capstone. Reúnes todo lo que aprendiste en una capa que te da una visión global: una carpeta raíz, un <code>CLAUDE.md</code> maestro y un panel HTML que lee tus datos y muestra proyectos, skills, agentes y costos de un vistazo.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">6</div><div class="text-xs text-neutral-400">Temas</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">~60</div><div class="text-xs text-neutral-400">Minutos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Intermedio</div><div class="text-xs text-neutral-400">Nivel</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Proyecto final</div><div class="text-xs text-neutral-400">Tipo</div></div>
+</div>
+<!-- Medidor de progresso do modulo -->
+<div class="mt-6 max-w-2xl">
+<div aria-label="Progreso del módulo 3.4" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:3-4" role="progressbar">
+<span class="inema-meter-pct" data-inema-meter-pct="">0%</span> <span class="inema-meter-count text-neutral-400 text-sm" data-inema-meter-frac="">0 de 6</span>
+</div>
+</div>
+</div>
+</header>
+<!-- CONTEUDO + TOC -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10" id="conteudo">
+<!-- TOC sticky -->
+<nav aria-label="Índice de la página" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Sección <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-1">1. Qué es un OS personal</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-2">2. Estructura de carpetas</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-3">3. CLAUDE.md maestro</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-4">4. Panel HTML que lee JSON</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-5">5. Seguimiento de costos</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-6">6. Incorporación + catálogo</a></li>
+</ul>
+</nav>
+<div class="inema-prose">
+<!-- SVG: painel contém módulos (aninhamento) + dashboard mock -->
+<div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
+<svg aria-label="Ilustrativo: un árbol de carpetas meu-os alimenta un panel con tres indicadores: Proyectos, Skills/Agentes y Costo del mes con alerta de subuso" class="w-full h-auto" role="img" viewbox="0 0 1000 300">
+<defs>
+<lineargradient id="m34-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#c084fc"></stop><stop offset="1" stop-color="#a855f7"></stop></lineargradient>
+<filter height="180%" id="m34-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m34-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#a855f7" opacity="0.12" r="1.3"></circle></pattern>
+<marker id="m34-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#c084fc"></path></marker>
+<marker id="m34-ahc" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"></path></marker>
+</defs>
+<rect fill="url(#m34-grid)" height="300" width="1000" x="0" y="0"></rect>
+<!-- arvore de pastas (raiz contem dados que alimentam o painel) -->
+<g fill="#d8b9ff" font-family="Inter,sans-serif" font-size="12.5">
+<rect fill="#1a1230" height="200" rx="14" stroke="url(#m34-grad)" stroke-width="2.5" width="220" x="36" y="50"></rect>
+<text fill="#c084fc" font-size="14" font-weight="700" x="58" y="80">📁 meu-os/</text>
+<text x="74" y="106">📋 CLAUDE.md</text>
+<text x="74" y="130">📁 projetos/</text>
+<text x="74" y="154">📁 skills/ · agentes/</text>
+<text x="74" y="178">📁 conocimiento/</text>
+<text fill="#e9d5ff" x="74" y="202">📁 datos/  (JSON)</text>
+<text x="74" y="226">🖥️ painel/index.html</text>
+</g>
+<!-- setas: dados alimentam o painel -->
+<g fill="none" opacity="0.6" stroke="#c084fc" stroke-width="1.8">
+<path d="M256,150 C330,150 350,90 410,90" marker-end="url(#m34-ah)"></path>
+<path d="M256,150 L410,150" marker-end="url(#m34-ah)"></path>
+<path d="M256,150 C330,150 350,210 410,210" marker-end="url(#m34-ah)"></path>
+</g>
+<!-- monitor / dashboard mock (painel contem 3 mostradores = modulos) -->
+<rect fill="#0f0a1e" height="208" rx="16" stroke="#a855f7" stroke-width="2" width="554" x="410" y="36"></rect>
+<text fill="#e9d5ff" font-family="Inter,sans-serif" font-size="14" font-weight="700" text-anchor="middle" x="687" y="62">🖥️ Panel — mi OS</text>
+<g font-family="Inter,sans-serif" font-size="13" font-weight="600">
+<g class="wf-a"><rect fill="#1a1230" height="62" rx="10" stroke="#c084fc" stroke-width="2" width="160" x="430" y="78"></rect><text fill="#e9d5ff" text-anchor="middle" x="510" y="104">📁 Proyectos</text><text fill="#a855f7" font-size="18" font-weight="800" text-anchor="middle" x="510" y="125">7</text></g>
+<g class="wf-a"><rect fill="#1a1230" height="62" rx="10" stroke="#c084fc" stroke-width="2" width="160" x="606" y="78"></rect><text fill="#e9d5ff" text-anchor="middle" x="686" y="104">🧩 Skills/Agentes</text><text fill="#a855f7" font-size="18" font-weight="800" text-anchor="middle" x="686" y="125">21</text></g>
+<g class="wf-a"><rect fill="#1a1230" height="62" rx="10" stroke="#38bdf8" stroke-width="2" width="160" x="782" y="78"></rect><text fill="#bfe6ff" text-anchor="middle" x="862" y="104">⛽ Costo del mes</text><text fill="#38bdf8" font-size="16" font-weight="800" text-anchor="middle" x="862" y="125">infrautilizado</text></g>
+</g>
+<!-- barra de custo ilustrativa -->
+<rect fill="#241a3a" height="14" rx="7" width="512" x="430" y="158"></rect>
+<rect fill="url(#m34-grad)" height="14" rx="7" width="190" x="430" y="158"></rect>
+<text fill="#9a86c0" font-family="Inter,sans-serif" font-size="11" x="430" y="196">indicador de uso bajo — señal para reevaluar el plan</text>
+<text fill="#7c6aa0" font-family="Inter,sans-serif" font-size="12" text-anchor="middle" x="687" y="276">Tu sistema, tu panel: empieza poco a poco y crece según lo necesites. (ilustrativo)</text>
+</svg>
+</div>
+<h2 class="text-2xl font-bold mb-6">Contenido detallado</h2>
+<!-- TOPICO 1 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-1" data-inema-track="3" id="topico-1">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">🗺️ Qué es un «OS personal» para IA</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t1-p1">A medida que usas Claude Code, las piezas se multiplican: varios proyectos, decenas de skills, agentes especializados, varias suscripciones. En algún momento pierdes la visión del conjunto. El <strong class="text-purple-400">"sistema operativo personal"</strong> es la capa que te devuelve esa perspectiva; no es un producto que compras, sino una combinación de cosas simples que reúnes por tu cuenta.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Carpeta raíz + <code>CLAUDE.md</code> maestro + panel visual que ofrece una visión única de tu uso de Claude Code.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Sin esta capa, cada proyecto es una isla; no sabes cuántas skills tienes ni cuánto gastas. Con ella, trabajas con un mapa, no a ciegas.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Panel (dashboard) · fuente única de verdad · sistema = datos + visualización (no una aplicación cerrada) · «empieza poco a poco y crece».</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h3 class="text-lg font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">🚗</span> Analogía del tablero del auto</h3>
+<p class="text-neutral-300 text-sm">No miras dentro del motor todo el tiempo; miras el tablero: velocidad, combustible, temperatura. Tu tablero de IA hace lo mismo: cuántos proyectos activos tienes, qué skills existen, cuánto gastaste este mes y qué suscripción está infrautilizada.</p>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">📌</span> Analogía del tablero de anuncios</h3>
+<p class="text-neutral-300 text-sm">O <code>CLAUDE.md</code> el maestro es el tablero de la entrada: todos los que llegan lo leen primero. Indica dónde están las cosas y cuáles son las reglas. El panel HTML es la «vitrina» de ese tablero: la versión bonita e interactiva.</p>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">⭐</span> La regla de oro</h3>
+<p class="text-neutral-300 text-sm"><em>El sistema es tuyo, así que empieza poco a poco y crece según la demanda.</em> No intentes reproducir un panel lleno de funciones el día 1. Arma la estructura, un <code>CLAUDE.md</code> maestro y una página que muestra tres cosas. Después agregas costos, onboarding, agente. Cada pieza es opcional y reemplazable.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- TOPICO 2 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-2" data-inema-track="3" id="topico-2">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">📁 La estructura de carpetas: la columna vertebral</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t2-p1">El panel solo puede mostrar lo que está organizado. Por eso, la <strong class="text-purple-400">estructura de carpetas</strong> va antes que todo: una carpeta raíz con subcarpetas para proyectos, skills, agentes, conocimiento, el panel y —la pieza clave— una carpeta <code>dados/</code> con archivos simples que el panel y Claude leen.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Una carpeta raíz (p. ej., <code>meu-os/</code>) con subcarpetas por categoría y una <code>dados/</code> para los archivos JSON.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">La estructura es lo que hace posible y automatizable todo lo demás. Sin ella, el panel no tiene nada que leer.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Carpeta raíz como índice · una subcarpeta por categoría · datos en formato simple (JSON/markdown) que el panel y Claude leen.</p></div>
+</div>
+<!-- CAIXA DE CÓDIGO: estrutura de pastas -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Estructura sugerida de la carpeta raíz</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre">meu-os/
+├── CLAUDE.md            ← o "quadro de avisos" (mestre)
+├── projetos/            ← um diretório por projeto seu
+├── skills/              ← suas skills
+├── agentes/             ← seus subagentes
+├── conhecimento/        ← memória longa (notas, referências)
+├── dados/               ← o painel LÊ daqui
+│   ├── projetos.json
+│   ├── skills.json
+│   ├── agentes.json
+│   └── custo.json
+└── painel/
+    └── index.html       ← a "vitrine" clicável</pre>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Crea la carpeta raíz</h4><p class="text-neutral-300 text-sm">Algo como <code>meu-os/</code>. Es el índice de todo.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Crea una subcarpeta por categoría</h4><p class="text-neutral-300 text-sm"><code>projetos/</code>, <code>skills/</code>, <code>agentes/</code>, <code>conhecimento/</code>, <code>painel/</code>, <code>dados/</code>.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Reserva <code>dados/</code> para el panel</h4><p class="text-neutral-300 text-sm">Es donde viven <code>projetos.json</code>, <code>custo.json</code> y compañía.</p></div>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- TOPICO 3 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-3" data-inema-track="3" id="topico-3">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">📋 El CLAUDE.md maestro: quién manda en el conjunto</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t3-p1">O <code>CLAUDE.md</code> en la raíz del <code>meu-os/</code> é o <strong class="text-purple-400">cerebro del sistema</strong>: describe dónde está cada cosa, las reglas generales y cómo Claude debe actualizar los datos. Cuando pides «actualiza mi panel» en cualquier chat, Claude lee este archivo y sabe exactamente qué hacer.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Un archivo breve en la raíz que describe todo el sistema: mapa de carpetas, reglas e instrucciones de mantenimiento.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Es la fuente de verdad que hace que el sistema obedezca comandos en lenguaje natural, en cualquier chat nuevo.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Mapa de carpetas · reglas globales · instrucciones de mantenimiento ("al agregar una skill, regístrala en <code>dados/skills.json</code>") · queda corto y estable (~250 palabras).</p></div>
+</div>
+<!-- CAIXA DE CÓDIGO: esqueleto do CLAUDE.md mestre -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Esqueleto del <code>meu-os/CLAUDE.md</code> (~250 palabras)</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap"># Meu OS pessoal — Claude Code
+
+## Mapa de pastas
+- projetos/      → um diretório por projeto
+- skills/        → minhas skills
+- agentes/       → meus subagentes
+- conhecimento/  → memória longa
+- dados/         → JSON que o painel lê
+- painel/        → index.html (a vitrine)
+
+## Arquivos de dados
+- dados/projetos.json  → nome, status, objetivo
+- dados/skills.json    → nome, descrição, modelo
+- dados/custo.json     → serviço, gasto, % de uso
+
+## Regras de manutenção
+- Ao adicionar projeto/skill/custo, edite SÓ o JSON
+  correto em dados/.
+- Nunca invente preços ou valores — pergunte se faltar.
+- Mantenha este arquivo curto; detalhes vão nos JSON.</pre>
+</div>
+<details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+<summary class="cursor-pointer font-semibold text-purple-400">Profundiza (opcional): ¿por qué ~250 palabras?</summary>
+<p class="text-neutral-300 text-sm mt-3">Un <code>CLAUDE.md</code> inflado se lee por completo en cada chat: consume contexto y envejece rápido. Mantén solo lo que es estable (mapa + reglas). Todo lo que cambia a cada rato (la lista de proyectos, los gastos) vive en los JSON de <code>dados/</code> y en <code>conhecimento/</code>, que Claude lee solo cuando lo necesita.</p>
+</details>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- TOPICO 4 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-4" data-inema-track="3" id="topico-4">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">🖥️ El panel HTML que lee JSON: el escaparate interactivo</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t4-p1">El panel es una <strong class="text-purple-400">página única <code>index.html</code></strong> que lee los archivos de <code>dados/</code> y muestra tarjetas de proyectos, una lista de skills/agentes y un resumen de costos. Sin build, sin backend, sin framework: se abre directamente en el navegador (<code>file://</code>) y transforma datos crudos en el "tablero del auto".</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Una página que carga JSON local mediante <code>fetch</code> y muestra bloques visuales; Claude genera y actualiza el HTML por ti.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Es lo que te permite mirar rápidamente y entender tu uso, en vez de abrir cinco archivos.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Una página · sin build/backend · lee JSON mediante <code>fetch</code> · empieza con tres bloques: Proyectos, Skills, Costo del mes.</p></div>
+</div>
+<!-- CAIXA DE CÓDIGO: exemplo de painel (fetch + render mínimo) -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Ejemplo de panel — corazón del <code>painel/index.html</code></p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">&lt;div id="projetos"&gt;&lt;/div&gt;
+&lt;div id="custo"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+async function carregar() {
+  // lê os JSON de dados/ (caminho relativo ao index.html)
+  const proj  = await fetch('../dados/projetos.json').then(r =&gt; r.json());
+  const custo = await fetch('../dados/custo.json').then(r =&gt; r.json());
+
+  // cards de projetos
+  document.getElementById('projetos').innerHTML =
+    proj.map(p =&gt; `&lt;article&gt;&lt;b&gt;${p.nome}&lt;/b&gt; — ${p.status}&lt;/article&gt;`).join('');
+
+  // soma de custo + alerta de subuso
+  const total = custo.reduce((s, c) =&gt; s + c.gasto, 0);
+  const subuso = custo.filter(c =&gt; c.uso &lt; 40);
+  document.getElementById('custo').innerHTML =
+    `Total do mês: R$ ${total.toFixed(2)}` +
+    (subuso.length ? ` · ⚠️ subutilizado: ${subuso.map(c =&gt; c.servico).join(', ')}` : '');
+}
+carregar();
+&lt;/script&gt;</pre>
+<p class="text-xs text-neutral-500 mt-2">Maqueta ilustrativa — Claude arma todo el HTML y el estilo por ti; lo que importa es el patrón: <em>leer JSON → renderizar → sumar/alertar</em>.</p>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Consejo práctico</h3>
+<p class="text-neutral-300 text-sm">Algunos navegadores bloquean <code>fetch</code> de archivos locales por seguridad. Si el panel se abre vacío en <code>file://</code>, pídele a Claude que inicie un servidor local sencillo (una línea) o que incruste los datos directamente en el HTML mientras haces las pruebas.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- TOPICO 5 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-5" data-inema-track="3" id="topico-5">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">💸 Seguimiento del costo y el uso entre modelos</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t5-p1">O <code>dados/custo.json</code> é o <strong class="text-purple-400">medidor de combustible</strong>: registras gastos y uso por modelo/suscripción, y el panel suma y destaca el uso insuficiente. Aquí es donde el sistema «se paga solo»: ver una suscripción infrautilizada puede hacer que cambies de plan y ahorres.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Un archivo con un elemento por servicio (modelo, gasto, % de uso) que el panel suma y analiza.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Es el retorno más concreto del sistema: claridad sobre en qué se está gastando el dinero de IA (y dónde está detenido).</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Registro manual o semiautomático · un elemento por servicio · campos de gasto y uso · los precios provienen de la página oficial — <strong>nunca inventes valores</strong>.</p></div>
+</div>
+<!-- CAIXA DE CÓDIGO: exemplo de custo.json -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Ejemplo de <code>dados/custo.json</code></p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">[
+  { "servico": "Claude (assinatura)", "gasto": 100.00, "uso": 78 },
+  { "servico": "API Claude (avulso)", "gasto":  35.00, "uso": 55 },
+  { "servico": "Editor IA",            "gasto":  50.00, "uso": 20 }
+]</pre>
+<p class="text-xs text-neutral-500 mt-2">Los valores son ejemplos. Usa los tuyos reales; para la API, consulta los <a class="text-sky-400 hover:text-sky-300" href="https://www.anthropic.com/pricing" target="_blank">precios oficiales</a>. El servicio con <code>uso</code> bajo (aquí, 20%) es lo que el panel te indica para que reevalúes.</p>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Enumera un elemento por servicio</h4><p class="text-neutral-300 text-sm">Modelo/suscripción, gasto mensual y porcentaje de uso.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Pídele a Claude que sume y marque el subuso</h4><p class="text-neutral-300 text-sm">Total del mes + alerta para los servicios de bajo uso.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Muestra el total y las alertas en el panel</h4><p class="text-neutral-300 text-sm">De un vistazo decides si vale la pena mantener, descargar o cancelar un plan.</p></div>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- TOPICO 6 -->
+<section class="mb-16" data-inema-module="3-4" data-inema-topic="modulo-3-4#topico-6" data-inema-track="3" id="topico-6">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">🚀 Onboarding y catálogo de skills/agentes</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-4-t6-p1">Dos piezas completan el sistema. El <strong class="text-purple-400">incorporación</strong> hace que Claude examine tu máquina (solo lectura), descubra las herramientas que usas y complete los datos iniciales. El <strong class="text-purple-400">catálogo</strong> mantiene un registro de cada skill y agente —con el modelo adecuado para cada tarea— para que nunca tengas que reinventar la rueda.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Onboarding = detección de herramientas en el PATH con confirmación antes de guardar. Catálogo = <code>skills.json</code> e <code>agentes.json</code> con nombre, descripción y modelo recomendado.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">El onboarding deja el sistema «listo para funcionar» en tu máquina sin tener que escribir nada manualmente; el catálogo evita que olvides lo que ya tienes.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Comandos seguros de solo lectura · confirmación antes de escribir · un modelo potente para el razonamiento profundo y uno ligero para las tareas repetitivas · nada es fijo, todo se puede editar.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">✓ Buenas prácticas de onboarding</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Detecta binarios en PATH y configuraciones conocidas — solo lectura.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Muestra la lista y pide confirmación antes de guardar.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Registrar en <code>dados/ferramentas.json</code>; lo que falte, lo agregas después.</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Qué evitar</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Dejar que Claude escriba sin que revises la lista.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Catálogo sin el campo del modelo recomendado.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Tratar lo que no se detectó como "imposible": solo hay que agregarlo.</span></li>
+</ul>
+</div>
+</div>
+<!-- CAIXA DE CÓDIGO: exemplo de skills.json -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Ejemplo de <code>dados/skills.json</code> (catálogo)</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">[
+  { "nome": "revisar-texto", "faz": "revisa ortografia e clareza",
+    "modelo": "leve (tarefa repetitiva)" },
+  { "nome": "arquiteto", "faz": "planeja arquitetura de projeto",
+    "modelo": "forte (raciocínio profundo)" }
+]</pre>
+</div>
+<details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+<summary class="cursor-pointer font-semibold text-purple-400">Profundiza (opcional): metas y un agente de código abierto</summary>
+<p class="text-neutral-300 text-sm mt-3">Para darle más vida al sistema, registra metas de mediano plazo en un <code>dados/metas.json</code> que el panel muestra como progreso, y activa <code>conhecimento/</code> como memoria a largo plazo. Si quieres conversar sobre tus metas, puedes conectar un agente <strong>open-source</strong> y gratuito — por ejemplo el <a class="text-sky-400 hover:text-sky-300" href="https://github.com/NousResearch/hermes-agent" target="_blank">Hermes Agent</a>, totalmente opcional y sin costos ocultos. Nada de esto es obligatorio: el panel funciona muy bien por sí solo.</p>
+</details>
+<!-- Checagem leve opcional -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-3-4#q1">
+<p class="font-medium mb-4">Autoevaluación (opcional): ¿qué hace que el panel HTML pueda mantenerse actualizado mediante comandos en lenguaje natural?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">Un backend que funciona todo el tiempo en un servidor de pago.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">Datos centralizados en JSON + un CLAUDE.md maestro que le indica a Claude qué archivo editar.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">Memorizar comandos especiales y escribirlos en el orden correcto.</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- EXEMPLO PRÁTICO GUIADO -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">🧪 Ejemplo práctico guiado</h2>
+<p class="text-neutral-300 text-sm mb-6">Crea una versión mínima funcional de tu OS personal, desde cero hasta tener el panel abierto en el navegador.</p>
+<div class="space-y-4">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">1.</span> Crea la estructura</h3><p class="text-neutral-300 text-sm">En la terminal o pidiéndole a Claude, configura <code>meu-os/</code> con las subcarpetas y los JSON vacíos (usa el árbol del tema 2).</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">2.</span> Abre <code>meu-os/</code> en Claude Code</h3><p class="text-neutral-300 text-sm">Indica a Claude la carpeta raíz.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">3.</span> Escribe el <code>CLAUDE.md</code> maestro</h3><p class="text-neutral-300 text-sm">Usa el prompt 1. Incluye el mapa de carpetas y las reglas de mantenimiento.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">4.</span> Completa los datos</h3><p class="text-neutral-300 text-sm">2–3 proyectos reales en <code>projetos.json</code>; tus suscripciones en <code>custo.json</code>; 3 skills en <code>skills.json</code>.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">5.</span> Genera el panel</h3><p class="text-neutral-300 text-sm">Pide <code>painel/index.html</code> leyendo los tres JSON: tarjetas de proyectos, lista de skills y costo total con alerta de subuso.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">6.</span> Ábrelo en el navegador</h3><p class="text-neutral-300 text-sm">Dos clics en <code>painel/index.html</code>. Deberías ver tus datos.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1"><span class="text-purple-400">7.</span> Prueba el mantenimiento</h3><p class="text-neutral-300 text-sm">En un <strong>chat nuevo</strong>, pide: "Agrega el proyecto X y actualiza el panel." Si Claude edita el JSON correcto leyendo solo el <code>CLAUDE.md</code>, el sistema está funcionando.</p></div>
+</div>
+</section>
+<!-- EXERCICIOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">✏️ Ejercicios</h2>
+<div class="space-y-4">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. Construye la columna vertebral <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Crea la carpeta raíz con todas las subcarpetas y los archivos vacíos. <span class="text-purple-400">Criterio:</span> el árbol de carpetas existe y coincide con el ejemplo.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Escribe el <code>CLAUDE.md</code> maestro <span class="text-xs text-neutral-500">(medio)</span></h3><p class="text-neutral-300 text-sm">Máximo ~250 palabras, con un mapa de carpetas y reglas de mantenimiento. <span class="text-purple-400">Criterio:</span> en un chat nuevo, Claude describe el sistema con solo leer este archivo.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Genera el panel mínimo <span class="text-xs text-neutral-500">(medio)</span></h3><p class="text-neutral-300 text-sm">Haz el <code>index.html</code> mostrar proyectos, skills y costo a partir de los JSON. <span class="text-purple-400">Criterio:</span> se abre en el navegador y muestra tus datos reales.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Rastrea el costo real <span class="text-xs text-neutral-500">(medio)</span></h3><p class="text-neutral-300 text-sm">Completa <code>custo.json</code> con tus suscripciones y marca la que menos usas. <span class="text-purple-400">Criterio:</span> el panel destaca el servicio subutilizado.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Comando de mantenimiento <span class="text-xs text-neutral-500">(difícil)</span></h3><p class="text-neutral-300 text-sm">En un chat nuevo, pídele a Claude que agregue una skill nueva. <span class="text-purple-400">Criterio:</span> <code>skills.json</code> se actualiza y la skill aparece en el panel sin que tengas que editarla manualmente.</p></div>
+</div>
+</section>
+<!-- PROMPTS PRONTOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⌨️ Prompts listos</h2>
+<p class="text-neutral-300 text-sm mb-6">Pega estos en Claude Code apuntando a la carpeta <code>meu-os/</code>. Arman cada pieza del sistema. La base de datos completa está en la <a class="text-sky-400 hover:text-sky-300" href="../trilha4/modulo-4-1.html">Biblioteca → Prompts</a>.</p>
+<div class="space-y-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">1. Crear el <code>CLAUDE.md</code> maestro</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Esta pasta é o meu "sistema operacional pessoal" para o Claude Code.
+Crie um CLAUDE.md mestre, curto (~250 palavras), com:
+- mapa de pastas (projetos, skills, agentes, conhecimento, dados, painel);
+- o que cada arquivo em dados/ contém (projetos.json, skills.json, custo.json);
+- regras de manutenção: ao eu pedir para adicionar projeto/skill/custo,
+  atualize o JSON correto em dados/ e nunca invente valores.
+Não escreva HTML aqui, só o CLAUDE.md.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">2. Generar el panel HTML simple</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Crie painel/index.html: uma única página, sem framework e sem backend,
+que carrega via fetch os arquivos dados/projetos.json, dados/skills.json
+e dados/custo.json e mostra três blocos: cards de Projetos, lista de Skills
+e resumo de Custo do mês. Deve abrir direto no navegador (file://).
+Visual limpo e escuro. Comente o código.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">3. Detectar herramientas instaladas (onboarding)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Vasculhe minha máquina e detecte quais ferramentas de IA e dev eu uso
+(CLIs, editores, terminais, agentes). Use comandos seguros, só de leitura.
+Me mostre a lista para eu confirmar antes de salvar.
+Depois grave o resultado em dados/ferramentas.json.
+O que não achar, eu adiciono depois.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">4. Comando de mantenimiento del sistema</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Vou pedir mudanças no meu OS pessoal (adicionar projeto, skill, custo ou meta).
+Sempre leia o CLAUDE.md mestre primeiro, edite só o JSON correto em dados/
+e me diga o que mudou. Se algo não existir, me pergunte antes de criar.</pre></div>
+</div>
+</section>
+<!-- ERROS COMUNS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⚠️ Errores comunes</h2>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Quererlo todo el día 1.</strong> Intentar reproducir un panel lleno de funciones de una sola vez. <em>Corrige:</em> empieza con una carpeta raíz + <code>CLAUDE.md</code> + tres bloques en el panel; crece según la demanda.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Datos dispersos y sin formato.</strong> Guardar información en lugares aleatorios que el panel no lee. <em>Corrige:</em> centraliza en <code>dados/</code> con JSON simple y consistente.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Adivinar precios y gastos.</strong> Inventar valores en el seguimiento de costos. <em>Corrige:</em> usa solo lo que indiques o los precios oficiales.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong><code>CLAUDE.md</code> maestro inflado.</strong> Llenar de detalles que cambian todo el tiempo. <em>Corrige:</em> mantén ~250 palabras; los detalles van a los JSON y <code>conhecimento/</code>.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Tratar el sistema como cerrado.</strong> Creer que es "todo o nada" y bloquearse cuando algo no se detecta. <em>Corrige:</em> todo es editable; lo que falte, lo agregas pidiéndoselo a Claude.</span></li>
+</ul>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Resumen del módulo</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>El OS personal</strong><span class="text-neutral-400"> — una capa que añades (no compras): carpeta raíz + <code>CLAUDE.md</code> maestro + panel.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>Estructura y datos</strong><span class="text-neutral-400"> — una subcarpeta por categoría y JSON simple en <code>dados/</code> que lee el panel.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>El panel</strong><span class="text-neutral-400"> — una página que lee JSON y muestra proyectos, skills y costos de un vistazo.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>Costo, onboarding y catálogo</strong><span class="text-neutral-400"> — el sistema se paga solo, se instala y nunca te deja reinventar la rueda.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-purple-400 mb-3">Lista de verificación de finalización</h3>
+<ul class="space-y-2 text-sm text-neutral-300">
+<li>☐ Creé la carpeta raíz <code>meu-os/</code> con todas las subcarpetas.</li>
+<li>☐ Escribí un <code>CLAUDE.md</code> maestro (~250 palabras) con mapa de carpetas y reglas de mantenimiento.</li>
+<li>☐ Completé <code>projetos.json</code>, <code>skills.json</code> e <code>custo.json</code> con datos reales.</li>
+<li>☐ Generé <code>painel/index.html</code> y se abre en el navegador mostrando mis datos.</li>
+<li>☐ El seguimiento de costos suma los gastos y destaca un servicio subutilizado.</li>
+<li>☐ Probé un comando de mantenimiento en un chat nuevo y se actualizó el JSON correcto.</li>
+<li>☐ (Opcional) Registré una meta y/o exploré un agente de código abierto.</li>
+</ul>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-purple-400 mb-2">Llegaste al final del aprendizaje:</h3>
+<p class="text-neutral-300">Este es el último módulo del curso. El siguiente paso es la <strong>Biblioteca</strong> — tu colección de prompts, skills y agentes listos para consultar cuando los necesites.</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Volver a la ruta</a>
+<a class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors" href="../trilha4/index.html">Explorar la Biblioteca →</a>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FOOTER -->
+<footer class="border-t border-dark-600 py-8 mt-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+<p>Claude Code en la práctica — <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p>
+</div>
+</footer>
+<!-- SCRIPTS: nucleo v1 -->
+<script>
+    function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp) e.classList.remove('active'); });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync();
+      tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+    function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }
+    function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  </script>
+<!-- Camada de aprendizagem -->
+<script>
+    window.addEventListener('DOMContentLoaded', function(){
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-3-4#q1', {
+          answer: 1,
+          explain: {
+            0: 'Não precisa — o painel é uma página estática que lê JSON local; sem servidor pago.',
+            1: 'Isso! Dados centralizados em JSON + um CLAUDE.md mestre que diz qual arquivo editar é o que deixa tudo manutenível por linguagem natural.',
+            2: 'Não há comandos secretos — o que conta é a estrutura (JSON + CLAUDE.md), não decorar fórmulas.'
+          }
+        });
+      }
+    });
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>

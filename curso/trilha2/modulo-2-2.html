@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="inema-course" content="claude-na-pratica">
-  <title>2.2 Construindo apps: do conceito ao app funcional | Claude Code na Prática</title>
 
-  <!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
-  <script>
+<html class="dark" lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="claude-na-pratica" name="inema-course"/>
+<title>2.2 Construindo apps: do conceito ao app funcional | Claude Code na Prática</title>
+<!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
+<script>
   (function () {
     try {
       var html = document.documentElement;
@@ -37,16 +37,14 @@
     } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
   })();
   </script>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
     tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/learn.css">
-
-  <!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
-  <script type="application/json" data-inema-manifest>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../assets/learn.css" rel="stylesheet"/>
+<!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
+<script data-inema-manifest="" type="application/json">
   {
     "course": "claude-na-pratica",
     "tracks": [
@@ -76,8 +74,7 @@
     ]
   }
   </script>
-
-  <style>
+<style>
     body { font-family: 'Inter', sans-serif; }
     .dark body { background-color: #111827; }
     .topic-explanation { display: none; }
@@ -128,470 +125,449 @@
       .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s}
     }
   </style>
-</head>
-<body class="bg-dark-900 text-neutral-100 min-h-screen">
-  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
-
-  <!-- NAV -->
-  <nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-14">
-        <div class="flex items-center space-x-4">
-          <a href="../../index.html" class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300">
-            <span class="text-2xl">⚡</span>
-            <span class="font-bold text-lg hidden sm:inline">Claude Code na Prática</span>
-          </a>
-          <span class="text-neutral-600">|</span>
-          <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300 text-sm font-medium">INEMA.CLUB</a>
-        </div>
-        <div class="flex items-center space-x-1 sm:space-x-2">
-          <a href="../trilha1/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
-          <a href="index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
-          <a href="../trilha3/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar &amp; Lucrar</span></a>
-          <a href="../trilha4/index.html" class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
-          <button type="button" data-inema-journey-open class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" title="Minha jornada">
-            <span aria-hidden="true">◷</span><span class="hidden lg:inline">Jornada</span>
-            <span class="inema-journey-badge hidden" aria-hidden="true"></span>
-          </button>
-          <button id="theme-toggle" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" title="Tema claro/escuro" aria-label="Alternar tema claro/escuro">
-            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-neutral-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- BREADCRUMB -->
-  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4" aria-label="Trilha de navegação">
-    <div class="flex items-center space-x-2 text-sm text-neutral-400">
-      <a href="../../index.html" class="hover:text-blue-400">Início</a>
-      <span>/</span>
-      <a href="index.html" class="hover:text-blue-400">Construir</a>
-      <span>/</span>
-      <span class="text-blue-400">Módulo 2.2</span>
-    </div>
-  </nav>
-
-  <!-- HEADER -->
-  <header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MÓDULO 2.2</span>
-      <h1 class="text-3xl sm:text-4xl font-bold mb-4">🧩 Construindo apps: do conceito ao app funcional</h1>
-      <p class="text-lg text-neutral-400 max-w-3xl">Um site só mostra; um app reage. Aqui você pega um site simples e o transforma num app de verdade — com banco de dados, login, formulário que salva e tudo no ar — construindo em camadas pequenas e testáveis.</p>
-      <div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">6</div><div class="text-xs text-neutral-400">Tópicos</div></div>
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">~60</div><div class="text-xs text-neutral-400">Minutos</div></div>
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Inter.</div><div class="text-xs text-neutral-400">Nível</div></div>
-        <div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Prática</div><div class="text-xs text-neutral-400">Tipo</div></div>
-      </div>
-      <!-- Medidor de progresso do modulo -->
-      <div class="mt-6 max-w-2xl">
-        <div data-inema-meter="modulo:2-2" class="inema-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do módulo 2.2">
-          <span data-inema-meter-pct class="inema-meter-pct">0%</span> <span data-inema-meter-frac class="inema-meter-count text-neutral-400 text-sm">0 de 6</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- CONTEUDO + TOC -->
-  <main id="conteudo" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10">
-
-    <!-- TOC sticky -->
-    <nav data-inema-toc aria-label="Índice da página" class="hidden lg:block sticky top-24 self-start">
-      <p class="text-sm text-neutral-400 mb-3">Seção <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
-      <ul class="space-y-1 text-sm">
-        <li><a href="#topico-1" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">1. Site vs app</a></li>
-        <li><a href="#topico-2" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">2. Banco de dados</a></li>
-        <li><a href="#topico-3" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">3. Login e contas</a></li>
-        <li><a href="#topico-4" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">4. Construir em camadas</a></li>
-        <li><a href="#topico-5" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">5. Testar de ponta a ponta</a></li>
-        <li><a href="#topico-6" class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400">6. Publicar no ar</a></li>
-      </ul>
-    </nav>
-
-    <div class="inema-prose">
-
-      <!-- SVG anatomia de um app -->
-      <div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
-        <svg viewBox="0 0 1000 240" class="w-full h-auto" role="img" aria-label="Anatomia de um app: front-end (o salão) liga ao back-end (a cozinha), que liga ao banco de dados, com integrações de e-mail e login saindo para fora e uma seta de publicação levando ao app no ar">
-          <defs>
-            <linearGradient id="m22-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/></linearGradient>
-            <filter id="m22-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <pattern id="m22-grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r="1.3" fill="#3b82f6" opacity="0.12"/></pattern>
-            <marker id="m22-ah" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"/></marker>
-            <marker id="m22-ahc" markerWidth="9" markerHeight="9" refX="6.5" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"/></marker>
-          </defs>
-          <rect x="0" y="0" width="1000" height="240" fill="url(#m22-grid)"/>
-          <!-- front-end -->
-          <g filter="url(#m22-glow)"><rect x="30" y="70" width="180" height="68" rx="14" fill="#0e1622" stroke="url(#m22-grad)" stroke-width="2.5"/></g>
-          <text x="120" y="98" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="16">🖥️ Front-end</text>
-          <text x="120" y="118" text-anchor="middle" fill="#9ec6ff" font-family="Inter,sans-serif" font-size="11.5">o salão (o que se vê)</text>
-          <!-- seta front -> back -->
-          <path d="M210,104 L300,104" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.7" marker-end="url(#m22-ah)"/>
-          <!-- back-end -->
-          <rect x="300" y="74" width="180" height="60" rx="12" fill="#0e1622" stroke="#3b82f6" stroke-width="2"/>
-          <text x="390" y="100" text-anchor="middle" fill="#cfe2ff" font-family="Inter,sans-serif" font-weight="600" font-size="15">⚙️ Back-end</text>
-          <text x="390" y="120" text-anchor="middle" fill="#9ec6ff" font-family="Inter,sans-serif" font-size="11.5">a cozinha (processa)</text>
-          <!-- seta back -> banco -->
-          <path d="M480,104 L580,104" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.7" marker-end="url(#m22-ah)"/>
-          <!-- banco (cilindro) -->
-          <g filter="url(#m22-glow)">
-            <ellipse cx="660" cy="80" rx="58" ry="14" fill="#0e1622" stroke="url(#m22-grad)" stroke-width="2.5"/>
-            <path d="M602,80 L602,128 A58,14 0 0 0 718,128 L718,80" fill="#0e1622" stroke="url(#m22-grad)" stroke-width="2.5"/>
-            <ellipse cx="660" cy="80" rx="58" ry="14" fill="#0e1622" stroke="url(#m22-grad)" stroke-width="2.5"/>
-          </g>
-          <text x="660" y="106" text-anchor="middle" fill="#60a5fa" font-family="Inter,sans-serif" font-weight="600" font-size="14">🗄️ Banco</text>
-          <text x="660" y="124" text-anchor="middle" fill="#9ec6ff" font-family="Inter,sans-serif" font-size="11">a despensa</text>
-          <!-- integracoes -->
-          <g font-family="Inter,sans-serif" font-size="13" font-weight="600">
-            <g class="wf-a"><rect x="800" y="58" width="170" height="32" rx="9" fill="#0e1622" stroke="#38bdf8" stroke-width="2"/><text x="885" y="79" text-anchor="middle" fill="#bfe6ff">✉️ e-mail</text></g>
-            <g class="wf-a"><rect x="800" y="118" width="170" height="32" rx="9" fill="#0e1622" stroke="#38bdf8" stroke-width="2"/><text x="885" y="139" text-anchor="middle" fill="#bfe6ff">🔐 login</text></g>
-          </g>
-          <g fill="none" stroke="#38bdf8" stroke-width="1.8" opacity="0.5">
-            <path d="M718,100 C760,100 770,74 800,74" marker-end="url(#m22-ahc)"/>
-            <path d="M718,108 C760,108 770,134 800,134" marker-end="url(#m22-ahc)"/>
-          </g>
-          <!-- faixa de publicacao -->
-          <path d="M120,180 L820,180" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.6" stroke-dasharray="6 5" marker-end="url(#m22-ah)"/>
-          <text x="300" y="172" text-anchor="middle" fill="#9ec6ff" font-family="Inter,sans-serif" font-size="11.5">publicar → no ar</text>
-          <g class="wf-a"><rect x="822" y="164" width="148" height="32" rx="9" fill="#0e1622" stroke="#60a5fa" stroke-width="2"/><text x="896" y="185" text-anchor="middle" fill="#cfe2ff" font-family="Inter,sans-serif" font-size="13" font-weight="600">▲ no ar</text></g>
-          <text x="500" y="222" text-anchor="middle" fill="#6b7280" font-family="Inter,sans-serif" font-size="11">um app = front-end + back-end + banco + integrações — e depois, publicado</text>
-        </svg>
-      </div>
-
-      <h2 class="text-2xl font-bold mb-6">Conteúdo detalhado</h2>
-
-      <!-- TOPICO 1 -->
-      <section id="topico-1" data-inema-topic="modulo-2-2#topico-1" data-inema-module="2-2" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
-            <h2 class="text-2xl font-bold">🧱 Site vs app: o que você está realmente construindo</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-2-t1-p1" class="text-neutral-300 mb-6 leading-relaxed">Um <strong class="text-blue-400">site</strong> é, em geral, só leitura: a pessoa chega, vê o conteúdo e vai embora — nada fica guardado. Um <strong class="text-blue-400">app</strong> reage a quem usa: recebe dados, guarda esses dados, lembra de você e dispara ações. É a diferença entre um cartaz na parede e um caixa eletrônico.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">As quatro peças de um app: front-end (o que se vê), back-end (o que processa), banco de dados (onde se guarda) e integrações (serviços de fora).</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Saber a peça certa para cada problema evita pedir a coisa errada ao Claude e gastar tempo à toa.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Front-end · back-end · banco de dados · integração · determinístico vs probabilístico.</p></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
-            <h4 class="font-bold text-blue-400 mb-4">✓ É hora de virar app quando…</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Você precisa guardar dados de quem usa (e-mails, respostas).</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Cada pessoa tem que entrar e ver a própria área.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Algo deve acontecer depois (enviar e-mail, registrar pedido).</span></li>
-            </ul>
-          </div>
-          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
-            <h4 class="font-bold text-red-400 mb-4">✗ Ainda é só um site quando…</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>A pessoa só lê o conteúdo e nada fica salvo.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Não há login nem áreas privadas.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Nenhuma ação acontece após a visita.</span></li>
-            </ul>
-          </div>
-        </div>
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🍽️</span> Analogia do restaurante</h3>
-          <p class="text-neutral-300 text-sm">O <strong>front-end</strong> é o salão (mesas, cardápio). O <strong>back-end</strong> é a cozinha (onde o pedido é processado). O <strong>banco</strong> é a despensa e o livro-caixa. As <strong>integrações</strong> são os fornecedores e a maquininha de pagamento — serviços de fora que o restaurante chama quando precisa.</p>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- TOPICO 2 -->
-      <section id="topico-2" data-inema-topic="modulo-2-2#topico-2" data-inema-module="2-2" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
-            <h2 class="text-2xl font-bold">🗄️ O banco de dados: onde os dados moram</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-2-t2-p1" class="text-neutral-300 mb-6 leading-relaxed">Sem banco, todo dado coletado se perde quando a aba fecha. Com banco, vira um ativo seu. Pense no Supabase como uma <strong class="text-blue-400">planilha turbinada</strong>: as tabelas são abas, as linhas são registros e as colunas são campos — só que confiável, com uma API pronta e falando direto com o Claude Code.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Um lugar confiável para gravar registros — nomes, e-mails, respostas de formulário, contas de usuário.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">O banco é o "esqueleto firme" determinístico do app — salvar um e-mail tem que salvar <em>aquele</em> e-mail, sempre igual.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Tabela · linha · coluna · "ponto de registro" (a fonte da verdade) · conector/MCP.</p></div>
-        </div>
-        <div class="space-y-6 mb-6">
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Abra os conectores</h4><p class="text-neutral-300 text-sm">No Claude Code, clique no botão de "+" e depois em "conectores".</p></div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Conecte o Supabase</h4><p class="text-neutral-300 text-sm">Ache o Supabase na lista e clique em conectar — abre uma janela para autorizar.</p></div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Crie o projeto e confirme</h4><p class="text-neutral-300 text-sm">Peça ao Claude para criar um projeto novo. Depois confirme em supabase.com que ele apareceu.</p></div>
-          </div>
-        </div>
-        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
-          <p class="text-sm text-neutral-400 mb-2">Conectar e criar o banco</p>
-          <pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Conecte este projeto a um banco de dados Supabase. Crie um projeto novo para este app.</pre>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- TOPICO 3 -->
-      <section id="topico-3" data-inema-topic="modulo-2-2#topico-3" data-inema-module="2-2" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
-            <h2 class="text-2xl font-bold">🔐 Login e contas: capturar dados com segurança</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-2-t3-p1" class="text-neutral-300 mb-6 leading-relaxed">Duas peças andam juntas: o <strong class="text-blue-400">formulário</strong>, que transforma cada resposta numa linha da tabela, e a <strong class="text-blue-400">autenticação</strong>, que identifica cada pessoa (cadastro, login, logout). Sem login, todo mundo vê tudo; com login, você tem áreas privadas e conteúdo por usuário — tudo gerenciado pelo Supabase.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Formulário → tabela (campo vira coluna) somado ao sistema de contas: cadastro (sign-up), login (sign-in) e sessão.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o salto de "site que mostra" para "app que coleta e protege" — o começo de valor de verdade.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Campo → coluna · validação · sessão · "área autenticada".</p></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
-            <h4 class="font-bold text-blue-400 mb-4">✓ Faça no teste</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Peça cadastro e login com senha obrigatória, gerenciados no Supabase.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Em Authentication → Sign-in providers, desligue a confirmação de e-mail só durante os testes.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Considere "entrar com Google" — é o padrão hoje e facilita a vida de quem usa.</span></li>
-            </ul>
-          </div>
-          <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
-            <h4 class="font-bold text-red-400 mb-4">✗ Não esqueça antes de ir ao ar</h4>
-            <ul class="space-y-3 text-neutral-300 text-sm">
-              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Deixar a confirmação de e-mail desligada em produção (enche o banco de cadastros falsos).</span></li>
-              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Esquecer de testar logout e novo login com a mesma senha.</span></li>
-              <li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Liberar áreas privadas sem sessão válida.</span></li>
-            </ul>
-          </div>
-        </div>
-        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
-          <p class="text-sm text-neutral-400 mb-2">Autenticação básica</p>
-          <pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Adicione cadastro e login com senha obrigatória, tudo autenticado e gerenciado no Supabase.
+<link href="https://inematds.github.io/claude-code-na-pratica/curso/trilha2/modulo-2-2.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/en/curso/trilha2/modulo-2-2.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/es/curso/trilha2/modulo-2-2.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="modulo-2-2.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">PT</a><a href="../../en/curso/trilha2/modulo-2-2.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="../../es/curso/trilha2/modulo-2-2.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">⚡</span>
+<span class="font-bold text-lg hidden sm:inline">Claude Code na Prática</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10" href="index.html"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar &amp; Lucrar</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+<button class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" data-inema-journey-open="" title="Minha jornada" type="button">
+<span aria-hidden="true">◷</span><span class="hidden lg:inline">Jornada</span>
+<span aria-hidden="true" class="inema-journey-badge hidden"></span>
+</button>
+<button aria-label="Alternar tema claro/escuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Tema claro/escuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Trilha de navegação" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-blue-400" href="../../index.html">Início</a>
+<span>/</span>
+<a class="hover:text-blue-400" href="index.html">Construir</a>
+<span>/</span>
+<span class="text-blue-400">Módulo 2.2</span>
+</div>
+</nav>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">MÓDULO 2.2</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🧩 Construindo apps: do conceito ao app funcional</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">Um site só mostra; um app reage. Aqui você pega um site simples e o transforma num app de verdade — com banco de dados, login, formulário que salva e tudo no ar — construindo em camadas pequenas e testáveis.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">6</div><div class="text-xs text-neutral-400">Tópicos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">~60</div><div class="text-xs text-neutral-400">Minutos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Inter.</div><div class="text-xs text-neutral-400">Nível</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Prática</div><div class="text-xs text-neutral-400">Tipo</div></div>
+</div>
+<!-- Medidor de progresso do modulo -->
+<div class="mt-6 max-w-2xl">
+<div aria-label="Progresso do módulo 2.2" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:2-2" role="progressbar">
+<span class="inema-meter-pct" data-inema-meter-pct="">0%</span> <span class="inema-meter-count text-neutral-400 text-sm" data-inema-meter-frac="">0 de 6</span>
+</div>
+</div>
+</div>
+</header>
+<!-- CONTEUDO + TOC -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10" id="conteudo">
+<!-- TOC sticky -->
+<nav aria-label="Índice da página" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Seção <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-1">1. Site vs app</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-2">2. Banco de dados</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-3">3. Login e contas</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-4">4. Construir em camadas</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-5">5. Testar de ponta a ponta</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-blue-400" href="#topico-6">6. Publicar no ar</a></li>
+</ul>
+</nav>
+<div class="inema-prose">
+<!-- SVG anatomia de um app -->
+<div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
+<svg aria-label="Anatomia de um app: front-end (o salão) liga ao back-end (a cozinha), que liga ao banco de dados, com integrações de e-mail e login saindo para fora e uma seta de publicação levando ao app no ar" class="w-full h-auto" role="img" viewbox="0 0 1000 240">
+<defs>
+<lineargradient id="m22-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#60a5fa"></stop><stop offset="1" stop-color="#3b82f6"></stop></lineargradient>
+<filter height="180%" id="m22-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m22-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#3b82f6" opacity="0.12" r="1.3"></circle></pattern>
+<marker id="m22-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#60a5fa"></path></marker>
+<marker id="m22-ahc" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"></path></marker>
+</defs>
+<rect fill="url(#m22-grid)" height="240" width="1000" x="0" y="0"></rect>
+<!-- front-end -->
+<g filter="url(#m22-glow)"><rect fill="#0e1622" height="68" rx="14" stroke="url(#m22-grad)" stroke-width="2.5" width="180" x="30" y="70"></rect></g>
+<text fill="#60a5fa" font-family="Inter,sans-serif" font-size="16" font-weight="600" text-anchor="middle" x="120" y="98">🖥️ Front-end</text>
+<text fill="#9ec6ff" font-family="Inter,sans-serif" font-size="11.5" text-anchor="middle" x="120" y="118">o salão (o que se vê)</text>
+<!-- seta front -> back -->
+<path d="M210,104 L300,104" fill="none" marker-end="url(#m22-ah)" opacity="0.7" stroke="#60a5fa" stroke-width="2"></path>
+<!-- back-end -->
+<rect fill="#0e1622" height="60" rx="12" stroke="#3b82f6" stroke-width="2" width="180" x="300" y="74"></rect>
+<text fill="#cfe2ff" font-family="Inter,sans-serif" font-size="15" font-weight="600" text-anchor="middle" x="390" y="100">⚙️ Back-end</text>
+<text fill="#9ec6ff" font-family="Inter,sans-serif" font-size="11.5" text-anchor="middle" x="390" y="120">a cozinha (processa)</text>
+<!-- seta back -> banco -->
+<path d="M480,104 L580,104" fill="none" marker-end="url(#m22-ah)" opacity="0.7" stroke="#60a5fa" stroke-width="2"></path>
+<!-- banco (cilindro) -->
+<g filter="url(#m22-glow)">
+<ellipse cx="660" cy="80" fill="#0e1622" rx="58" ry="14" stroke="url(#m22-grad)" stroke-width="2.5"></ellipse>
+<path d="M602,80 L602,128 A58,14 0 0 0 718,128 L718,80" fill="#0e1622" stroke="url(#m22-grad)" stroke-width="2.5"></path>
+<ellipse cx="660" cy="80" fill="#0e1622" rx="58" ry="14" stroke="url(#m22-grad)" stroke-width="2.5"></ellipse>
+</g>
+<text fill="#60a5fa" font-family="Inter,sans-serif" font-size="14" font-weight="600" text-anchor="middle" x="660" y="106">🗄️ Banco</text>
+<text fill="#9ec6ff" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="660" y="124">a despensa</text>
+<!-- integracoes -->
+<g font-family="Inter,sans-serif" font-size="13" font-weight="600">
+<g class="wf-a"><rect fill="#0e1622" height="32" rx="9" stroke="#38bdf8" stroke-width="2" width="170" x="800" y="58"></rect><text fill="#bfe6ff" text-anchor="middle" x="885" y="79">✉️ e-mail</text></g>
+<g class="wf-a"><rect fill="#0e1622" height="32" rx="9" stroke="#38bdf8" stroke-width="2" width="170" x="800" y="118"></rect><text fill="#bfe6ff" text-anchor="middle" x="885" y="139">🔐 login</text></g>
+</g>
+<g fill="none" opacity="0.5" stroke="#38bdf8" stroke-width="1.8">
+<path d="M718,100 C760,100 770,74 800,74" marker-end="url(#m22-ahc)"></path>
+<path d="M718,108 C760,108 770,134 800,134" marker-end="url(#m22-ahc)"></path>
+</g>
+<!-- faixa de publicacao -->
+<path d="M120,180 L820,180" fill="none" marker-end="url(#m22-ah)" opacity="0.6" stroke="#60a5fa" stroke-dasharray="6 5" stroke-width="2"></path>
+<text fill="#9ec6ff" font-family="Inter,sans-serif" font-size="11.5" text-anchor="middle" x="300" y="172">publicar → no ar</text>
+<g class="wf-a"><rect fill="#0e1622" height="32" rx="9" stroke="#60a5fa" stroke-width="2" width="148" x="822" y="164"></rect><text fill="#cfe2ff" font-family="Inter,sans-serif" font-size="13" font-weight="600" text-anchor="middle" x="896" y="185">▲ no ar</text></g>
+<text fill="#6b7280" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="500" y="222">um app = front-end + back-end + banco + integrações — e depois, publicado</text>
+</svg>
+</div>
+<h2 class="text-2xl font-bold mb-6">Conteúdo detalhado</h2>
+<!-- TOPICO 1 -->
+<section class="mb-16" data-inema-module="2-2" data-inema-topic="modulo-2-2#topico-1" data-inema-track="2" id="topico-1">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">🧱 Site vs app: o que você está realmente construindo</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t1-p1">Um <strong class="text-blue-400">site</strong> é, em geral, só leitura: a pessoa chega, vê o conteúdo e vai embora — nada fica guardado. Um <strong class="text-blue-400">app</strong> reage a quem usa: recebe dados, guarda esses dados, lembra de você e dispara ações. É a diferença entre um cartaz na parede e um caixa eletrônico.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">As quatro peças de um app: front-end (o que se vê), back-end (o que processa), banco de dados (onde se guarda) e integrações (serviços de fora).</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Saber a peça certa para cada problema evita pedir a coisa errada ao Claude e gastar tempo à toa.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Front-end · back-end · banco de dados · integração · determinístico vs probabilístico.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">✓ É hora de virar app quando…</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Você precisa guardar dados de quem usa (e-mails, respostas).</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Cada pessoa tem que entrar e ver a própria área.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Algo deve acontecer depois (enviar e-mail, registrar pedido).</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Ainda é só um site quando…</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>A pessoa só lê o conteúdo e nada fica salvo.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Não há login nem áreas privadas.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Nenhuma ação acontece após a visita.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🍽️</span> Analogia do restaurante</h3>
+<p class="text-neutral-300 text-sm">O <strong>front-end</strong> é o salão (mesas, cardápio). O <strong>back-end</strong> é a cozinha (onde o pedido é processado). O <strong>banco</strong> é a despensa e o livro-caixa. As <strong>integrações</strong> são os fornecedores e a maquininha de pagamento — serviços de fora que o restaurante chama quando precisa.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- TOPICO 2 -->
+<section class="mb-16" data-inema-module="2-2" data-inema-topic="modulo-2-2#topico-2" data-inema-track="2" id="topico-2">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">🗄️ O banco de dados: onde os dados moram</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t2-p1">Sem banco, todo dado coletado se perde quando a aba fecha. Com banco, vira um ativo seu. Pense no Supabase como uma <strong class="text-blue-400">planilha turbinada</strong>: as tabelas são abas, as linhas são registros e as colunas são campos — só que confiável, com uma API pronta e falando direto com o Claude Code.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Um lugar confiável para gravar registros — nomes, e-mails, respostas de formulário, contas de usuário.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">O banco é o "esqueleto firme" determinístico do app — salvar um e-mail tem que salvar <em>aquele</em> e-mail, sempre igual.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Tabela · linha · coluna · "ponto de registro" (a fonte da verdade) · conector/MCP.</p></div>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Abra os conectores</h4><p class="text-neutral-300 text-sm">No Claude Code, clique no botão de "+" e depois em "conectores".</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Conecte o Supabase</h4><p class="text-neutral-300 text-sm">Ache o Supabase na lista e clique em conectar — abre uma janela para autorizar.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Crie o projeto e confirme</h4><p class="text-neutral-300 text-sm">Peça ao Claude para criar um projeto novo. Depois confirme em supabase.com que ele apareceu.</p></div>
+</div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Conectar e criar o banco</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Conecte este projeto a um banco de dados Supabase. Crie um projeto novo para este app.</pre>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- TOPICO 3 -->
+<section class="mb-16" data-inema-module="2-2" data-inema-topic="modulo-2-2#topico-3" data-inema-track="2" id="topico-3">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">🔐 Login e contas: capturar dados com segurança</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t3-p1">Duas peças andam juntas: o <strong class="text-blue-400">formulário</strong>, que transforma cada resposta numa linha da tabela, e a <strong class="text-blue-400">autenticação</strong>, que identifica cada pessoa (cadastro, login, logout). Sem login, todo mundo vê tudo; com login, você tem áreas privadas e conteúdo por usuário — tudo gerenciado pelo Supabase.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Formulário → tabela (campo vira coluna) somado ao sistema de contas: cadastro (sign-up), login (sign-in) e sessão.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">É o salto de "site que mostra" para "app que coleta e protege" — o começo de valor de verdade.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Campo → coluna · validação · sessão · "área autenticada".</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">✓ Faça no teste</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Peça cadastro e login com senha obrigatória, gerenciados no Supabase.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Em Authentication → Sign-in providers, desligue a confirmação de e-mail só durante os testes.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">✓</span><span>Considere "entrar com Google" — é o padrão hoje e facilita a vida de quem usa.</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ Não esqueça antes de ir ao ar</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Deixar a confirmação de e-mail desligada em produção (enche o banco de cadastros falsos).</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Esquecer de testar logout e novo login com a mesma senha.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Liberar áreas privadas sem sessão válida.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Autenticação básica</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Adicione cadastro e login com senha obrigatória, tudo autenticado e gerenciado no Supabase.
 Depois do login, leve a pessoa para um dashboard simples no mesmo estilo do site.</pre>
-          <p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p>
-          <pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">Add sign-up and login with a required password, fully authenticated and managed in Supabase.
+<p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p>
+<pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">Add sign-up and login with a required password, fully authenticated and managed in Supabase.
 After login, take the user to a simple dashboard in the same style as the site.</pre>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- TOPICO 4 -->
-      <section id="topico-4" data-inema-topic="modulo-2-2#topico-4" data-inema-module="2-2" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
-            <h2 class="text-2xl font-bold">💬 Construir em camadas: pedir, testar, repetir</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-2-t4-p1" class="text-neutral-300 mb-6 leading-relaxed">Você não escreve tudo de uma vez. Você <strong class="text-blue-400">conversa em camadas</strong>: "adiciona um formulário", testa, "agora salva no banco", testa, "agora deixa mais bonito", testa. Cada pedido é pequeno e verificável — é assim que se constrói com confiança.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Descrever uma mudança pequena em linguagem natural, ver o resultado e ajustar — em vez de tentar tudo de uma vez.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Mudanças pequenas são fáceis de testar e corrigir. É o que mantém o projeto sob controle.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Loop pedir → testar → feedback · descrever o "o quê", não o "como" · contexto enxuto (<code class="text-blue-400">/compact</code>, fork).</p></div>
-        </div>
-        <div class="space-y-6 mb-6">
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Faça um pedido só</h4><p class="text-neutral-300 text-sm">Descreva uma única mudança pequena e espere o Claude terminar.</p></div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Abra o app e confira</h4><p class="text-neutral-300 text-sm">Teste de verdade. Não confie no "feito" — veja com os próprios olhos.</p></div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Dê feedback e repita</h4><p class="text-neutral-300 text-sm">Descreva o que está errado ou faltando e mande o próximo pedido. Repita até gostar.</p></div>
-          </div>
-        </div>
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🧠</span> Dica prática: cuide do contexto</h3>
-          <p class="text-neutral-300 text-sm">Conversa longa demais piora as respostas. Quando o histórico ficar pesado, use <code class="text-primary">/compact</code>. Para um experimento isolado sem misturar tudo, renomeie a conversa atual e crie um <strong>fork</strong> a partir dela.</p>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- TOPICO 5 -->
-      <section id="topico-5" data-inema-topic="modulo-2-2#topico-5" data-inema-module="2-2" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
-            <h2 class="text-2xl font-bold">✅ Testar de ponta a ponta</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-2-t5-p1" class="text-neutral-300 mb-6 leading-relaxed">"Parece funcionar" não basta. Você testa o fluxo completo como uma pessoa de verdade — preenche, envia — e <strong class="text-blue-400">só então olha o Supabase</strong> para ver o registro exato na tabela. A tela diz "enviado"; o banco diz a verdade.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Percorrer o app como usuária(o) e, depois, conferir manualmente no Table Editor do Supabase.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Ver "enviado com sucesso" na tela não prova que salvou. Confirmar no banco é o que dá certeza.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Teste de ponta a ponta · fonte da verdade · conferência manual.</p></div>
-        </div>
-        <div class="space-y-6 mb-6">
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Use o app de verdade</h4><p class="text-neutral-300 text-sm">Preencha o formulário, crie uma conta de teste e faça login como qualquer pessoa faria.</p></div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Abra o Table Editor</h4><p class="text-neutral-300 text-sm">No Supabase, vá ao Table Editor e procure a linha exata que você acabou de criar.</p></div>
-          </div>
-          <div class="flex items-start space-x-4">
-            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
-            <div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Confirme o dado certo</h4><p class="text-neutral-300 text-sm">O nome e o e-mail que você digitou têm que estar lá — campo por campo. Só então está validado.</p></div>
-          </div>
-        </div>
-        <div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
-          <h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">⚖️</span> Determinístico vs probabilístico</h3>
-          <p class="text-neutral-300 text-sm">Modelos de linguagem são probabilísticos: a mesma pergunta pode dar respostas diferentes. Um app precisa de partes determinísticas — salvar um e-mail tem que salvar <em>aquele</em> e-mail, sempre igual. Por isso a verdade mora no banco, não na geração de texto.</p>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- TOPICO 6 -->
-      <section id="topico-6" data-inema-topic="modulo-2-2#topico-6" data-inema-module="2-2" data-inema-track="2" class="mb-16">
-        <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
-          <div class="flex items-center space-x-4">
-            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
-            <h2 class="text-2xl font-bold">🚀 Publicar no ar (deploy)</h2>
-          </div>
-          <button type="button" data-inema-doubt-toggle aria-pressed="false" title="Marcar dúvida neste tópico" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
-        </div>
-        <p data-inema-block="m2-2-t6-p1" class="text-neutral-300 mb-6 leading-relaxed">Um app só no seu PC não serve a ninguém. <strong class="text-blue-400">Publicar</strong> é "subir" o código para a internet, com um endereço que qualquer pessoa abre. É o passo que torna o app real — e fecha o ciclo conceito → app funcional.</p>
-        <div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
-          <div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Colocar o app em produção na Vercel, com um endereço público que qualquer pessoa abre.</p></div>
-          <div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Publicar é o que transforma um experimento local em algo que outras pessoas realmente usam.</p></div>
-          <div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Deploy · ambiente de produção · "no ar" · checklist pré-lançamento.</p></div>
-        </div>
-        <div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
-          <p class="text-sm text-neutral-400 mb-2">Publicar no ar</p>
-          <pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quando estas mudanças estiverem prontas, publique e coloque o app no ar na Vercel.</pre>
-          <p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p>
-          <pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">When these changes are ready, deploy and publish the app live on Vercel.</pre>
-        </div>
-        <details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
-          <summary class="cursor-pointer font-semibold text-blue-400">Indo mais fundo (opcional): o checklist antes de divulgar</summary>
-          <p class="text-neutral-300 text-sm mt-3">Antes de mandar o link para alguém: confirme em vercel.com que o deploy saiu, abra o endereço gerado e refaça o fluxo completo num navegador anônimo. E o mais importante: <strong>reative a confirmação de e-mail no Supabase</strong> — você só a tinha desligado para testar.</p>
-        </details>
-        <!-- Checagem leve opcional -->
-        <div data-inema-check="modulo-2-2#q1" class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6">
-          <p class="font-medium mb-4">Auto-checagem (opcional): como você tem <em>certeza</em> de que um lead foi salvo?</p>
-          <div class="inema-check-options space-y-2">
-            <button type="button" data-inema-check-option="0" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Porque a tela mostrou "enviado com sucesso".</button>
-            <button type="button" data-inema-check-option="1" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Abrindo o Table Editor do Supabase e vendo a linha exata.</button>
-            <button type="button" data-inema-check-option="2" class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm">Pedindo de novo para a IA confirmar que salvou.</button>
-          </div>
-          <div data-inema-check-feedback class="mt-4 text-sm" role="status" aria-live="polite"></div>
-        </div>
-        <div class="flex justify-start mt-6">
-          <button type="button" data-inema-read-toggle aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors"><span class="inema-ico-todo" aria-hidden="true">○</span><span class="inema-ico-done" aria-hidden="true">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
-        </div>
-      </section>
-
-      <!-- EXERCICIOS -->
-      <section class="mb-16">
-        <h2 class="text-2xl font-bold mb-6">✏️ Exercícios</h2>
-        <div class="space-y-4">
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. Conecte e crie a tabela <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Conecte o Supabase ao seu projeto e crie a tabela <code class="text-blue-400">leads</code>. <span class="text-blue-400">Critério:</span> a tabela aparece no Table Editor com as colunas certas.</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Capture um lead real <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Adicione o formulário e envie uma resposta de teste. <span class="text-blue-400">Critério:</span> a linha com o nome e e-mail que você digitou aparece na tabela <code class="text-blue-400">leads</code>.</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Adicione login <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Implemente cadastro e login com senha. <span class="text-blue-400">Critério:</span> você cria conta, sai e entra de novo com a senha — e vê uma área que só aparece depois do login.</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Itere com feedback <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Faça pelo menos três melhorias pequenas (uma por pedido), testando entre elas. <span class="text-blue-400">Critério:</span> cada mudança foi descrita em uma frase, testada e confirmada antes da próxima.</p></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Publique <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Coloque o app no ar na Vercel. <span class="text-blue-400">Critério:</span> você abre o endereço público num navegador anônimo e o fluxo completo funciona.</p></div>
-        </div>
-      </section>
-
-      <!-- PROMPTS PRONTOS -->
-      <section class="mb-16">
-        <h2 class="text-2xl font-bold mb-6">⌨️ Prompts prontos</h2>
-        <p class="text-neutral-300 text-sm mb-6">Use estes como ponto de partida e adapte ao seu app. Quando o prompt for canônico, deixamos também o <strong class="text-blue-400">original em inglês</strong>. O banco completo está na <a href="../trilha4/modulo-4-1.html" class="text-sky-400 hover:text-sky-300">Biblioteca → Prompts</a>.</p>
-        <div class="space-y-5">
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Formulário que salva no banco</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Adicione um formulário com nome, e-mail e "qual seu maior desafio hoje?".
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- TOPICO 4 -->
+<section class="mb-16" data-inema-module="2-2" data-inema-topic="modulo-2-2#topico-4" data-inema-track="2" id="topico-4">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">💬 Construir em camadas: pedir, testar, repetir</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t4-p1">Você não escreve tudo de uma vez. Você <strong class="text-blue-400">conversa em camadas</strong>: "adiciona um formulário", testa, "agora salva no banco", testa, "agora deixa mais bonito", testa. Cada pedido é pequeno e verificável — é assim que se constrói com confiança.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Descrever uma mudança pequena em linguagem natural, ver o resultado e ajustar — em vez de tentar tudo de uma vez.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Mudanças pequenas são fáceis de testar e corrigir. É o que mantém o projeto sob controle.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Loop pedir → testar → feedback · descrever o "o quê", não o "como" · contexto enxuto (<code class="text-blue-400">/compact</code>, fork).</p></div>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Faça um pedido só</h4><p class="text-neutral-300 text-sm">Descreva uma única mudança pequena e espere o Claude terminar.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Abra o app e confira</h4><p class="text-neutral-300 text-sm">Teste de verdade. Não confie no "feito" — veja com os próprios olhos.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Dê feedback e repita</h4><p class="text-neutral-300 text-sm">Descreva o que está errado ou faltando e mande o próximo pedido. Repita até gostar.</p></div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🧠</span> Dica prática: cuide do contexto</h3>
+<p class="text-neutral-300 text-sm">Conversa longa demais piora as respostas. Quando o histórico ficar pesado, use <code class="text-primary">/compact</code>. Para um experimento isolado sem misturar tudo, renomeie a conversa atual e crie um <strong>fork</strong> a partir dela.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- TOPICO 5 -->
+<section class="mb-16" data-inema-module="2-2" data-inema-topic="modulo-2-2#topico-5" data-inema-track="2" id="topico-5">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">✅ Testar de ponta a ponta</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t5-p1">"Parece funcionar" não basta. Você testa o fluxo completo como uma pessoa de verdade — preenche, envia — e <strong class="text-blue-400">só então olha o Supabase</strong> para ver o registro exato na tabela. A tela diz "enviado"; o banco diz a verdade.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Percorrer o app como usuária(o) e, depois, conferir manualmente no Table Editor do Supabase.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Ver "enviado com sucesso" na tela não prova que salvou. Confirmar no banco é o que dá certeza.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Teste de ponta a ponta · fonte da verdade · conferência manual.</p></div>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Use o app de verdade</h4><p class="text-neutral-300 text-sm">Preencha o formulário, crie uma conta de teste e faça login como qualquer pessoa faria.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Abra o Table Editor</h4><p class="text-neutral-300 text-sm">No Supabase, vá ao Table Editor e procure a linha exata que você acabou de criar.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center"><span class="text-blue-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Confirme o dado certo</h4><p class="text-neutral-300 text-sm">O nome e o e-mail que você digitou têm que estar lá — campo por campo. Só então está validado.</p></div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">⚖️</span> Determinístico vs probabilístico</h3>
+<p class="text-neutral-300 text-sm">Modelos de linguagem são probabilísticos: a mesma pergunta pode dar respostas diferentes. Um app precisa de partes determinísticas — salvar um e-mail tem que salvar <em>aquele</em> e-mail, sempre igual. Por isso a verdade mora no banco, não na geração de texto.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- TOPICO 6 -->
+<section class="mb-16" data-inema-module="2-2" data-inema-topic="modulo-2-2#topico-6" data-inema-track="2" id="topico-6">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">🚀 Publicar no ar (deploy)</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar dúvida neste tópico" type="button"><span aria-hidden="true">?</span><span>Tenho dúvida</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m2-2-t6-p1">Um app só no seu PC não serve a ninguém. <strong class="text-blue-400">Publicar</strong> é "subir" o código para a internet, com um endereço que qualquer pessoa abre. É o passo que torna o app real — e fecha o ciclo conceito → app funcional.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-blue-400 font-semibold">O que é:</span><p class="text-neutral-300 text-sm">Colocar o app em produção na Vercel, com um endereço público que qualquer pessoa abre.</p></div>
+<div><span class="text-blue-400 font-semibold">Por que aprender:</span><p class="text-neutral-300 text-sm">Publicar é o que transforma um experimento local em algo que outras pessoas realmente usam.</p></div>
+<div><span class="text-blue-400 font-semibold">Conceitos-chave:</span><p class="text-neutral-300 text-sm">Deploy · ambiente de produção · "no ar" · checklist pré-lançamento.</p></div>
+</div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5 mb-6">
+<p class="text-sm text-neutral-400 mb-2">Publicar no ar</p>
+<pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quando estas mudanças estiverem prontas, publique e coloque o app no ar na Vercel.</pre>
+<p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p>
+<pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">When these changes are ready, deploy and publish the app live on Vercel.</pre>
+</div>
+<details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+<summary class="cursor-pointer font-semibold text-blue-400">Indo mais fundo (opcional): o checklist antes de divulgar</summary>
+<p class="text-neutral-300 text-sm mt-3">Antes de mandar o link para alguém: confirme em vercel.com que o deploy saiu, abra o endereço gerado e refaça o fluxo completo num navegador anônimo. E o mais importante: <strong>reative a confirmação de e-mail no Supabase</strong> — você só a tinha desligado para testar.</p>
+</details>
+<!-- Checagem leve opcional -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-2-2#q1">
+<p class="font-medium mb-4">Auto-checagem (opcional): como você tem <em>certeza</em> de que um lead foi salvo?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">Porque a tela mostrou "enviado com sucesso".</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">Abrindo o Table Editor do Supabase e vendo a linha exata.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">Pedindo de novo para a IA confirmar que salvou.</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como lido</span><span class="inema-label-done">Lido</span></button>
+</div>
+</section>
+<!-- EXERCICIOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">✏️ Exercícios</h2>
+<div class="space-y-4">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. Conecte e crie a tabela <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Conecte o Supabase ao seu projeto e crie a tabela <code class="text-blue-400">leads</code>. <span class="text-blue-400">Critério:</span> a tabela aparece no Table Editor com as colunas certas.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Capture um lead real <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">Adicione o formulário e envie uma resposta de teste. <span class="text-blue-400">Critério:</span> a linha com o nome e e-mail que você digitou aparece na tabela <code class="text-blue-400">leads</code>.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Adicione login <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Implemente cadastro e login com senha. <span class="text-blue-400">Critério:</span> você cria conta, sai e entra de novo com a senha — e vê uma área que só aparece depois do login.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Itere com feedback <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Faça pelo menos três melhorias pequenas (uma por pedido), testando entre elas. <span class="text-blue-400">Critério:</span> cada mudança foi descrita em uma frase, testada e confirmada antes da próxima.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Publique <span class="text-xs text-neutral-500">(médio)</span></h3><p class="text-neutral-300 text-sm">Coloque o app no ar na Vercel. <span class="text-blue-400">Critério:</span> você abre o endereço público num navegador anônimo e o fluxo completo funciona.</p></div>
+</div>
+</section>
+<!-- PROMPTS PRONTOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⌨️ Prompts prontos</h2>
+<p class="text-neutral-300 text-sm mb-6">Use estes como ponto de partida e adapte ao seu app. Quando o prompt for canônico, deixamos também o <strong class="text-blue-400">original em inglês</strong>. O banco completo está na <a class="text-sky-400 hover:text-sky-300" href="../trilha4/modulo-4-1.html">Biblioteca → Prompts</a>.</p>
+<div class="space-y-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Formulário que salva no banco</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Adicione um formulário com nome, e-mail e "qual seu maior desafio hoje?".
 Quando enviarem, salve as respostas no Supabase, na tabela `leads`.</pre></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Pedir feedback antes de construir</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Antes de implementar, me diga o que você precisa de mim e quais decisões você vai tomar.
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Pedir feedback antes de construir</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Antes de implementar, me diga o que você precisa de mim e quais decisões você vai tomar.
 Faça perguntas de esclarecimento se algo estiver ambíguo.</pre></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Iterar com base numa tela</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Aqui está um print da tela atual. Há espaço demais acima e abaixo da imagem.
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Iterar com base numa tela</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Aqui está um print da tela atual. Há espaço demais acima e abaixo da imagem.
 Ajuste para caber bem, sem cortar o conteúdo importante.</pre></div>
-          <div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Deixar o Claude executar em vez de pedir para você (canônico)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Sempre que possível, execute você mesmo as tarefas (CLI, scripts) em vez de me pedir para fazer manualmente.
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Deixar o Claude executar em vez de pedir para você (canônico)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Sempre que possível, execute você mesmo as tarefas (CLI, scripts) em vez de me pedir para fazer manualmente.
 Só me peça quando for algo que só eu posso fornecer (login, chave, decisão).</pre><p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p><pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">Whenever possible, run the tasks yourself (CLI, scripts) instead of asking me to do them manually.
 Only ask me for things only I can provide (login, key, decision).</pre></div>
-        </div>
-      </section>
-
-      <!-- ERROS COMUNS -->
-      <section class="mb-16">
-        <h2 class="text-2xl font-bold mb-6">⚠️ Erros comuns</h2>
-        <div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
-          <ul class="space-y-3 text-neutral-300 text-sm">
-            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Tentar tudo de uma vez.</strong> Um único pedido gigante gera um resultado difícil de testar e corrigir. Quebre em passos pequenos.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Não validar no banco.</strong> Ver "enviado com sucesso" na tela não prova que salvou. Abra o Table Editor e confira a linha.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Esquecer de reativar a confirmação de e-mail.</strong> Desligar para testar é ok; deixar desligado em produção enche o banco de cadastros falsos.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Esperar respostas idênticas da IA.</strong> Modelos são probabilísticos. Para o que precisa ser sempre igual, confie no banco e na lógica.</span></li>
-            <li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Deixar o contexto inchar.</strong> Conversa longa demais piora as respostas. Use <code class="text-red-400">/compact</code> e considere um fork para frentes paralelas.</span></li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- RESUMO -->
-      <section class="mb-12">
-        <div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
-          <h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Resumo do módulo</h2>
-          <div class="space-y-4 mb-8">
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Site vs app</strong><span class="text-neutral-400"> — site mostra; app guarda dados e reage. As quatro peças: front-end, back-end, banco e integrações.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Banco + login</strong><span class="text-neutral-400"> — o Supabase guarda os dados (a fonte da verdade) e gerencia cadastro, login e sessão.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Construir em camadas</strong><span class="text-neutral-400"> — pedido pequeno → teste → feedback → próximo, com contexto enxuto.</span></div></div>
-            <div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Testar e publicar</strong><span class="text-neutral-400"> — valide no banco de ponta a ponta e suba o app no ar na Vercel.</span></div></div>
-          </div>
-          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
-            <h3 class="font-semibold text-blue-400 mb-3">Checklist de conclusão</h3>
-            <ul class="space-y-2 text-sm text-neutral-300">
-              <li>☐ Sei explicar a diferença entre site e app e nomear as quatro peças (front, back, banco, integrações).</li>
-              <li>☐ Conectei o Supabase ao meu projeto e criei um projeto novo de banco.</li>
-              <li>☐ Tenho um formulário que salva respostas reais na tabela <code class="text-blue-400">leads</code>.</li>
-              <li>☐ Confirmei o registro diretamente no Table Editor do Supabase.</li>
-              <li>☐ Adicionei cadastro e login com senha e testei criar conta, sair e entrar.</li>
-              <li>☐ Construí de forma incremental: pedido pequeno → teste → feedback → próximo.</li>
-              <li>☐ Publiquei o app na Vercel e validei o fluxo completo (com a confirmação de e-mail reativada).</li>
-            </ul>
-          </div>
-          <div class="bg-dark-800/50 rounded-lg p-4 mb-8">
-            <h3 class="font-semibold text-blue-400 mb-2">Próximo módulo:</h3>
-            <p class="text-neutral-300">2.3 — Construa qualquer coisa: além de sites e apps, automações e ferramentas sob medida</p>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-4">
-            <a href="index.html" class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors">← Voltar para a trilha</a>
-            <a href="modulo-2-3.html" class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors">Próximo: 2.3 →</a>
-          </div>
-        </div>
-      </section>
-
-    </div>
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="border-t border-dark-600 py-8 mt-16">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
-      <p>Claude Code na Prática — <a href="https://inema.club" target="_blank" class="text-sky-400 hover:text-sky-300">INEMA.CLUB</a> · 2026</p>
-    </div>
-  </footer>
-
-  <!-- SCRIPTS: nucleo v1 -->
-  <script>
+</div>
+</section>
+<!-- ERROS COMUNS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⚠️ Erros comuns</h2>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Tentar tudo de uma vez.</strong> Um único pedido gigante gera um resultado difícil de testar e corrigir. Quebre em passos pequenos.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Não validar no banco.</strong> Ver "enviado com sucesso" na tela não prova que salvou. Abra o Table Editor e confira a linha.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Esquecer de reativar a confirmação de e-mail.</strong> Desligar para testar é ok; deixar desligado em produção enche o banco de cadastros falsos.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Esperar respostas idênticas da IA.</strong> Modelos são probabilísticos. Para o que precisa ser sempre igual, confie no banco e na lógica.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Deixar o contexto inchar.</strong> Conversa longa demais piora as respostas. Use <code class="text-red-400">/compact</code> e considere um fork para frentes paralelas.</span></li>
+</ul>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-blue-900/40 via-dark-800 to-dark-800 rounded-xl border border-blue-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Resumo do módulo</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Site vs app</strong><span class="text-neutral-400"> — site mostra; app guarda dados e reage. As quatro peças: front-end, back-end, banco e integrações.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Banco + login</strong><span class="text-neutral-400"> — o Supabase guarda os dados (a fonte da verdade) e gerencia cadastro, login e sessão.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Construir em camadas</strong><span class="text-neutral-400"> — pedido pequeno → teste → feedback → próximo, com contexto enxuto.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-blue-400 mt-1">✓</span><div><strong>Testar e publicar</strong><span class="text-neutral-400"> — valide no banco de ponta a ponta e suba o app no ar na Vercel.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-blue-400 mb-3">Checklist de conclusão</h3>
+<ul class="space-y-2 text-sm text-neutral-300">
+<li>☐ Sei explicar a diferença entre site e app e nomear as quatro peças (front, back, banco, integrações).</li>
+<li>☐ Conectei o Supabase ao meu projeto e criei um projeto novo de banco.</li>
+<li>☐ Tenho um formulário que salva respostas reais na tabela <code class="text-blue-400">leads</code>.</li>
+<li>☐ Confirmei o registro diretamente no Table Editor do Supabase.</li>
+<li>☐ Adicionei cadastro e login com senha e testei criar conta, sair e entrar.</li>
+<li>☐ Construí de forma incremental: pedido pequeno → teste → feedback → próximo.</li>
+<li>☐ Publiquei o app na Vercel e validei o fluxo completo (com a confirmação de e-mail reativada).</li>
+</ul>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-blue-400 mb-2">Próximo módulo:</h3>
+<p class="text-neutral-300">2.3 — Construa qualquer coisa: além de sites e apps, automações e ferramentas sob medida</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Voltar para a trilha</a>
+<a class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors" href="modulo-2-3.html">Próximo: 2.3 →</a>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FOOTER -->
+<footer class="border-t border-dark-600 py-8 mt-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+<p>Claude Code na Prática — <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p>
+</div>
+</footer>
+<!-- SCRIPTS: nucleo v1 -->
+<script>
     function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp) e.classList.remove('active'); });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
     (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
       function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
@@ -601,9 +577,8 @@ Only ask me for things only I can provide (login, key, decision).</pre></div>
     function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
     document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
   </script>
-
-  <!-- Camada de aprendizagem -->
-  <script>
+<!-- Camada de aprendizagem -->
+<script>
     window.addEventListener('DOMContentLoaded', function(){
       if (window.INEMA && INEMA.registerCheck) {
         INEMA.registerCheck('modulo-2-2#q1', {
@@ -617,7 +592,7 @@ Only ask me for things only I can provide (login, key, decision).</pre></div>
       }
     });
   </script>
-  <script src="../../assets/learn.js"></script>
-  <script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+<script src="../../assets/learn.js"></script>
+<script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
 </body>
 </html>

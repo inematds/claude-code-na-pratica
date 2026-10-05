@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="claude-na-pratica" name="inema-course"/>
+<title>Ruta 2 — Construir | Claude Code en la práctica</title>
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'emerald');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.emerald;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    html:not(.dark) .text-blue-400 { color: #2563eb; }
+    html:not(.dark) .bg-blue-500\/20 { background-color: rgba(37,99,235,0.12); }
+    html:not(.dark) .bg-blue-500\/10 { background-color: rgba(37,99,235,0.08); }
+    html:not(.dark) .border-blue-500\/30 { border-color: rgba(37,99,235,0.25); }
+    html:not(.dark) .hover\:bg-blue-500\/30:hover { background-color: rgba(37,99,235,0.18); }
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) { .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; } .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s} }
+  </style>
+<link href="https://inematds.github.io/claude-code-na-pratica/curso/trilha2/" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/en/curso/trilha2/" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/es/curso/trilha2/" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha2/" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha2/" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="./" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="skip" href="#conteudo">Saltar al contenido</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html"><span class="text-2xl">⚡</span><span class="font-bold text-lg hidden sm:inline">Claude Code en la práctica</span></a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-blue-400 bg-blue-500/10" href="index.html"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors" href="../trilha3/index.html"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar y ganar</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+<button class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" data-inema-journey-open="" title="Mi recorrido" type="button"><span aria-hidden="true">◷</span><span class="hidden lg:inline">Recorrido</span><span aria-hidden="true" class="inema-journey-badge hidden"></span></button>
+<button aria-label="Alternar entre tema claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Tema claro/oscuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-blue-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded-full mb-4">RUTA 2</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🚀 Construir</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">Manos a la obra: desde cero hasta tener un sitio en línea, luego apps, lo que sea, y con aspecto profesional.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">4</div><div class="text-xs text-neutral-400">Módulos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">24</div><div class="text-xs text-neutral-400">Temas</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">~4h</div><div class="text-xs text-neutral-400">Duración</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-blue-400">Principiante→Inter</div><div class="text-xs text-neutral-400">Nivel</div></div>
+</div>
+<div class="mt-6 max-w-2xl">
+<div aria-label="Progreso de la Ruta 2" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="trilha:2" role="progressbar"><span class="inema-meter-pct" data-inema-meter-pct="">0%</span> <span class="inema-meter-count text-neutral-400 text-sm" data-inema-meter-frac="">0 de 24</span></div>
+</div>
+<!-- HERO SVG -->
+<div class="rounded-2xl border border-blue-500/30 bg-dark-900/40 p-3 sm:p-4 mt-8 overflow-hidden">
+<svg aria-label="Cuatro etapas de construcción en escalera — sitio web, apps, cualquier cosa y sistema de diseño — que te llevan de la idea al producto profesional" class="w-full h-auto" role="img" viewbox="0 0 1000 200">
+<defs>
+<lineargradient id="t2-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#60a5fa"></stop><stop offset="1" stop-color="#3b82f6"></stop></lineargradient>
+<filter height="180%" id="t2-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="t2-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#3b82f6" opacity="0.12" r="1.3"></circle></pattern>
+</defs>
+<rect fill="url(#t2-grid)" height="200" width="1000" x="0" y="0"></rect>
+<path d="M70,160 L300,128 L540,96 L780,64" fill="none" opacity="0.5" stroke="#38bdf8" stroke-dasharray="8 8" stroke-width="1.8"></path>
+<g font-family="Inter,sans-serif">
+<g class="wf-a"><rect fill="#0e1622" height="44" rx="11" stroke="#60a5fa" stroke-width="2" width="150" x="40" y="138"></rect><text fill="#bcd6fb" font-size="14" font-weight="600" text-anchor="middle" x="115" y="165">1 · Sitio web</text></g>
+<g class="wf-a"><rect fill="#0e1622" height="44" rx="11" stroke="#60a5fa" stroke-width="2" width="150" x="270" y="106"></rect><text fill="#bcd6fb" font-size="14" font-weight="600" text-anchor="middle" x="345" y="133">2 · Apps</text></g>
+<g class="wf-a"><rect fill="#0e1622" height="44" rx="11" stroke="#60a5fa" stroke-width="2" width="150" x="510" y="74"></rect><text fill="#bcd6fb" font-size="14" font-weight="600" text-anchor="middle" x="585" y="101">3 · Cualquier cosa</text></g>
+<g filter="url(#t2-glow)"><rect fill="#0e1622" height="48" rx="12" stroke="url(#t2-grad)" stroke-width="2.5" width="170" x="750" y="40"></rect></g>
+<text fill="#60a5fa" font-size="14" font-weight="600" text-anchor="middle" x="835" y="69">Producto profesional</text>
+</g>
+</svg>
+</div>
+</div>
+</header>
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="conteudo">
+<!-- MAPA DA TRILHA -->
+<section class="mb-12">
+<h2 class="text-2xl font-bold mb-6">Mapa de la ruta</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all" href="#modulo-2-1"><div class="flex items-center justify-between mb-2"><span class="text-blue-400 font-bold text-sm">2.1</span><span class="text-xs text-neutral-500">~75 min</span></div><h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">🚀 Website</h3><p class="text-xs text-neutral-400">Investiga, diseña, publica</p></a>
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all" href="#modulo-2-2"><div class="flex items-center justify-between mb-2"><span class="text-blue-400 font-bold text-sm">2.2</span><span class="text-xs text-neutral-500">~60 min</span></div><h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">🧩 Crear apps</h3><p class="text-xs text-neutral-400">Del concepto a la app</p></a>
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all" href="#modulo-2-3"><div class="flex items-center justify-between mb-2"><span class="text-blue-400 font-bold text-sm">2.3</span><span class="text-xs text-neutral-500">~45 min</span></div><h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">🧩 Construye cualquier cosa</h3><p class="text-xs text-neutral-400">La stack universal</p></a>
+<a class="group bg-dark-800 rounded-xl border border-dark-600 hover:border-blue-500/30 p-5 transition-all" href="#modulo-2-4"><div class="flex items-center justify-between mb-2"><span class="text-blue-400 font-bold text-sm">2.4</span><span class="text-xs text-neutral-500">~55 min</span></div><h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">🎨 Design Systems</h3><p class="text-xs text-neutral-400">Profesional de primer nivel</p></a>
+</div>
+</section>
+<h2 class="text-2xl font-bold mb-6">Contenido detallado</h2>
+<!-- MODULO 2-1 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-2-1">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-blue-400 font-bold">2.1</span><span class="text-xs text-neutral-500">~75 min</span></div>
+<h3 class="text-2xl font-bold mb-2">🚀 Website desde cero hasta el deploy</h3>
+<p class="text-neutral-400 text-sm">Investigar referencias, escribir un brief, construir en paralelo y publicar en la web.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-2-1-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">📋</span><div><span class="font-medium">Copia lo que ya funciona</span><span class="text-neutral-500 text-sm ml-2">- aprende de los mejores</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-1-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Estudiar sitios que ya funcionan antes de inventar algo desde cero.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Los patrones probados evitan errores y aceleran los resultados.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Referencia · patrón validado · adaptar, no copiar.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-1-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">🔍</span><div><span class="font-medium">Inteligencia competitiva</span><span class="text-neutral-500 text-sm ml-2">- mapea el mercado</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-1-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Usar el agente para analizar a la competencia y encontrar oportunidades.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Descubres dónde diferenciarte antes de construir.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Competidor · brecha · diferencial.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-1-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">📝</span><div><span class="font-medium">Brief de diseño estructurado</span><span class="text-neutral-500 text-sm ml-2">- el pedido correcto</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-1-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Un documento que describe el objetivo, el público y el estilo del sitio.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Brief claro = resultado acertado desde el primer intento.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Objetivo · público · tono visual.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-1-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">👥</span><div><span class="font-medium">Agentes paralelos</span><span class="text-neutral-500 text-sm ml-2">- varias versiones</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-1-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Generar varias propuestas de sitio al mismo tiempo y compararlas.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Más opciones en menos tiempo, y tú eliges la mejor.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Paralelo · variar · elegir.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-1-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">🎯</span><div><span class="font-medium">UI sniping + SEO</span><span class="text-neutral-500 text-sm ml-2">- ajuste fino</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-1-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Corregir detalles de UI punto por punto y preparar el SEO.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Los detalles distinguen al aficionado del profesional.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Ajuste puntual · metadatos · que te encuentren.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-1-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">🌐</span><div><span class="font-medium">Deploy en Vercel</span><span class="text-neutral-500 text-sm ml-2">- en línea</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-1-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Publica el sitio en una URL pública, gratis y en minutos.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Un proyecto solo existe de verdad cuando está en línea.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Deploy · URL pública · dominio.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-2-1')">Ver en Modal</button>
+<a class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors" href="modulo-2-1.html">Ver completo</a>
+</div>
+</div>
+<!-- MODULO 2-2 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-2-2">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-blue-400 font-bold">2.2</span><span class="text-xs text-neutral-500">~60 min</span></div>
+<h3 class="text-2xl font-bold mb-2">🧩 Crear apps</h3>
+<p class="text-neutral-400 text-sm">La diferencia entre sitio y app, base de datos, inicio de sesión, capas y cómo publicar.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-2-2-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">⚖️</span><div><span class="font-medium">Sitio vs. app</span><span class="text-neutral-500 text-sm ml-2">- la diferencia</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-2-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">El sitio muestra contenido; la app guarda datos y responde al usuario.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Saber lo que quieres evita construir algo equivocado.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Estático · interactivo · estado.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-2-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">🗃️</span><div><span class="font-medium">La base de datos</span><span class="text-neutral-500 text-sm ml-2">- dónde se encuentra la información</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-2-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">El lugar donde la app guarda los datos de forma permanente.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Sin una base de datos, todo desaparece cuando se cierra la página.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Tabla · registro · persistencia.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-2-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">🔑</span><div><span class="font-medium">Inicio de sesión y cuentas</span><span class="text-neutral-500 text-sm ml-2">- quién es quién</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-2-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Cada usuario entra con su cuenta y ve solo lo que le pertenece.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Es la base de cualquier app con más de una persona.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Autenticación · sesión · permiso.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-2-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">🧱</span><div><span class="font-medium">Construir por capas</span><span class="text-neutral-500 text-sm ml-2">- un paso a la vez</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-2-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Construir la app por partes, validando cada una antes de pasar a la siguiente.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Ir capa por capa evita el caos de hacerlo todo de una vez.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Incremento · validar · acumular.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-2-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">✅</span><div><span class="font-medium">Probar de punta a punta</span><span class="text-neutral-500 text-sm ml-2">- antes de lanzar</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-2-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Simular el uso real de la app, de principio a fin.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Detecta errores antes que el usuario y te da confianza para publicar.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Flujo real · bug · cobertura.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-2-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">🚀</span><div><span class="font-medium">Publicar en línea</span><span class="text-neutral-500 text-sm ml-2">- usuarios reales</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-2-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Poner la app en línea con la base de datos y el inicio de sesión funcionando.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Solo cuando está en línea descubres si la app resuelve el problema.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Deploy · producción · comentarios reales.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-2-2')">Ver en Modal</button>
+<a class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors" href="modulo-2-2.html">Ver completo</a>
+</div>
+</div>
+<!-- MODULO 2-3 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-2-3">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-blue-400 font-bold">2.3</span><span class="text-xs text-neutral-500">~45 min</span></div>
+<h3 class="text-2xl font-bold mb-2">🧩 Construye cualquier cosa</h3>
+<p class="text-neutral-400 text-sm">Primeros principios, un protocolo de 5 pasos y el stack universal para cualquier proyecto.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-2-3-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">🧩</span><div><span class="font-medium">Primeros principios</span><span class="text-neutral-500 text-sm ml-2">- piensa desde cero</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-3-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Descomponer cualquier proyecto en sus elementos más básicos.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Sin copiar a ciegas, resuelves problemas inéditos.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Descomponer · esencia · de lo básico al todo.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-3-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">🪜</span><div><span class="font-medium">Protocolo de 5 pasos</span><span class="text-neutral-500 text-sm ml-2">- el método</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-3-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Una secuencia fija que lleva de la idea al proyecto terminado.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Un método repetible te saca del punto de partida cada vez.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Paso a paso · repetible · checklist.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-3-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">🛠️</span><div><span class="font-medium">La stack universal</span><span class="text-neutral-500 text-sm ml-2">- herramientas que sirven para todo</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-3-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Un conjunto conciso de herramientas que cubre casi todo.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Dominar pocas herramientas vale más que conocer muchas.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Stack · estándar · reutilización.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-3-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">🎯</span><div><span class="font-medium">A quién buscar + extraer datos</span><span class="text-neutral-500 text-sm ml-2">- buscar y recopilar</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-3-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Definir el objetivo y recopilar datos sobre él en la web.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Los datos correctos convierten una idea vaga en un proyecto real.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Objetivo · scraping · recopilación.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-3-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">📦</span><div><span class="font-medium">Validar/enriquecer/empaquetar</span><span class="text-neutral-500 text-sm ml-2">- dar valor</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-3-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Revisar, completar y organizar los datos en algo útil.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Los datos sin procesar no valen nada; los datos procesados valen oro.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Validar · enriquecer · empaquetar.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-3-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">⚡</span><div><span class="font-medium">Alta agencia + metaprompt</span><span class="text-neutral-500 text-sm ml-2">- haz que la IA te ayude a pedir</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-3-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Tomar la iniciativa y usar la IA para mejorar el propio pedido.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Quien actúa y pide mejor obtiene mucho más del agente.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Iniciativa · metaprompt · iterar.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-2-3')">Ver en Modal</button>
+<a class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors" href="modulo-2-3.html">Ver completo</a>
+</div>
+</div>
+<!-- MODULO 2-4 -->
+<div class="bg-dark-800 rounded-xl border border-dark-600 mb-6" id="modulo-2-4">
+<div class="p-6 border-b border-dark-600">
+<div class="flex items-center justify-between mb-2"><span class="text-blue-400 font-bold">2.4</span><span class="text-xs text-neutral-500">~55 min</span></div>
+<h3 class="text-2xl font-bold mb-2">🎨 Design Systems</h3>
+<p class="text-neutral-400 text-sm">El diseño se convirtió en código: extrae la identidad, usa skills y crea un sistema reutilizable.</p>
+</div>
+<div class="divide-y divide-dark-600">
+<div class="topic-item"><button aria-controls="t-2-4-1" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">1</span><span class="text-lg">🎨</span><div><span class="font-medium">El diseño se convirtió en código</span><span class="text-neutral-500 text-sm ml-2">- la nueva realidad</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-4-1"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Las decisiones de diseño se convierten en reglas que el agente aplica directamente.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Diriges el estilo sin saber abrir Figma.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Diseño como código · regla · consistencia.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-4-2" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">2</span><span class="text-lg">✨</span><div><span class="font-medium">Codificar el buen diseño</span><span class="text-neutral-500 text-sm ml-2">- lo que es "bonito"</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-4-2"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Transformar principios de buen diseño en instrucciones claras.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">"Hazlo bonito" no funciona; las reglas explícitas, sí.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Espaciado · jerarquía · tipografía.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-4-3" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">3</span><span class="text-lg">🎯</span><div><span class="font-medium">Skills de diseño</span><span class="text-neutral-500 text-sm ml-2">- estilo empaquetado</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-4-3"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Paquetes de diseño que el agente aplica en cualquier proyecto.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Reutilizas tu estilo visual sin tener que volver a explicarlo todo.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Skill · estilo listo · reutilización.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-4-4" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">4</span><span class="text-lg">🖼️</span><div><span class="font-medium">Extraer la identidad visual</span><span class="text-neutral-500 text-sm ml-2">- copia el estilo correcto</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-4-4"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Extraer colores, fuentes y tono de una referencia y volver a aplicarlos.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Mantiene todo con la misma imagen de marca sin esfuerzo.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Paleta · fuente · tono de marca.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-4-5" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">5</span><span class="text-lg">🌀</span><div><span class="font-medium">Imágenes, animación y 3D</span><span class="text-neutral-500 text-sm ml-2">- dar vida</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-4-5"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Agregar imágenes, movimiento y efectos 3D al proyecto.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Estos detalles hacen que el resultado sea memorable.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Imagen · animación · 3D.</p></div></div></div></div>
+<div class="topic-item"><button aria-controls="t-2-4-6" aria-expanded="false" class="w-full px-6 py-4 flex items-center space-x-3 hover:bg-dark-700/50 transition-colors text-left" onclick="toggleTopic(this)"><span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-sm font-bold flex items-center justify-center flex-shrink-0">6</span><span class="text-lg">♻️</span><div><span class="font-medium">Sistema de diseño reutilizable</span><span class="text-neutral-500 text-sm ml-2">- tu kit de marca</span></div></button><div class="topic-explanation px-6 pb-4" id="t-2-4-6"><div class="bg-dark-700/50 rounded-lg p-4 space-y-3 ml-9"><div><span class="text-blue-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Un kit con tus reglas de diseño para todos los proyectos.</p></div><div><span class="text-blue-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Todo lo que creas mantiene la misma identidad.</p></div><div><span class="text-blue-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Sistema · tokens · reutilización.</p></div></div></div></div>
+</div>
+<div class="p-4 bg-dark-700/30 flex justify-start space-x-3">
+<button class="px-4 py-2 text-sm bg-dark-600 hover:bg-dark-500 rounded-lg transition-colors" onclick="openModal('modal-2-4')">Ver en Modal</button>
+<a class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors" href="modulo-2-4.html">Ver completo</a>
+</div>
+</div>
+<!-- NAVEGACAO ENTRE TRILHAS -->
+<div class="flex flex-col sm:flex-row gap-4 mt-10">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="../trilha1/index.html">← Ruta anterior: Fundamentos</a>
+<a class="flex-1 text-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-500 transition-colors" href="../trilha3/index.html">Siguiente ruta: Operar &amp; Lucrar →</a>
+</div>
+</main>
+<!-- MODAIS -->
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-2-1" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-blue-400 font-bold">2.1</span><span class="font-semibold">Sitio web desde cero hasta el deploy</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-2-1.html" title="Módulo 2.1"></iframe></div></div>
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-2-2" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-blue-400 font-bold">2.2</span><span class="font-semibold">Construcción de apps</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-2-2.html" title="Módulo 2.2"></iframe></div></div>
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-2-3" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-blue-400 font-bold">2.3</span><span class="font-semibold">Construye cualquier cosa</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-2-3.html" title="Módulo 2.3"></iframe></div></div>
+<div class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80" id="modal-2-4" onclick="if(event.target===this) closeModal()"><div class="bg-dark-800 rounded-xl w-full max-w-6xl h-[95vh] flex flex-col border border-dark-600"><div class="p-4 border-b border-dark-600 flex justify-between items-center flex-shrink-0"><div class="flex items-center space-x-3"><span class="text-blue-400 font-bold">2.4</span><span class="font-semibold">Sistemas de diseño</span></div><button class="text-neutral-400 hover:text-white text-2xl leading-none" onclick="closeModal()">×</button></div><iframe class="flex-1 w-full rounded-b-xl" src="modulo-2-4.html" title="Módulo 2.4"></iframe></div></div>
+<footer class="border-t border-dark-600 py-8 mt-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm"><p>Claude Code en la práctica — <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p></div>
+</footer>
+<script>
+    function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp){ e.classList.remove('active'); var b=e.parentElement.querySelector('button[aria-expanded]'); if(b) b.setAttribute('aria-expanded','false'); } });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync(); tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+    function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }
+    function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>

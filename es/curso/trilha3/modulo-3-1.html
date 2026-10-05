@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="claude-na-pratica" name="inema-course"/>
+<title>3.1 Agente personal siempre activo | Claude Code na Prática</title>
+<!-- ANTI-FOUC: bloqueante, SEPARADO, antes do Tailwind/learn.css -->
+<script>
+  (function () {
+    try {
+      var html = document.documentElement;
+      var DEF = { theme: 'inema-dark', font: 'inter', fontScale: 100, lineWidth: 68, leading: 1.7, accent: 'emerald' };
+      function clone(o){ var r={}; for (var x in o) r[x]=o[x]; return r; }
+      var p = clone(DEF);
+      try {
+        var raw = localStorage.getItem('inema.prefs');
+        if (raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed==='object'){ for (var k in DEF) if (parsed[k]!=null) p[k]=parsed[k]; } }
+        else { var legacy = localStorage.getItem('theme'); if (legacy==='light') p.theme='claro'; else if (legacy==='dark') p.theme='inema-dark'; }
+      } catch (e) { p = clone(DEF); }
+      var THEMES = { 'inema-dark':{dark:true,attr:null,cs:'dark'},'claro':{dark:false,attr:null,cs:'light'},'sepia':{dark:false,attr:'sepia',cs:'light'},'foco':{dark:null,attr:'foco',cs:null},'contraste':{dark:true,attr:'contraste',cs:'dark'} };
+      var t = THEMES[p.theme] || THEMES['inema-dark'];
+      if (t.dark===true) html.classList.add('dark'); else if (t.dark===false) html.classList.remove('dark');
+      if (t.attr) html.setAttribute('data-theme', t.attr); else html.removeAttribute('data-theme');
+      html.style.colorScheme = (t.cs ? t.cs : (html.classList.contains('dark')?'dark':'light'));
+      html.setAttribute('data-font', p.font||'inter'); html.setAttribute('data-accent', p.accent||'emerald');
+      var s = html.style, scale=(+p.fontScale||100);
+      s.setProperty('--inema-font-scale',(scale/100).toString()); s.setProperty('font-size', scale+'%');
+      s.setProperty('--measure',(+p.lineWidth||68)+'ch'); s.setProperty('--lh-body',(+p.leading||1.7).toString());
+      var fam = p.font==='system' ? 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' : (p.font==='leitura' ? '"Atkinson Hyperlegible","Inter",system-ui,sans-serif' : '"Inter",system-ui,sans-serif');
+      s.setProperty('--font-body', fam);
+      var ACC={emerald:[152,76,45],blue:[217,91,60],purple:[258,90,66],amber:[38,92,50],teal:[174,72,41],rose:[350,89,60]};
+      var a=ACC[p.accent]||ACC.emerald;
+      s.setProperty('--accent-h',a[0]+''); s.setProperty('--accent-s',a[1]+'%'); s.setProperty('--accent-l',a[2]+'%');
+      s.setProperty('--accent','hsl('+a[0]+' '+a[1]+'% '+a[2]+'%)');
+    } catch (err) { try { document.documentElement.classList.add('dark'); document.documentElement.style.colorScheme='dark'; } catch(e){} }
+  })();
+  </script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#FACC15', dark:{900:'#111827',800:'#1f2937',700:'#374151',600:'#4b5563'} } } } }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../../../assets/learn.css" rel="stylesheet"/>
+<!-- Manifesto do curso (IDÊNTICO em TODA pagina) -->
+<script data-inema-manifest="" type="application/json">
+  {
+    "course": "claude-na-pratica",
+    "tracks": [
+      { "n": "1", "title": "Fundamentos", "modules": [
+        { "id": "1-1", "title": "Boas-vindas: imagine e construa", "topics": 6, "href": "curso/trilha1/modulo-1-1.html" },
+        { "id": "1-2", "title": "Fundamentos e Setup", "topics": 6, "href": "curso/trilha1/modulo-1-2.html" },
+        { "id": "1-3", "title": "Sistema de memoria", "topics": 6, "href": "curso/trilha1/modulo-1-3.html" },
+        { "id": "1-4", "title": "Power Features", "topics": 6, "href": "curso/trilha1/modulo-1-4.html" }
+      ]},
+      { "n": "2", "title": "Construir", "modules": [
+        { "id": "2-1", "title": "Website do zero ao deploy", "topics": 6, "href": "curso/trilha2/modulo-2-1.html" },
+        { "id": "2-2", "title": "Construindo apps", "topics": 6, "href": "curso/trilha2/modulo-2-2.html" },
+        { "id": "2-3", "title": "Construa qualquer coisa", "topics": 6, "href": "curso/trilha2/modulo-2-3.html" },
+        { "id": "2-4", "title": "Design Systems", "topics": 6, "href": "curso/trilha2/modulo-2-4.html" }
+      ]},
+      { "n": "3", "title": "Operar & Lucrar", "modules": [
+        { "id": "3-1", "title": "Agente pessoal sempre-ligado", "topics": 6, "href": "curso/trilha3/modulo-3-1.html" },
+        { "id": "3-2", "title": "Compliance & Manutencao", "topics": 6, "href": "curso/trilha3/modulo-3-2.html" },
+        { "id": "3-3", "title": "Monetizacao", "topics": 6, "href": "curso/trilha3/modulo-3-3.html" },
+        { "id": "3-4", "title": "Seu sistema operacional", "topics": 6, "href": "curso/trilha3/modulo-3-4.html" }
+      ]},
+      { "n": "4", "title": "Biblioteca", "modules": [
+        { "id": "4-1", "title": "Banco de Prompts", "topics": 0, "href": "curso/trilha4/modulo-4-1.html" },
+        { "id": "4-2", "title": "Skills", "topics": 0, "href": "curso/trilha4/modulo-4-2.html" },
+        { "id": "4-3", "title": "Agentes", "topics": 0, "href": "curso/trilha4/modulo-4-3.html" }
+      ]}
+    ]
+  }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .dark body { background-color: #111827; }
+    .topic-explanation { display: none; }
+    .topic-explanation.active { display: block; }
+    section[data-inema-topic], [id^="topico-"], [id^="modulo-"] { scroll-margin-top: 5rem; }
+    .skip { position:absolute; left:-999px; top:0; z-index:100; }
+    .skip:focus { left:8px; top:8px; background:#111827; color:#fff; padding:8px 12px; border-radius:8px; }
+
+    /* Light mode - base */
+    html:not(.dark) body { background-color: #f8fafc; }
+    html:not(.dark) .bg-dark-900 { background-color: #ffffff; }
+    html:not(.dark) .bg-dark-800 { background-color: #f9fafb; }
+    html:not(.dark) .bg-dark-700 { background-color: #f3f4f6; }
+    html:not(.dark) .bg-dark-600 { background-color: #e5e7eb; }
+    html:not(.dark) .text-neutral-100 { color: #111827; }
+    html:not(.dark) .text-neutral-300 { color: #4b5563; }
+    html:not(.dark) .text-neutral-400 { color: #6b7280; }
+    html:not(.dark) .text-neutral-500 { color: #9ca3af; }
+    html:not(.dark) .border-dark-600 { border-color: #d1d5db; }
+    html:not(.dark) .border-dark-700 { border-color: #e5e7eb; }
+    /* Light mode - acento T3 purple (purple -> violet-600) */
+    html:not(.dark) .text-purple-400 { color: #7c3aed; }
+    html:not(.dark) .bg-purple-500\/20 { background-color: rgba(124,58,237,0.12); }
+    html:not(.dark) .bg-purple-500\/10 { background-color: rgba(124,58,237,0.08); }
+    html:not(.dark) .border-purple-500\/30 { border-color: rgba(124,58,237,0.25); }
+    html:not(.dark) .hover\:bg-purple-500\/30:hover { background-color: rgba(124,58,237,0.18); }
+    /* Light mode - remove gradientes + cores especiais */
+    html:not(.dark) [class*="bg-gradient-to"] { background-image: none !important; }
+    html:not(.dark) .text-primary { color: #a16207; }
+    html:not(.dark) .bg-primary\/10 { background-color: rgba(161,98,7,0.08); }
+    html:not(.dark) .border-primary\/30 { border-color: rgba(161,98,7,0.25); }
+    html:not(.dark) .text-sky-400 { color: #0369a1; }
+    html:not(.dark) .text-yellow-400 { color: #a16207; }
+    html:not(.dark) .hover\:text-sky-300:hover { color: #0284c7; }
+    html:not(.dark) .hover\:text-yellow-300:hover { color: #854d0e; }
+    html:not(.dark) .text-red-400 { color: #b91c1c; }
+    /* Light mode - nav */
+    html:not(.dark) .bg-dark-900\/95 { background-color: rgba(255,255,255,0.95); }
+    /* SVG adapta ao tema claro */
+    html:not(.dark) svg[role="img"] { filter: saturate(0.82) brightness(0.96); }
+    /* Dark mode - bordas suavizadas */
+    .dark .border-dark-600 { border-color: #374151; }
+    .dark .divide-dark-600 > :not([hidden]) ~ :not([hidden]) { border-color: #374151; }
+    /* Pulso do SVG */
+    @keyframes wf-pulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+    @media (prefers-reduced-motion: no-preference) {
+      .wf-a { animation: wf-pulse 2.6s ease-in-out infinite; }
+      .wf-a:nth-child(2){animation-delay:.25s} .wf-a:nth-child(3){animation-delay:.5s} .wf-a:nth-child(4){animation-delay:.75s}
+    }
+  </style>
+<link href="https://inematds.github.io/claude-code-na-pratica/curso/trilha3/modulo-3-1.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/en/curso/trilha3/modulo-3-1.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/claude-code-na-pratica/es/curso/trilha3/modulo-3-1.html" hreflang="es" rel="alternate"/></head>
+<body class="bg-dark-900 text-neutral-100 min-h-screen"><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../../../curso/trilha3/modulo-3-1.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="../../../en/curso/trilha3/modulo-3-1.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="modulo-3-1.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">ES</a></div>
+<a class="skip" href="#conteudo">Saltar al contenido</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-14">
+<div class="flex items-center space-x-4">
+<a class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300" href="../../index.html">
+<span class="text-2xl">⚡</span>
+<span class="font-bold text-lg hidden sm:inline">Claude Code en la práctica</span>
+</a>
+<span class="text-neutral-600">|</span>
+<a class="text-sky-400 hover:text-sky-300 text-sm font-medium" href="https://inema.club" target="_blank">INEMA.CLUB</a>
+</div>
+<div class="flex items-center space-x-1 sm:space-x-2">
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors" href="../trilha1/index.html"><span class="sm:hidden">T1</span><span class="hidden sm:inline">Fundamentos</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors" href="../trilha2/index.html"><span class="sm:hidden">T2</span><span class="hidden sm:inline">Construir</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-purple-400 bg-purple-500/10" href="index.html"><span class="sm:hidden">T3</span><span class="hidden sm:inline">Operar y ganar</span></a>
+<a class="px-3 py-1.5 rounded-lg text-sm font-semibold text-neutral-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors" href="../trilha4/index.html"><span class="sm:hidden">T4</span><span class="hidden sm:inline">Biblioteca</span></a>
+<button class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-neutral-300 hover:text-neutral-100 transition-colors text-sm ml-1" data-inema-journey-open="" title="Mi recorrido" type="button">
+<span aria-hidden="true">◷</span><span class="hidden lg:inline">Recorrido</span>
+<span aria-hidden="true" class="inema-journey-badge hidden"></span>
+</button>
+<button aria-label="Alternar entre tema claro y oscuro" class="p-2 rounded-lg bg-dark-700 hover:bg-dark-600 transition-colors ml-1" id="theme-toggle" title="Tema claro/oscuro">
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-dark-icon" viewbox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+<svg class="hidden w-5 h-5 text-neutral-300" fill="currentColor" id="theme-toggle-light-icon" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- BREADCRUMB -->
+<nav aria-label="Ruta de navegación" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+<div class="flex items-center space-x-2 text-sm text-neutral-400">
+<a class="hover:text-purple-400" href="../../index.html">Inicio</a>
+<span>/</span>
+<a class="hover:text-purple-400" href="index.html">Operar y ganar</a>
+<span>/</span>
+<span class="text-purple-400">Módulo 3.1</span>
+</div>
+</nav>
+<!-- HEADER -->
+<header class="bg-gradient-to-br from-purple-900/30 via-dark-800 to-dark-800 py-12 border-b border-dark-600">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<span class="inline-block px-3 py-1 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-full mb-4">MÓDULO 3.1</span>
+<h1 class="text-3xl sm:text-4xl font-bold mb-4">🤖 Tu agente personal siempre activo</h1>
+<p class="text-lg text-neutral-400 max-w-3xl">El jefe de gabinete de IA en tu bolsillo. Aquí separas el trabajo de escritorio del agente que te acompaña, conectas tus herramientas, programas tareas y aíslas todo en Docker: la imagen es la receta, el contenedor es la pizza.</p>
+<div class="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">6</div><div class="text-xs text-neutral-400">Temas</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">~60</div><div class="text-xs text-neutral-400">Minutos</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Princip→Inter</div><div class="text-xs text-neutral-400">Nivel</div></div>
+<div class="bg-dark-800/50 rounded-lg p-3 border border-dark-600"><div class="text-xl font-bold text-purple-400">Práctica</div><div class="text-xs text-neutral-400">Tipo</div></div>
+</div>
+<!-- Medidor de progresso do modulo -->
+<div class="mt-6 max-w-2xl">
+<div aria-label="Progreso del módulo 3.1" aria-valuemax="100" aria-valuemin="0" class="inema-meter" data-inema-meter="modulo:3-1" role="progressbar">
+<span class="inema-meter-pct" data-inema-meter-pct="">0%</span> <span class="inema-meter-count text-neutral-400 text-sm" data-inema-meter-frac="">0 de 6</span>
+</div>
+</div>
+</div>
+</header>
+<!-- CONTEUDO + TOC -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10" id="conteudo">
+<!-- TOC sticky -->
+<nav aria-label="Índice de la página" class="hidden lg:block sticky top-24 self-start" data-inema-toc="">
+<p class="text-sm text-neutral-400 mb-3">Sección <span class="inema-toc-pos">1</span> de <span class="inema-toc-total">6</span></p>
+<ul class="space-y-1 text-sm">
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-1">1. Escritorio × móvil</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-2">2. Jefe de gabinete de IA</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-3">3. Canal en el celular</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-4">4. Conecta tus herramientas</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-5">5. Tareas que se ejecutan solas</a></li>
+<li><a class="inema-toc-link block py-1 text-neutral-400 hover:text-purple-400" href="#topico-6">6. Aislamiento con Docker</a></li>
+</ul>
+</nav>
+<div class="inema-prose">
+<!-- SVG modelo mental -->
+<div class="rounded-2xl border border-purple-500/30 bg-dark-900/40 p-3 sm:p-4 mb-10 overflow-hidden">
+<svg aria-label="Dos modos de IA conectados por una flecha de doble sentido: a la izquierda, el escritorio con Claude Code limitado a un proyecto; a la derecha, el agente personal en el celular, limitado a ti, que recuerda, actúa y se ejecuta solo a las 7h, conectado a tus herramientas y aislado en un contenedor Docker (la imagen es la receta, el contenedor es la pizza)" class="w-full h-auto" role="img" viewbox="0 0 1000 240">
+<defs>
+<lineargradient id="m31-grad" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#c084fc"></stop><stop offset="1" stop-color="#a855f7"></stop></lineargradient>
+<filter height="180%" id="m31-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="b" stddeviation="1.8"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
+<pattern height="32" id="m31-grid" patternunits="userSpaceOnUse" width="32"><circle cx="1.3" cy="1.3" fill="#a855f7" opacity="0.12" r="1.3"></circle></pattern>
+<marker id="m31-ah" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#c084fc"></path></marker>
+<marker id="m31-ahs" markerheight="9" markerwidth="9" orient="auto" refx="6.5" refy="4.5"><path d="M0,0 L8,4.5 L0,9 L2.4,4.5 Z" fill="#38bdf8"></path></marker>
+<marker id="m31-ahb" markerheight="9" markerwidth="9" orient="auto" refx="2.5" refy="4.5"><path d="M8,0 L0,4.5 L8,9 L5.6,4.5 Z" fill="#c084fc"></path></marker>
+</defs>
+<rect fill="url(#m31-grid)" height="240" width="1000" x="0" y="0"></rect>
+<!-- desktop -->
+<g filter="url(#m31-glow)"><rect fill="#1a1230" height="92" rx="14" stroke="url(#m31-grad)" stroke-width="2.5" width="240" x="40" y="64"></rect></g>
+<text fill="#c084fc" font-family="Inter,sans-serif" font-size="17" font-weight="600" text-anchor="middle" x="160" y="96">💻 Escritorio — Claude Code</text>
+<text fill="#d8b4fe" font-family="Inter,sans-serif" font-size="12.5" text-anchor="middle" x="160" y="118">delimitado a un proyecto</text>
+<text fill="#9ca3af" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="160" y="138">igual para todos</text>
+<!-- seta de mao dupla -->
+<path d="M286,110 L430,110" fill="none" marker-end="url(#m31-ah)" marker-start="url(#m31-ahb)" opacity="0.8" stroke="#c084fc" stroke-width="2"></path>
+<text fill="#9ca3af" font-family="Inter,sans-serif" font-size="10.5" text-anchor="middle" x="358" y="100">se conectan</text>
+<!-- celular / agente -->
+<rect fill="#0e1b26" height="104" rx="16" stroke="#38bdf8" stroke-width="2" width="220" x="436" y="58"></rect>
+<text fill="#bfe6ff" font-family="Inter,sans-serif" font-size="16" font-weight="600" text-anchor="middle" x="546" y="92">📱 Móvil — agente personal</text>
+<text fill="#9ad6ff" font-family="Inter,sans-serif" font-size="12.5" text-anchor="middle" x="546" y="114">delimitado a ti</text>
+<g font-family="Inter,sans-serif" font-size="11" font-weight="600">
+<g class="wf-a"><rect fill="#1a1230" height="22" rx="7" stroke="#a855f7" stroke-width="1.6" width="62" x="448" y="128"></rect><text fill="#d8b4fe" text-anchor="middle" x="479" y="143">recuerda</text></g>
+<g class="wf-a"><rect fill="#1a1230" height="22" rx="7" stroke="#a855f7" stroke-width="1.6" width="48" x="516" y="128"></rect><text fill="#d8b4fe" text-anchor="middle" x="540" y="143">actúa</text></g>
+<g class="wf-a"><rect fill="#1a1230" height="22" rx="7" stroke="#a855f7" stroke-width="1.6" width="76" x="570" y="128"></rect><text fill="#d8b4fe" text-anchor="middle" x="608" y="143">7 h a solas</text></g>
+</g>
+<!-- ferramentas -->
+<g fill="none" opacity="0.5" stroke="#38bdf8" stroke-width="1.7">
+<path d="M656,90 C740,90 760,52 826,52" marker-end="url(#m31-ahs)"></path>
+<path d="M656,110 L826,110" marker-end="url(#m31-ahs)"></path>
+<path d="M656,130 C740,130 760,168 826,168" marker-end="url(#m31-ahs)"></path>
+</g>
+<g font-family="Inter,sans-serif" font-size="12" font-weight="600">
+<g class="wf-a"><rect fill="#1a1230" height="30" rx="9" stroke="#a855f7" stroke-width="1.8" width="150" x="826" y="36"></rect><text fill="#d8b4fe" text-anchor="middle" x="901" y="56">✉️ Gmail · Slack</text></g>
+<g class="wf-a"><rect fill="#1a1230" height="30" rx="9" stroke="#a855f7" stroke-width="1.8" width="150" x="826" y="95"></rect><text fill="#d8b4fe" text-anchor="middle" x="901" y="115">💳 Stripe · GitHub</text></g>
+<g class="wf-a"><rect fill="#1a1230" height="30" rx="9" stroke="#a855f7" stroke-width="1.8" width="150" x="826" y="154"></rect><text fill="#d8b4fe" text-anchor="middle" x="901" y="174">🔎 Firecrawl</text></g>
+</g>
+<!-- docker: casa com comodo fechado -->
+<rect fill="#0e1b26" height="42" rx="10" stroke="#38bdf8" stroke-dasharray="5 4" stroke-width="1.6" width="220" x="436" y="186"></rect>
+<text fill="#bfe6ff" font-family="Inter,sans-serif" font-size="11" font-weight="600" text-anchor="middle" x="546" y="205">🐳 Docker — habitación cerrada</text>
+<text fill="#9ca3af" font-family="Inter,sans-serif" font-size="10" text-anchor="middle" x="546" y="220">🧊 imagen = receta · 🍕 contenedor = pizza</text>
+<text fill="#6b7280" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" x="160" y="222">el agente te acompaña — no depende de que recuerdes todo</text>
+</svg>
+</div>
+<h2 class="text-2xl font-bold mb-6">Contenido detallado</h2>
+<!-- TOPICO 1 -->
+<section class="mb-16" data-inema-module="3-1" data-inema-topic="modulo-3-1#topico-1" data-inema-track="3" id="topico-1">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">1</span>
+<h2 class="text-2xl font-bold">🤖 Computadora × móvil: dos formas complementarias de usar IA</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t1-p1">Mucha gente mezcla dos cosas que son distintas. El <strong class="text-purple-400">desktop</strong> eres tú, sentado con tu café, en la terminal: Claude Code es <strong class="text-purple-400">delimitado a un proyecto</strong> (un repositorio, una carpeta) y funciona igual para todos. El <strong class="text-purple-400">móvil</strong> es el agente personal que te acompaña en el celular y tiene alcance limitado a <em>tú</em>: tu vida, tus herramientas, tu memoria.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">La distinción entre el trabajo de escritorio (Claude Code en un proyecto) y el agente móvil (con alcance limitado a ti, en el celular).</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Sin este mapa, las personas intentan hacerlo todo en un solo lugar. Saber cómo se divide te indica <em>dónde</em> cada cosa tiene su lugar.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Escritorio = repo/proyecto, igual para todos · móvil = personal, va contigo · ambos se conectan.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">💻 Escritorio — Claude Code</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">•</span><span>Vive en el IDE/terminal, limitado a un proyecto.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">•</span><span>Trabajo profundo: programar, automatizar, construir.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">•</span><span>Funciona igual para cualquier persona.</span></li>
+</ul>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">📱 Móvil — agente personal</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Va contigo, en el celular, con alcance limitado a <em>tú</em>.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Seguimiento continuo a lo largo del día.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Cuanto más lo usas, mejor se vuelve.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🔗</span> Cómo se conectan los dos</h3>
+<p class="text-neutral-300 text-sm">El trabajo profundo ocurre en la computadora; el seguimiento continuo, en el móvil. Levantarte de la silla no significa que tengas que desconectarte: el agente continúa la conversación donde quedó en la computadora.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- TOPICO 2 -->
+<section class="mb-16" data-inema-module="3-1" data-inema-topic="modulo-3-1#topico-2" data-inema-track="3" id="topico-2">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">2</span>
+<h2 class="text-2xl font-bold">🧭 El jefe de gabinete de IA: siempre conectado, con alcance adaptado a ti</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t2-p1">La idea de un asistente personal no es nueva: Siri prometía eso y nunca lo logró. Lo que cambió es que los modelos llegaron a ser lo bastante buenos para <strong class="text-purple-400">actuar</strong>, no solo responder. Piensa en tu agente como un <strong class="text-purple-400">jefe de gabinete</strong>: siempre activo, accesible desde el celular, que recuerda lo que acordaron ayer y ejecuta lo que hace falta.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">El agente personal que te acompaña a lo largo de tu vida, al que puedes acceder desde el celular, que recuerda y actúa.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Es el concepto central del recorrido. Entender que <em>actúa</em> (no solo responde) cambia cómo lo usas.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Siempre activo · memoria entre sesiones · acciones reales (redactar correos, programar, guardar notas) · cuanto más lo usas, mejor funciona.</p></div>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center"><span class="mr-2">📊</span> Responder × actuar, en la práctica</h3>
+<ul class="space-y-2 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>Responder: «aquí tienes un modelo de correo electrónico que podrías enviar».</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>Actuar: redacta el correo, programa el evento, guarda la nota — de verdad.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400 mt-0.5">•</span><span>Envías un audio de camino al trabajo y ya lo ejecuta.</span></li>
+</ul>
+</div>
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-purple-400 mb-3 flex items-center"><span class="mr-2">🌱</span> Configuración con un agente open-source</h3>
+<p class="text-neutral-300 text-sm">Una forma práctica es usar un agente de código abierto —por ejemplo, el <a class="text-sky-400 hover:text-sky-300" href="https://github.com/NousResearch/hermes-agent" target="_blank">Hermes, de NousResearch</a>: lo instalas, conectas tus canales y herramientas, y se convierte en tu agente siempre activo. Como es de código abierto, las mejoras llegan con solo actualizarlo. Trata el concepto de forma genérica: «agente personal» sirve con cualquier herramienta equivalente.</p>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">⭐</span> La regla de oro</h3>
+<p class="text-neutral-300 text-sm">Un buen agente personal <em>no depende de que recuerdes todo</em> ni de estar en un chat específico. Guarda el contexto entre sesiones y está disponible desde donde estés.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- TOPICO 3 -->
+<section class="mb-16" data-inema-module="3-1" data-inema-topic="modulo-3-1#topico-3" data-inema-track="3" id="topico-3">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">3</span>
+<h2 class="text-2xl font-bold">💬 Canal en el celular: habla con tu agente por Telegram/WhatsApp</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t3-p1">El canal es lo que hace que el agente sea <em>móvil</em> de verdad — hablar con él desde cualquier lugar, por texto o audio, en una app de mensajería. Sin un canal, se queda atrapado en la PC. Y una garantía innegociable: la <strong class="text-purple-400">lista de permitidos</strong>, que hace que solo <em>tú</em> puedas controlar el bot.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">La forma de conversar con el agente desde cualquier lugar —por texto o audio— mediante una app de mensajería.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Es lo que hace que el agente sea móvil. Sin un canal, queda limitado al escritorio.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Telegram, WhatsApp o SMS · el audio funciona · <strong>lista de permitidos</strong> (solo tú hablas con el bot).</p></div>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Abre BotFather</h4><p class="text-neutral-300 text-sm">Instala el <a class="text-sky-400 hover:text-sky-300" href="https://telegram.org" target="_blank">Telegram</a> y abre la cuenta oficial <strong>BotFather</strong>.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Crea el bot y obtén el token</h4><p class="text-neutral-300 text-sm">Escribe <code class="text-purple-400">/newbot</code>, elige un nombre que termine en <code class="text-purple-400">bot</code> y copia el <strong>token</strong>.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Pega el token en la config</h4><p class="text-neutral-300 text-sm">Cuando la configuración del agente te lo pida, pega el token copiado.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">4</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Agrega tu ID a la whitelist</h4><p class="text-neutral-300 text-sm">Toma tu <strong>user ID</strong> (usa un bot de "get my ID") y agrégalo a la lista permitida — solo tú puedes enviarle mensajes a tu agente.</p></div>
+</div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- TOPICO 4 -->
+<section class="mb-16" data-inema-module="3-1" data-inema-topic="modulo-3-1#topico-4" data-inema-track="3" id="topico-4">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">4</span>
+<h2 class="text-2xl font-bold">🔌 Conecta tus herramientas: todo lo que ya usas, al alcance del agente</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t4-p1">Un agente sin herramientas solo conversa. Con herramientas, <strong class="text-purple-400">hace</strong>. Básicamente, cualquier cosa que conectes a Claude puedes conectarla al agente: correo electrónico, mensajes, pagos, código, búsqueda en la web. La clave es conectar <strong class="text-purple-400">una a la vez</strong>.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Conectar el agente a los servicios de tu día a día: Gmail, Slack, Stripe, GitHub, Firecrawl y otros.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Un agente sin herramientas solo conversa. Con herramientas, realiza acciones reales.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Cualquier integración de Claude sirve aquí · correo electrónico, mensajes, pagos, código, investigación.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">✓ Conexión saludable</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Enumera las 3–5 herramientas que más usas.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Conecta una herramienta y prueba una acción simple ("lee mi último correo sin leer").</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">✓</span><span>Pasa a la siguiente solo después de que la anterior funcione.</span></li>
+</ul>
+</div>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<h4 class="font-bold text-red-400 mb-4">✗ El atajo que sale mal</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Conectar diez herramientas de una sola vez.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>No probar cada conexión por separado.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400">✗</span><span>Cuando algo se rompe, no saber qué fue.</span></li>
+</ul>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">🧪</span> Prueba de una acción real</h3>
+<p class="text-neutral-300 text-sm">Después de conectar, pide una acción concreta y confirma el resultado — "lee el asunto de mi último correo" — antes de continuar. Si el agente <em>realizó</em> la acción (no solo describió cómo lo haría), la conexión está activa.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- TOPICO 5 -->
+<section class="mb-16" data-inema-module="3-1" data-inema-topic="modulo-3-1#topico-5" data-inema-track="3" id="topico-5">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">5</span>
+<h2 class="text-2xl font-bold">⏰ Tareas que se ejecutan solas: trabaja incluso cuando no se lo pides</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t5-p1">Es aquí donde el agente se convierte en una palanca de tiempo: rutinas <strong class="text-purple-400">programadas</strong> que ejecuta sin que tú lo actives: el clásico "resumen diario a las 7h". Tú defines <strong class="text-purple-400">una vez</strong>, y lo entrega todos los días. "Set and forget": configúralo y olvídate.</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Rutinas programadas que el agente ejecuta sin que tú las actives.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Es donde el agente se convierte en una palanca de tiempo. Lo defines una vez y te entrega resultados todos los días.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Programación · «configurar y olvidar» · si está conectado al escritorio, también puede resumir tus proyectos.</p></div>
+</div>
+<div class="space-y-6 mb-6">
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">1</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Elige una rutina de alto valor</h4><p class="text-neutral-300 text-sm">Ej.: un resumen de las 5 cosas más importantes de ayer. Empieza con <strong>una</strong> solo.</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">2</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Pide que lo programe para un horario fijo</h4><p class="text-neutral-300 text-sm">"Todos los días a las 7 h, envíame por Telegram…" (consulta el prompt en la sección de Prompts).</p></div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center"><span class="text-purple-400 font-bold">3</span></div>
+<div class="flex-1 bg-dark-800 rounded-xl p-6 border border-dark-600"><h4 class="font-semibold mb-2">Ajustes después de la primera entrega</h4><p class="text-neutral-300 text-sm">Revisa lo que llegó y mejora el contenido del resumen a partir del mundo real.</p></div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-xl border border-primary/30 p-6 mb-6">
+<h3 class="text-lg font-semibold text-primary mb-3 flex items-center"><span class="mr-2">💡</span> Se conecta con el escritorio</h3>
+<p class="text-neutral-300 text-sm">Si el agente puede ver tus proyectos del escritorio, el resumen de las 7h puede incluir "qué cambió ayer en tus repositorios", no solo correos y mensajes.</p>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- TOPICO 6 -->
+<section class="mb-16" data-inema-module="3-1" data-inema-topic="modulo-3-1#topico-6" data-inema-track="3" id="topico-6">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+<div class="flex items-center space-x-4">
+<span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xl">6</span>
+<h2 class="text-2xl font-bold">📦 Aislamiento con Docker: la imagen es la receta, el contenedor es la pizza</h2>
+</div>
+<button aria-pressed="false" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-dark-700 border border-dark-600 text-neutral-300 hover:bg-dark-600 transition-colors text-sm" data-inema-doubt-toggle="" title="Marcar una duda en este tema" type="button"><span aria-hidden="true">?</span><span>Tengo una duda</span></button>
+</div>
+<p class="text-neutral-300 mb-6 leading-relaxed" data-inema-block="m3-1-t6-p1">Para ejecutar el agente aislado del resto de tu computadora, se usa el <a class="text-sky-400 hover:text-sky-300" href="https://docker.com" target="_blank">Docker</a>. Imagina tu PC como una casa; Docker es <strong class="text-purple-400">una habitación separada y cerrada</strong> dentro de ella — funciona en tu máquina, pero sin ver tus otras carpetas. La <strong class="text-purple-400">la imagen es la receta</strong> (ingredientes congelados, archivo inactivo en el disco); el <strong class="text-purple-400">el contenedor es la pizza</strong> (lo que realmente horneas y usas).</p>
+<div class="bg-dark-700/50 rounded-lg p-5 space-y-3 mb-6">
+<div><span class="text-purple-400 font-semibold">Qué es:</span><p class="text-neutral-300 text-sm">Ejecutar el agente dentro de un contenedor Docker, aislado del resto de la computadora.</p></div>
+<div><span class="text-purple-400 font-semibold">Por qué aprender:</span><p class="text-neutral-300 text-sm">Si no quieres que el agente vea tus carpetas y fotos, el contenedor ofrece esa barrera.</p></div>
+<div><span class="text-purple-400 font-semibold">Conceptos clave:</span><p class="text-neutral-300 text-sm">Docker = habitación cerrada en la casa · imagen = receta · contenedor = pizza · detener el contenedor «borra» la ejecución.</p></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<div class="bg-purple-900/20 rounded-xl border border-purple-500/30 p-6">
+<h4 class="font-bold text-purple-400 mb-4">🧊 Imagen = receta</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-purple-400">•</span><span>Ingredientes congelados: un archivo sin modificar en el disco.</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">•</span><span>Lo descargas una vez; aparece en "Images".</span></li>
+<li class="flex items-start space-x-2"><span class="text-purple-400">•</span><span>Descargar la imagen <em>no</em> es «estar en ejecución».</span></li>
+</ul>
+</div>
+<div class="bg-blue-900/20 rounded-xl border border-blue-500/30 p-6">
+<h4 class="font-bold text-blue-400 mb-4">🍕 Container = pizza</h4>
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Lo que realmente horneas y usas a partir de la receta.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Cada vez que activas el agente, se inicia un contenedor.</span></li>
+<li class="flex items-start space-x-2"><span class="text-blue-400">•</span><span>Hiciste clic en <strong>Stop</strong>: la ejecución desaparece, nada de la PC quedó expuesto.</span></li>
+</ul>
+</div>
+</div>
+<details class="bg-dark-800 border border-dark-600 rounded-xl p-5 mb-6">
+<summary class="cursor-pointer font-semibold text-purple-400">Profundiza (opcional): dar acceso solo a carpetas específicas</summary>
+<p class="text-neutral-300 text-sm mt-3">Por defecto, el contenedor no ve tus carpetas. Si necesitas dar acceso, pídelo explícitamente y enumera solo las rutas necesarias: el agente monta únicamente esas carpetas dentro del espacio cerrado, y nada más. Empieza siempre con todo cerrado y abre lo mínimo.</p>
+</details>
+<!-- Checagem leve opcional -->
+<div class="inema-check mt-8 bg-dark-800 border border-dark-600 rounded-xl p-6" data-inema-check="modulo-3-1#q1">
+<p class="font-medium mb-4">Autoevaluación (opcional): en la analogía de Docker, ¿qué es el <em>contenedor</em>?</p>
+<div class="inema-check-options space-y-2">
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="0" type="button">La receta: ingredientes congelados, un archivo quieto en el disco.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="1" type="button">La pizza: lo que realmente se ejecuta, horneado a partir de la receta.</button>
+<button class="block w-full text-left px-4 py-2 rounded-lg bg-dark-700 border border-dark-600 hover:bg-dark-600 transition-colors text-sm" data-inema-check-option="2" type="button">Toda la casa: tu computadora con todas las carpetas.</button>
+</div>
+<div aria-live="polite" class="mt-4 text-sm" data-inema-check-feedback="" role="status"></div>
+</div>
+<div class="flex justify-start mt-6">
+<button aria-pressed="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors" data-inema-read-toggle="" type="button"><span aria-hidden="true" class="inema-ico-todo">○</span><span aria-hidden="true" class="inema-ico-done">●</span><span class="inema-label-todo">Marcar como leído</span><span class="inema-label-done">Leído</span></button>
+</div>
+</section>
+<!-- EXEMPLO PRATICO GUIADO -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">🧩 Ejemplo práctico guiado</h2>
+<p class="text-neutral-300 text-sm mb-6">Vamos a crear un agente personal mínimo, aislado en Docker, que se comunique contigo por Telegram y te entregue un resumen diario.</p>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6">
+<ol class="space-y-3 text-neutral-300 text-sm list-decimal list-inside">
+<li><strong class="text-purple-400">Instala Docker.</strong> Ve a docker.com → "Get started" e instálalo para tu sistema. Abre la aplicación.</li>
+<li><strong class="text-purple-400">Pídele a Claude Code que instale el agente en Docker.</strong> Usa el Prompt 1. Claude tiene los comandos; tú solo confirmas.</li>
+<li><strong class="text-purple-400">Entiende imagen × container.</strong> En "Images" está la receta descargada; al subirla, aparece en "Containers" la pizza en ejecución.</li>
+<li><strong class="text-purple-400">Configura Telegram.</strong> En BotFather, crea el bot con <code class="text-purple-400">/newbot</code>, copia el token y pégalo. Obtén tu user ID y agrégalo a la lista permitida.</li>
+<li><strong class="text-purple-400">Haz la prueba de funcionamiento.</strong> Por Telegram, envía «¿Cuál es la fecha de hoy?». Si responde, el canal está activo.</li>
+<li><strong class="text-purple-400">Conecta una herramienta.</strong> Empieza por Gmail: «lee el asunto de mi último correo sin leer» y confirma.</li>
+<li><strong class="text-purple-400">Programa el resumen diario.</strong> "Todos los días a las 7 h, envíame por Telegram un resumen de las 5 cosas más importantes de ayer." (Prompt 4.)</li>
+<li><strong class="text-purple-400">Detén el contenedor.</strong> En Docker, haz clic en <strong>Stop</strong>. Confirma que se detuvo y que ninguna de tus carpetas quedó expuesta.</li>
+</ol>
+<p class="text-neutral-400 text-sm mt-4 italic">Resultado: un agente aislado y seguro (solo tú puedes hablar con él), conectado a una herramienta y que entrega valor automáticamente todos los días.</p>
+</div>
+</section>
+<!-- EXERCICIOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">✏️ Ejercicios</h2>
+<div class="space-y-4">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">1. Mapa de escritorio × móvil <span class="text-xs text-neutral-500">(fácil)</span></h3><p class="text-neutral-300 text-sm">En una frase cada una, describe una tarea tuya "de escritorio" y una "móvil". <span class="text-purple-400">Criterio:</span> la de escritorio se limita a un proyecto; la de móvil te acompaña durante el día.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">2. Canal seguro <span class="text-xs text-neutral-500">(medio)</span></h3><p class="text-neutral-300 text-sm">Crea un bot en Telegram y configura la whitelist con tu user ID. <span class="text-purple-400">Criterio:</span> envías un mensaje y te responde; otra cuenta no puede hacerlo.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">3. Una herramienta conectada <span class="text-xs text-neutral-500">(medio)</span></h3><p class="text-neutral-300 text-sm">Conecta <strong>una</strong> herramienta (Gmail, Slack, GitHub…) y ejecuta una acción sencilla con ella. <span class="text-purple-400">Criterio:</span> el agente realizó la acción real, no solo describió cómo la haría.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">4. Resumen diario <span class="text-xs text-neutral-500">(medio)</span></h3><p class="text-neutral-300 text-sm">Programa un digest diario a una hora fija. <span class="text-purple-400">Criterio:</span> la primera entrega llega a tiempo y trae elementos reales de tu mundo.</p></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-6"><h3 class="font-semibold mb-1">5. Aísla y detén <span class="text-xs text-neutral-500">(medio)</span></h3><p class="text-neutral-300 text-sm">Inicia el agente en Docker y luego detén el contenedor. <span class="text-purple-400">Criterio:</span> señalas cuál es la imagen y cuál es el contenedor, y confirmas que detenerlo no dejó acceso a tus carpetas.</p></div>
+</div>
+</section>
+<!-- PROMPTS PRONTOS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⌨️ Prompts listos</h2>
+<p class="text-neutral-300 text-sm mb-6">Pega estos en Claude Code para configurar y operar tu agente. Confirma cada comando antes de ejecutarlo. La base de datos completa está en <a class="text-sky-400 hover:text-sky-300" href="../trilha4/modulo-4-1.html">Biblioteca → Prompts</a>.</p>
+<div class="space-y-5">
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Instalar el agente aislado en Docker (canónico)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Ya instalé Docker y está en ejecución. Instala mi agente personal dentro de un contenedor Docker, completamente aislado del resto de mi computadora y sin acceso a mis carpetas. Guíame paso a paso y confirma cada comando antes de ejecutarlo.</pre><p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p><pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">I've installed Docker and it's running. Install my personal agent inside a Docker container, fully isolated from the rest of my computer, with no access to my folders. Walk me through it step by step and confirm each command before running it.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Dar acceso a carpetas específicas</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Quero dar ao container do meu agente acesso de leitura APENAS a estas pastas: &lt;liste os caminhos&gt;. Não dê acesso a nenhuma outra pasta. Confirme antes de aplicar.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Programar un resumen diario (canónico)</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Todo dia às 7h, me envie no &lt;Telegram/WhatsApp&gt; um resumo das 5 coisas mais importantes que aconteceram ontem no meu mundo (e-mails, mensagens e tarefas). Curto e direto, em tópicos. Se faltar acesso a alguma ferramenta, me avise.</pre><p class="text-xs text-neutral-500 mt-2 mb-1">Original (EN):</p><pre class="font-mono text-xs bg-dark-900 rounded-lg p-3 overflow-x-auto text-neutral-400 whitespace-pre-wrap">Every day at 7am, send me a digest on &lt;Telegram/WhatsApp&gt; of the 5 most important things that happened yesterday in my world (emails, messages, tasks). Short and to the point, as bullets. If you're missing access to any tool, tell me.</pre></div>
+<div class="bg-dark-800 rounded-xl border border-dark-600 p-5"><p class="text-sm text-neutral-400 mb-2">Conectar una herramienta y probarla</p><pre class="font-mono text-sm bg-dark-900 rounded-lg p-4 overflow-x-auto text-neutral-200 whitespace-pre-wrap">Conecte meu agente ao &lt;Gmail/Slack/GitHub/Stripe/Firecrawl&gt;. Depois faça um teste simples (ex.: ler meu último item) e me mostre o resultado, para eu confirmar que a conexão funciona antes de seguirmos.</pre></div>
+</div>
+</section>
+<!-- ERROS COMUNS -->
+<section class="mb-16">
+<h2 class="text-2xl font-bold mb-6">⚠️ Errores comunes</h2>
+<div class="bg-red-900/20 rounded-xl border border-red-500/30 p-6">
+<ul class="space-y-3 text-neutral-300 text-sm">
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Creer que el agente "solo responde".</strong> Tratarlo como un chat común y nunca pedir acciones. <em>Corrige:</em> pídele que <strong>hacer</strong> (redactar borradores, programar, resumir).</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Saltarte la lista blanca.</strong> Dejar abierto el canal sin restringir quién puede hablar. <em>Corrige:</em> configura tu user ID; solo tú controlas al agente.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Confundir imagen y contenedor.</strong> Creer que descargar la imagen ya es "tenerlo en marcha". <em>Corrige:</em> la imagen es la receta; es el contenedor que se ejecuta. Sube el contenedor.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Ir directamente a un servidor externo (VPS).</strong> Complicar con infraestructura paga antes de necesitarla. <em>Corrige:</em> empieza en tu PC: más rápido, seguro y sin costo.</span></li>
+<li class="flex items-start space-x-2"><span class="text-red-400 mt-0.5">✗</span><span><strong>Conectar todo de una vez.</strong> Conectar diez herramientas sin saber qué se rompió. <em>Corrige:</em> conecta y prueba uno a la vez.</span></li>
+</ul>
+</div>
+</section>
+<!-- RESUMO -->
+<section class="mb-12">
+<div class="bg-gradient-to-br from-purple-900/40 via-dark-800 to-dark-800 rounded-xl border border-purple-500/30 p-8">
+<h2 class="text-2xl font-bold mb-6 flex items-center"><span class="mr-3">✅</span> Resumen del módulo</h2>
+<div class="space-y-4 mb-8">
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>Escritorio × móvil</strong><span class="text-neutral-400"> — el escritorio se limita a un proyecto; el agente móvil se limita a ti y va en tu bolsillo.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>Siempre activo que actúa</strong><span class="text-neutral-400"> — recuerda entre sesiones y ejecuta acciones reales, no solo responde.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>Canal + herramientas + programación</strong><span class="text-neutral-400"> — Telegram con lista de permitidos, una herramienta a la vez y el resumen de las 7h.</span></div></div>
+<div class="flex items-start space-x-3"><span class="text-purple-400 mt-1">✓</span><div><strong>Docker</strong><span class="text-neutral-400"> — la imagen es la receta; el contenedor es la pizza; detener el contenedor no expone tus carpetas.</span></div></div>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-purple-400 mb-3">Lista de verificación de finalización</h3>
+<ul class="space-y-2 text-sm text-neutral-300">
+<li>☐ Sé explicar la diferencia entre escritorio (limitado a un proyecto) y móvil (limitado a mí).</li>
+<li>☐ Tengo un canal de chat en el celular (ej.: Telegram) con una whitelist solo para mí.</li>
+<li>☐ Conecté al menos una herramienta y probé una acción real con ella.</li>
+<li>☐ Programé al menos una tarea automática (p. ej., resumen diario a las 7h).</li>
+<li>☐ Inicié el agente en Docker y sé identificar la imagen y el contenedor.</li>
+<li>☐ Sé detener el contenedor y confirmé que no tiene acceso a mis carpetas.</li>
+<li>☐ Guardé mi perfil/estilo para que el agente lo recuerde entre sesiones.</li>
+</ul>
+</div>
+<div class="bg-dark-800/50 rounded-lg p-4 mb-8">
+<h3 class="font-semibold text-purple-400 mb-2">Siguiente módulo:</h3>
+<p class="text-neutral-300">3.2 — Compliance &amp; Mantenimiento: mantén tu agente seguro y actualizado</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="flex-1 text-center px-6 py-3 bg-dark-700 text-neutral-300 rounded-lg font-semibold hover:bg-dark-600 transition-colors" href="index.html">← Volver a la ruta</a>
+<a class="flex-1 text-center px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-500 transition-colors" href="modulo-3-2.html">Siguiente: 3.2 →</a>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FOOTER -->
+<footer class="border-t border-dark-600 py-8 mt-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-500 text-sm">
+<p>Claude Code en la práctica — <a class="text-sky-400 hover:text-sky-300" href="https://inema.club" target="_blank">INEMA.CLUB</a> · 2026</p>
+</div>
+</footer>
+<!-- SCRIPTS: nucleo v1 -->
+<script>
+    function toggleTopic(button){ var item=button.closest('.topic-item'); if(!item) return; var exp=item.querySelector('.topic-explanation'); var card=button.closest('.bg-dark-800'); if(card){card.querySelectorAll('.topic-explanation.active').forEach(function(e){ if(e!==exp) e.classList.remove('active'); });} if(exp) exp.classList.toggle('active'); var open=exp&&exp.classList.contains('active'); button.setAttribute('aria-expanded', open?'true':'false'); }
+    (function(){ var tt=document.getElementById('theme-toggle'); if(!tt) return; var di=document.getElementById('theme-toggle-dark-icon'), li=document.getElementById('theme-toggle-light-icon'), html=document.documentElement;
+      function sync(){ if(html.classList.contains('dark')){ li&&li.classList.remove('hidden'); di&&di.classList.add('hidden'); } else { di&&di.classList.remove('hidden'); li&&li.classList.add('hidden'); } }
+      sync();
+      tt.addEventListener('click', function(){ html.classList.toggle('dark'); var dark=html.classList.contains('dark'); localStorage.setItem('theme', dark?'dark':'light'); try{ var p=JSON.parse(localStorage.getItem('inema.prefs')||'{}'); p.theme=dark?'inema-dark':'claro'; localStorage.setItem('inema.prefs', JSON.stringify(p)); }catch(e){} html.style.colorScheme=dark?'dark':'light'; sync(); }); })();
+    function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('hidden'); document.body.style.overflow='hidden'; } }
+    function closeModal(){ document.querySelectorAll('.modal').forEach(function(m){ m.classList.add('hidden'); }); document.body.style.overflow='auto'; }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  </script>
+<!-- Camada de aprendizagem -->
+<script>
+    window.addEventListener('DOMContentLoaded', function(){
+      if (window.INEMA && INEMA.registerCheck) {
+        INEMA.registerCheck('modulo-3-1#q1', {
+          answer: 1,
+          explain: {
+            0: 'Essa é a imagem — a receita parada no disco. O container é o que roda.',
+            1: 'Isso! O container é a pizza: o que de fato roda, assado a partir da receita (imagem).',
+            2: 'A casa inteira é o seu PC. O container é só o cômodo fechado onde o agente roda.'
+          }
+        });
+      }
+    });
+  </script>
+<script src="../../../assets/learn.js"></script>
+<script>if (window.INEMA && typeof window.INEMA.init==='function'){ window.INEMA.init(); }</script>
+</body>
+</html>
